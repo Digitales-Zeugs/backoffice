@@ -26,10 +26,16 @@ class UserProvider extends EloquentUserProvider implements UserProviderContract
 
         $query = $this->createModel()->newQuery();
 
-        foreach ($credentials as $key => $value) {
-            if (! Str::contains($key, 'clave')) {
-                $query->where($key, $value);
-            }
+        if (array_key_exists('username', $credentials)) {
+            $query = $query->where('usuarioid', $credentials['username']);
+        }
+
+        if (array_key_exists('email', $credentials)) {
+            $query = $query->where('email', $credentials['email']);
+        }
+
+        if (array_key_exists('status', $credentials)) {
+            $query = $query->where('status', $credentials['status']);
         }
 
         return $query->first();
@@ -37,11 +43,11 @@ class UserProvider extends EloquentUserProvider implements UserProviderContract
 
     public function validateCredentials(Authenticatable $user, array $credentials)
     {
-        if ($user->usuarioid !== $credentials['usuarioid']) {
+        if ($user->usuarioid !== $credentials['username']) {
             return false;
         }
 
-        if (md5($credentials['clave']) !== $member->getAuthPassword()) {
+        if (md5($credentials['password']) !== $user->getAuthPassword()) {
             return false;
         }
 

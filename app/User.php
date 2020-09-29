@@ -13,6 +13,8 @@ class User extends Authenticatable
     protected $primaryKey = 'usuarioid';
     public $incrementing = false;
 
+    protected $table = 'usuarios';
+
     protected $fillable = [
         'email', 'usuarioid', 'clave', 'status',
     ];
@@ -20,4 +22,9 @@ class User extends Authenticatable
     protected $hidden = [
         'clave'
     ];
+
+    public function getAuthPassword()
+    {
+        return $this->clave;
+    }
 }
