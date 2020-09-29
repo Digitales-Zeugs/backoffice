@@ -46,9 +46,9 @@ services:
       - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: toor
-      MYSQL_DATABASE: registro
-      MYSQL_USER: registro
-      MYSQL_PASSWORD: registro
+      MYSQL_DATABASE: backoffice
+      MYSQL_USER: backoffice
+      MYSQL_PASSWORD: backoffice
 
   mailhog:
     image: mailhog/mailhog
