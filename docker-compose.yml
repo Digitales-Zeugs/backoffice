@@ -79,4 +79,5 @@ networks:
 
 volumes:
   dbdata:
-    driver: local
+    name: registro-obras_dbdata
+    external: true
