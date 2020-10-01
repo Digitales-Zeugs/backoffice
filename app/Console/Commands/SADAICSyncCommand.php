@@ -67,7 +67,10 @@ class SADAICSyncCommand extends Command
                 break;
             }
 
-            ProcessImports::dispatch($file, $table);
+            // Únicamente importar archivos conocidos
+            if ($table != "") {
+                ProcessImports::dispatch($file, $table);
+            }
         }
 
         return 0;
