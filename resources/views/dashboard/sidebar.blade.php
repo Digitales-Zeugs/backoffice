@@ -12,6 +12,12 @@
                         <p>Inicio</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="/profiles" class="nav-link">
+                        <i class="nav-icon fas fa-user-edit"></i>
+                        <p>Actualización de Datos</p>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>
