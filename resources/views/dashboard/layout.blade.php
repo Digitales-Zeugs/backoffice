@@ -17,7 +17,9 @@
     <div class="wrapper">
         @include('dashboard.navbar')
         @include('dashboard.sidebar')
+        <div class="content-wrapper">
         @yield('content')
+        </div>
     </div>
 
     @stack('scripts')
