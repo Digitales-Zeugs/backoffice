@@ -16,9 +16,10 @@ class CreateWorksLogsTable extends Migration
         Schema::create('works_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('registration_id')->constrained('works_registration');
-            $table->foreignId('disitribution_id')->nullable()->constraint('works_distribution');
-            $table->foreignId('action_id')->constraint('works_logs_actions');
-            $table->json('action_data');
+            $table->foreignId('distribution_id')->nullable()->constrained('works_distribution');
+            $table->foreignId('action_id')->constrained('works_logs_actions');
+            $table->dateTime('time');
+            $table->json('action_data')->nullable();
         });
     }
 
