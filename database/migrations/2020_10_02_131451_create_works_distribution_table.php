@@ -15,12 +15,13 @@ class CreateWorksDistributionTable extends Migration
     {
         Schema::create('works_distribution', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('work_id')->constrained('works_registration');
+            $table->foreignId('registration_id')->constrained('works_registration');
             $table->string('function');
             $table->string('member');
             $table->string('name');
             $table->string('dni');
             $table->string('amount');
+            $table->boolean('response')->nullable()->default(null);
             $table->timestamps();
         });
     }
