@@ -14,12 +14,13 @@ class CreateMembersTable extends Migration
     public function up()
     {
         Schema::create('members', function (Blueprint $table) {
+            $table->id();
             $table->string('email', 256);
             $table->string('member_id', 32);
             $table->integer('heir');
             $table->timestamps();
 
-            $table->primary(['member_id', 'heir']);
+            $table->index(['member_id', 'heir']);
             $table->index('email');
         });
     }
