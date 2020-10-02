@@ -17,8 +17,6 @@ class CreateMembersTable extends Migration
             $table->string('email', 256);
             $table->string('member_id', 32);
             $table->integer('heir');
-            $table->string('password', 512);
-            $table->rememberToken();
             $table->timestamps();
 
             $table->primary(['member_id', 'heir']);

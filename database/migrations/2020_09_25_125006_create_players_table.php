@@ -16,8 +16,6 @@ class CreatePlayersTable extends Migration
         Schema::create('players', function (Blueprint $table) {
             $table->string('email', 256);
             $table->string('player_id', 32);
-            $table->string('password', 512);
-            $table->rememberToken();
             $table->timestamps();
 
             $table->primary(['player_id']);
