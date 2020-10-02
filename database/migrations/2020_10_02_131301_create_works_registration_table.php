@@ -19,12 +19,12 @@ class CreateWorksRegistrationTable extends Migration
             
             $table->string('lyric_dnda_file');
             $table->date('lyric_dnda_date');
-            $table->string('lyric_file');
+            $table->string('lyric_file')->nullable();
             $table->string('lyric_text');
             
             $table->string('audio_dnda_file');
             $table->date('audio_dnda_date');
-            $table->string('audio_file');
+            $table->string('audio_file')->nullable();
 
             $table->timestamps();
         });
