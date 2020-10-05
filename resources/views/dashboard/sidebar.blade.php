@@ -18,6 +18,12 @@
                         <p>Actualización de Datos</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="/works" class="nav-link">
+                        <i class="nav-icon fas fa-folder-plus"></i>
+                        <p>Registros de Obras</p>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>
