@@ -10,30 +10,22 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+    protected $connection = 'sadaic';
+    protected $primaryKey = 'usuarioid';
+    public $incrementing = false;
+
+    protected $table = 'usuarios';
+
     protected $fillable = [
-        'name', 'email', 'password',
+        'email', 'usuarioid', 'clave', 'status',
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
-        'password', 'remember_token',
+        'clave'
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function getAuthPassword()
+    {
+        return $this->clave;
+    }
 }
