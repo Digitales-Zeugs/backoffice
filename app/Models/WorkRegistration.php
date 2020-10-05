@@ -10,6 +10,6 @@ class WorkRegistration extends Model
 
     public function distribution()
     {
-        return $this->hasMany('App\Models\Work\Distribution', 'registration_id', 'id');
+        return $this->hasMany('App\Models\WorkDistribution', 'registration_id', 'id');
     }
 }
