@@ -26,6 +26,10 @@
     </tr>
 @endforeach
 </table>
+@else
+<div class="alert alert-warning" role="alert">
+  No hay solicitudes pendientes.
+</div>
 @endif
 </section>
 @endsection
