@@ -34,7 +34,7 @@
                     <th>Título</th>
                     <th>DNDA Letra</th>
                     <th>DNDA Música</th>
-                    <th>Fecha</th>
+                    <th></th>
                 </tr>
             </tfoot>
         </table>
@@ -101,9 +101,16 @@ window.onload = function() {
                 searchable: true
             },
             {
-                name:       'created_at',
-                data:       'created_at',
-                searchable: true
+                name:        'created_at',
+                data:        'created_at',
+                searchable:  true,
+                createdCell: function (cell, cellData) {
+                    const parsedDate = new Date(cellData);
+                    let output = `${ parsedDate.getDate() }/${ parsedDate.getMonth() + 1 }/`; // dd/mm
+                    output += `${ parsedDate.getFullYear().toString().substring(2) } `; // yy
+                    output += `${ parsedDate.getHours() }:${ parsedDate.getMinutes() }`; // hh:ii
+                    $(cell).text(output);
+                }
             }
         ],
         initComplete: function () {
@@ -116,7 +123,7 @@ window.onload = function() {
 
                 if (title) {
                     {{-- Crear inputs en el footer para hacer search --}}
-                    $footer.html( '<input type="text" placeholder="Buscar '+ title + '" />' );
+                    $footer.html(`<input type="text" class="search_${ column.dataSrc() }" placeholder="${ title }" />`);
 
                     {{-- Bindear el evento change de los input --}}
                     $('input', $footer).on('keyup change clear', function () {
