@@ -1,0 +1,17 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+stages:
+  - build
+
+build_image_base:
+  only:
+    - /.*-build/
+  stage: build
+  script:
+    - echo $DOCKER_USER
+    - docker login registry.gitlab.com -u $DOCKER_USER -p $PASS_REGISTRY
+    - docker build . -t registry.gitlab.com/qkstudio/sadaic/backoffice/backoffice:$CI_COMMIT_REF_NAME -t registry.gitlab.com/qkstudio/sadaic/backoffice/backoffice:test
+    - docker push registry.gitlab.com/qkstudio/sadaic/backoffice/
