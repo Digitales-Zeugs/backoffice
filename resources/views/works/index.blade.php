@@ -15,10 +15,12 @@
                     <th>DNDA Letra</th>
                     <th>DNDA Música</th>
                     <th>Fecha</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -34,6 +36,7 @@
                     <th>Título</th>
                     <th>DNDA Letra</th>
                     <th>DNDA Música</th>
+                    <th></th>
                     <th></th>
                 </tr>
             </tfoot>
@@ -52,7 +55,6 @@ window.onload = function() {
         output += '<th>Apellido y Nombre</th>';
         output += '<th>DNI</th>';
         output += '<th>Socio</th>';
-        output += '<th>Consentimiento</th>';
         output += '</tr>';
         register.distribution.forEach(function(current) {
             output += '<tr>';
@@ -60,7 +62,6 @@ window.onload = function() {
             output += `<td>${current.name}</td>`;
             output += `<td>${current.dni}</td>`;
             output += `<td>${current.member}</td>`;
-            output += `<td>${current.updated_at}</td>`;
             output += '</tr>';
         })
         output += '</table>';
@@ -111,7 +112,14 @@ window.onload = function() {
                     output += `${ parsedDate.getHours() }:${ parsedDate.getMinutes() }`; // hh:ii
                     $(cell).text(output);
                 }
-            }
+            },
+            {
+                className:      'view-control',
+                orderable:      false,
+                searchable:     false,
+                data:           null,
+                defaultContent: ''
+            },
         ],
         initComplete: function () {
             {{-- Búsqueda --}}
@@ -138,8 +146,8 @@ window.onload = function() {
 
     {{-- Mostrar/ocultar detalles --}}
     $('.table tbody').on('click', 'td.details-control', function () {
-        var tr = $(this).closest('tr');
-        var row = table.row( tr );
+        const tr = $(this).closest('tr');
+        const row = table.row( tr );
  
         if ( row.child.isShown() ) {
             row.child.hide();
@@ -149,6 +157,14 @@ window.onload = function() {
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
         }
+    });
+
+    {{-- Ver solicitud --}}
+    $('.table tbody').on('click', 'td.view-control', function () {
+        const tr = $(this).closest('tr');
+        const row = table.row(tr);
+ 
+        window.location = `/works/${ row.data().id }`;
     });
 }
 </script>

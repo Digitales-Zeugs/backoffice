@@ -10,6 +10,7 @@ Route::get('/profiles/{profile}', 'ProfilesController@view');
 Route::post('/profiles/{profile}/status', 'ProfilesController@changeStatus');
 
 Route::get('/works', 'WorksController@index');
+Route::get('/works/{registration}', 'WorksController@view');
 
 Route::get('/login', 'AuthController@login')->name('login');
 Route::get('/logout', 'AuthController@logout')->name('logout');

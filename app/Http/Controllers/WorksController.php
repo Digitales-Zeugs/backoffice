@@ -32,4 +32,13 @@ class WorksController extends Controller
 
         return $response;
     }
+
+    public function view(WorkRegistration $registration)
+    {
+        $registration->load('distribution', 'distribution.role');
+
+        return view('works.view', [
+            'registration' => $registration
+        ]);
+    }
 }
