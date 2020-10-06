@@ -10,6 +10,11 @@ class WorkDistribution extends Model
 
     public function registration()
     {
-        return $this->belongsTo('App\Models\Work\Registration', 'registration_id');
+        return $this->belongsTo('App\Models\WorkRegistration', 'registration_id');
+    }
+
+    public function role()
+    {
+        return $this->belongsTo('App\Models\SADAICRoles', 'function', 'code');
     }
 }
