@@ -28,7 +28,7 @@ class WorksController extends Controller
         $requests = $query->get();
 
         $response = response(null);
-        $response->datatables = $requests;
+        $response->datatablesOutput = $requests;
 
         return $response;
     }

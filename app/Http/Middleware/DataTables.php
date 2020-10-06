@@ -90,12 +90,12 @@ class DataTables extends Middleware
         $response = $next($request);
 
         // Si hay adjuntos datos en la respuesta, los procesamos
-        if (!property_exists($response, 'datatables')) {
+        if (!property_exists($response, 'datatablesOutput')) {
             return $response;
         }
 
-        $data = $response->datatables;
-        unset($response->datatables);
+        $data = $response->datatablesOutput;
+        unset($response->datatablesOutput);
 
         $output = [];
         $output['draw'] = $request->input('draw');
