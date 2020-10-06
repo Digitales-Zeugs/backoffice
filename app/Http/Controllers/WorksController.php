@@ -9,25 +9,27 @@ use App\Models\SADAICRoles;
 
 class WorksController extends Controller
 {
+    public $datatablesModel = WorkRegistration::class;
+
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('datatables')->only('index');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $requests = WorkRegistration::whereIn('id', function($query) {
-            $query->select('registration_id')
-            ->from('works_distribution')
-            ->groupBy('registration_id')
-            ->havingRaw('SUM(`response`) = COUNT(*)');
-        })->with('distribution')->get()->toArray();
+        if (!$request->ajax()) {
+            return view('works.index');
+        }
 
-        $roles = SADAICRoles::all()->toArray();
+        $query = $request->datatablesQuery;
+        $query->with('distribution', 'distribution.role');
+        $requests = $query->get();
 
-        return view('works.index', [
-            'requests' => $requests,
-            'roles'    => $roles
-        ]);
+        $response = response(null);
+        $response->datatables = $requests;
+
+        return $response;
     }
 }

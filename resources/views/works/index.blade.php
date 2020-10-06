@@ -6,34 +6,38 @@
         <h1>Solicitudes de Registro de Obra</h1>
     </section>
     <section class="content">
-    @if(count($requests) > 0)
-    <table class="table">
-        <thead>
-            <tr>
-                <th></th>
-                <th>#</th>
-                <th>Título</th>
-                <th>DNDA Letra</th>
-                <th>DNDA Música</th>
-                <th>Fecha</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
-    @else
-    <div class="alert alert-warning" role="alert">
-    No hay solicitudes pendientes.
-    </div>
-    @endif
+        <table class="table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>#</th>
+                    <th>Título</th>
+                    <th>DNDA Letra</th>
+                    <th>DNDA Música</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th></th>
+                    <th>#</th>
+                    <th>Título</th>
+                    <th>DNDA Letra</th>
+                    <th>DNDA Música</th>
+                    <th>Fecha</th>
+                </tr>
+            </tfoot>
+        </table>
     </section>
 </div>
 @endsection
@@ -41,11 +45,6 @@
 @push('scripts')
 <script>
 window.onload = function() {
-    const data = {!! json_encode($requests) !!};
-    const roles = {!! json_encode($roles) !!};
-
-    console.log(roles);
-
     const format = function( register ) {
         let output = '<table cellpadding="5" cellspacing="0" border="0" style="margin-left:50px;">';
         output += '<tr>';
@@ -56,10 +55,8 @@ window.onload = function() {
         output += '<th>Consentimiento</th>';
         output += '</tr>';
         register.distribution.forEach(function(current) {
-            const role = roles.find(r => r.code == current.function);
-
             output += '<tr>';
-            output += `<td>${role.description}</td>`;
+            output += `<td>${current.role.description}</td>`;
             output += `<td>${current.name}</td>`;
             output += `<td>${current.dni}</td>`;
             output += `<td>${current.member}</td>`;
@@ -72,22 +69,67 @@ window.onload = function() {
     };
 
     const table = $('.table').DataTable({
-        "data": data,
-        "columns": [
+        ajax: '{{ URL::current() }}',
+        serverSide: true,
+        dom: 'lrtip',
+        columns: [
             {
-                "className":      'details-control',
-                "orderable":      false,
-                "data":           null,
-                "defaultContent": ''
+                className:      'details-control',
+                orderable:      false,
+                searchable:     false,
+                data:           null,
+                defaultContent: ''
             },
-            { "data": "id" },
-            { "data": "title" },
-            { "data": "lyric_dnda_file" },
-            { "data": "audio_dnda_file" },
-            { "data": "created_at" }
-        ]
+            {
+                name:       'id',
+                data:       'id',
+                searchable: true
+            },
+            {
+                name:       'title',
+                data:       'title',
+                searchable: true
+            },
+            {
+                name:       'lyric_dnda_file',
+                data:       'lyric_dnda_file',
+                searchable: true
+            },
+            {
+                name:       'audio_dnda_file',
+                data:       'audio_dnda_file',
+                searchable: true
+            },
+            {
+                name:       'created_at',
+                data:       'created_at',
+                searchable: true
+            }
+        ],
+        initComplete: function () {
+            {{-- Búsqueda --}}
+            this.api().columns().every( function () {
+                const column = this;
+
+                const $footer = $(this.footer());
+                const title = $footer.text();
+
+                if (title) {
+                    {{-- Crear inputs en el footer para hacer search --}}
+                    $footer.html( '<input type="text" placeholder="Buscar '+ title + '" />' );
+
+                    {{-- Bindear el evento change de los input --}}
+                    $('input', $footer).on('keyup change clear', function () {
+                        if ( column.search() !== this.value ) {
+                            column.search( this.value ).draw();
+                        }
+                    });
+                }
+            });
+        }
     });
 
+    {{-- Mostrar/ocultar detalles --}}
     $('.table tbody').on('click', 'td.details-control', function () {
         var tr = $(this).closest('tr');
         var row = table.row( tr );
