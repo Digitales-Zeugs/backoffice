@@ -16,7 +16,7 @@ class CreateWorksDistributionTable extends Migration
         Schema::create('works_distribution', function (Blueprint $table) {
             $table->id();
             $table->foreignId('registration_id')->constrained('works_registration');
-            $table->string('function');
+            $table->string('function', 5);
             $table->string('member');
             $table->string('name');
             $table->string('dni');
