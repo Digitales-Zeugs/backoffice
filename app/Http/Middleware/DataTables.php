@@ -11,68 +11,117 @@ class DataTables extends Middleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if ($request->ajax()) {
-            // https://datatables.net/manual/server-side
-            $request->validate([
-                'draw'                   => 'nullable|integer',
-                'start'                  => 'nullable|integer',
-                'length'                 => 'nullable|integer',
-                'search.value'           => 'nullable|string',
-                'search.regex'           => 'nullable|string|in:true,false',
-                'order.*.column'         => 'nullable|integer',
-                'order.*.dir'            => 'nullable|string',
-                'columns.*.data'         => 'nullable|string',
-                'columns.*.name'         => 'nullable|string',
-                'columns.*.searchable'   => 'nullable|string|in:true,false',
-                'columns.*.orderable'    => 'nullable|string|in:true,false',
-                'columns.*.search.value' => 'nullable|string',
-                'columns.*.search.regex' => 'nullable|string|in:true,false',
-            ]);
+        if (!$request->ajax()) {
+            return $next($request);
+        }
 
-            $this->clean($request);
+        // https://datatables.net/manual/server-side
+        $request->validate([
+            'draw'                   => 'nullable|integer',
+            'start'                  => 'nullable|integer',
+            'length'                 => 'nullable|integer',
+            'search.value'           => 'nullable|string',
+            'search.regex'           => 'nullable|string|in:true,false',
+            'order.*.column'         => 'nullable|integer',
+            'order.*.dir'            => 'nullable|string',
+            'columns.*.data'         => 'nullable|string',
+            'columns.*.name'         => 'nullable|string',
+            'columns.*.searchable'   => 'nullable|string|in:true,false',
+            'columns.*.orderable'    => 'nullable|string|in:true,false',
+            'columns.*.search.value' => 'nullable|string',
+            'columns.*.search.regex' => 'nullable|string|in:true,false',
+        ]);
 
-            if (property_exists(Route::current()->controller, 'datatablesModel')) {
-                $modelClass = Route::current()->controller->datatablesModel;
-                if (class_exists($modelClass)) {
-                    $query = $modelClass::query();
+        // Limpiamos y transformamos datos
+        $this->clean($request);
 
-                    if($request->has('start')) {
-                        $query->skip($request->input('start'));
-                    }
+        // Si no está seteado ningún modelo, pasamos el control
+        if (!property_exists(Route::current()->controller, 'datatablesModel')) {
+            return $next($request);
+        }
 
-                    if($request->has('length')) {
-                        $query->take($request->input('length'));
-                    }
+        $modelClass = Route::current()->controller->datatablesModel;
 
-                    if($request->has('order')) {
-                        foreach($request->input('order') as $order) {
-                            $column = $request->input('columns.' . $order['column'] . '.name');
-                            if (!$column) $column = $request->input('columns.' . $order['column'] . '.data');
-                            if (!$column) continue;
+        // Si el modelo no existe, no es accesible, étc, pasamos el control
+        if (!class_exists($modelClass)) {
+            return $next($request);
+        }
 
-                            $query->orderBy($column, $order['dir']);
-                        }
-                    }
+        // Creamos una nueva query
+        $query = $modelClass::query();
 
-                    if ($request->has('columns')) {
-                        foreach($request->input('columns.*.search') as $idx => $search) {
-                            if ($search['value'] == null) continue;
-                            if ($search['regex']) continue; // Búsquedas regex no soportadas
-                            
-                            $column = $request->input('columns.' . $idx . '.name');
-                            if (!$column) $column = $request->input('columns.' . $idx . '.data');
-                            if (!$column) continue;
-            
-                            $query->where($column, 'like', '%' . $search['value'] . '%');
-                        }
-                    }
+        // Omitir registros iniciales
+        if($request->has('start')) {
+            $query->skip($request->input('start'));
+        }
 
-                    $request->datatablesQuery = $query;
-                }
+        // Cantidad de registros a devolver
+        if($request->has('length')) {
+            $query->take($request->input('length'));
+        }
+
+        // Campos por los que ordenar
+        if($request->has('order')) {
+            foreach($request->input('order') as $order) {
+                $column = $this->getColumnName($request, $order['column']);
+                if (!$column) continue;
+
+                $query->orderBy($column, $order['dir']);
             }
         }
 
-        return $next($request);
+        // Campos por los que filtrar
+        if ($request->has('columns')) {
+            foreach($request->input('columns.*.search') as $idx => $search) {
+                if ($search['value'] == null) continue;
+                if ($search['regex']) continue; // Búsquedas regex no soportadas
+                
+                $column = $this->getColumnName($request, $idx);
+                if (!$column) continue;
+
+                $query->where($column, 'like', '%' . $search['value'] . '%');
+            }
+        }
+
+        // Seteamos la query en la request
+        $request->datatablesQuery = $query;
+
+        // Pasamos el control
+        $response = $next($request);
+
+        // Si hay adjuntos datos en la respuesta, los procesamos
+        if (!property_exists($response, 'datatables')) {
+            return $response;
+        }
+
+        $data = $response->datatables;
+        unset($response->datatables);
+
+        $output = [];
+        $output['draw'] = $request->input('draw');
+        $output['data'] = $data;
+        $output['recordsFiltered'] = $data->count();
+
+        if ($modelClass) {
+            $output['recordsTotal'] = $modelClass::count();
+        } else {
+            $output['recordsTotal'] = $data->count();
+        }
+
+        $response->setContent(json_encode($output));
+
+        $response->header('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    private function getColumnName(Request $request, int $idx)
+    {
+        $column = $request->input('columns.' . $idx . '.name');
+        if (!$column) $column = $request->input('columns.' . $idx . '.data');
+        if (!$column) return null;
+
+        return $column;
     }
 
     protected function transform(string $key, $value)
