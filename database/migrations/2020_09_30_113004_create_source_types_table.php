@@ -14,8 +14,8 @@ class CreateSourceTypesTable extends Migration
     public function up()
     {
         Schema::create('source_types', function (Blueprint $table) {
-            $table->string('code', 10);
             $table->string('description');
+            $table->string('code', 10);
         });
     }
 

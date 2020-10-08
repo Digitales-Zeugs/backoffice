@@ -15,7 +15,6 @@ class CreateSourceGenresTable extends Migration
     {
         Schema::create('source_genres', function (Blueprint $table) {
             $table->unsignedBigInteger('cod_int_gen');
-            $table->string('localidad', 100);
             $table->string('log_creat', 20);
             $table->string('log_updat', 20);
             $table->string('log_user', 50);
