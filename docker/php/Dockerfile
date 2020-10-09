@@ -12,7 +12,7 @@ COPY src/composer.lock src/composer.json /var/www/
 WORKDIR /var/www
 
 # Install dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install --no-install-recommends -y \
     build-essential ${DEV_DEPS} \
     libpng-dev \
     libjpeg62-turbo-dev \
@@ -20,10 +20,9 @@ RUN apt-get update && apt-get install -y \
     locales \
     zip \
     jpegoptim optipng pngquant gifsicle \
-    vim \
     unzip \
-    git \
-    curl
+    net-tools \
+    && rm -rf /var/lib/apt/lists/*
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
