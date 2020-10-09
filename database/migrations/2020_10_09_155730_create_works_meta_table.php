@@ -17,22 +17,22 @@ class CreateWorksMetaTable extends Migration
             $table->id();
             $table->foreignId('distribution_id')->constrained('works_distribution');
 
-            $table->string('address_city');
             $table->string('address_country')->references('tis_n')->on('source_countries');
-            $table->string('address_state');
+            $table->foreignId('address_state')->constrained('states');
+            $table->foreignId('address_city')->constrained('cities');
             $table->string('address_zip', 10);
-            $table->string('apartment');
-            $table->string('birth_country')->references('tis_n')->on('source_countries');
+            $table->string('apartment', 20);
+            $table->string('birth_country', 10)->references('tis_n')->on('source_countries');
             $table->date('birth_date');
             $table->string('doc_type', 10)->references('code')->on('source_types');
             $table->string('email', 254);
             $table->string('floor', 20);
-            $table->string('name');
-            $table->string('phone_area');
-            $table->string('phone_country');
-            $table->string('phone_number');
+            $table->string('name', 100);
+            $table->string('phone_area', 10);
+            $table->string('phone_country', 5);
+            $table->string('phone_number', 20);
             $table->string('street_name', 100);
-            $table->string('street_number');
+            $table->string('street_number', 20);
 
             $table->timestamps();
         });
