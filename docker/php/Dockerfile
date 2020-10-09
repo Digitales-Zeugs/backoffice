@@ -1,5 +1,10 @@
 FROM php:7.2-fpm
 
+# Si existe DEV instala DEV_DEPS
+ARG DEV
+
+ENV DEV_DEPS=${DEV:+"vim git curl"}
+
 # Copy composer.lock and composer.json
 COPY src/composer.lock src/composer.json /var/www/
 
@@ -8,7 +13,7 @@ WORKDIR /var/www
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
-    build-essential \
+    build-essential ${DEV_DEPS} \
     libpng-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \

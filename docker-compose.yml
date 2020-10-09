@@ -25,6 +25,8 @@ services:
   php_back:
     build:
       context: .
+      args:
+        - DEV
       dockerfile: ./docker/php/Dockerfile
     restart: "always"
     volumes:
