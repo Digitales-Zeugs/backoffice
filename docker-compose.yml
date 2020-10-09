@@ -45,10 +45,10 @@ services:
     networks:
       - app-network
     environment:
-      MYSQL_ROOT_PASSWORD: toor
-      MYSQL_DATABASE: backoffice
-      MYSQL_USER: backoffice
-      MYSQL_PASSWORD: backoffice
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
@@ -65,7 +65,7 @@ services:
     depends_on:
       - database
     environment:
-      ADMINER_DEFAULT_SERVER: database
+      ADMINER_DEFAULT_SERVER: ${ADMINER_DEFAULT_SERVER}
     volumes:
       - ./docker/adminer/php.ini:/usr/local/etc/php/conf.d/0-upload_large_dumps.ini
     networks:
