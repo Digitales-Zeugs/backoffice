@@ -1,17 +1,21 @@
-image: docker:latest
+image: docker:19.03.13
 
 services:
-  - docker:dind
+  - docker:19.03.13-dind
 
 stages:
   - build
+
+before_script:
+  - docker login registry.gitlab.com -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 build_image_base:
   only:
     - /.*-build/
   stage: build
+  allow_failure: false
   script:
-    - echo $DOCKER_USER
-    - docker login registry.gitlab.com -u $DOCKER_USER -p $PASS_REGISTRY
-    - docker build . -t registry.gitlab.com/qkstudio/sadaic/backoffice/backoffice:$CI_COMMIT_REF_NAME -t registry.gitlab.com/qkstudio/sadaic/backoffice/backoffice:test
-    - docker push registry.gitlab.com/qkstudio/sadaic/backoffice/
+    - docker pull $CI_REGISTRY_IMAGE:test || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME -t $CI_REGISTRY_IMAGE:test
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+    - docker push $CI_REGISTRY_IMAGE:test
