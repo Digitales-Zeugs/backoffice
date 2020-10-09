@@ -17,14 +17,16 @@ class CreateWorksRegistrationTable extends Migration
             $table->id();
             $table->string('title');
 
+            $table->foreignId('initiator_id')->constrained('members');
+
             $table->unsignedBigInteger('genre_id')->references('cod_int_gen')->on('source_genres');
             $table->string('duration', 5);
             
-            $table->date('audio_dnda_ed_date');
+            $table->date('audio_dnda_ed_date')->nullable();
             $table->string('audio_dnda_ed_file');
             $table->string('audio_dnda_in_file');
 
-            $table->date('lyric_dnda_ed_date');
+            $table->date('lyric_dnda_ed_date')->nullable();
             $table->string('lyric_dnda_ed_file');
             $table->string('lyric_dnda_in_file');
 
@@ -32,6 +34,8 @@ class CreateWorksRegistrationTable extends Migration
             
             $table->string('lyric_file')->nullable();
             $table->string('audio_file')->nullable();
+
+            $table->boolean('submitted')->default(false);
 
             $table->timestamps();
         });
