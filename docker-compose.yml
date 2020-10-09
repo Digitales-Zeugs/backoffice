@@ -11,6 +11,12 @@ services:
       - ./docker/nginx/app.conf:/etc/nginx/conf.d/default.conf
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 5s
+      timeout: 1s
+      retries: 3
+      start_period: 10s
     depends_on:
       - php_back
       - database
