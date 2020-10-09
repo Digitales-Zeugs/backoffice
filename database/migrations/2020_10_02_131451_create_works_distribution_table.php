@@ -29,7 +29,6 @@ class CreateWorksDistributionTable extends Migration
             $table->tinyInteger('sync');
 
             $table->boolean('response')->nullable()->default(null);
-            $table->boolean('submitted')->default(false);
 
             $table->timestamps();
         });
