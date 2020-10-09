@@ -16,14 +16,21 @@ class CreateWorksRegistrationTable extends Migration
         Schema::create('works_registration', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+
+            $table->unsignedBigInteger('genre_id')->references('cod_int_gen')->on('source_genres');
+            $table->string('duration', 5);
             
-            $table->string('lyric_dnda_file');
-            $table->date('lyric_dnda_date');
-            $table->string('lyric_file')->nullable();
+            $table->date('audio_dnda_ed_date');
+            $table->string('audio_dnda_ed_file');
+            $table->string('audio_dnda_in_file');
+
+            $table->date('lyric_dnda_ed_date');
+            $table->string('lyric_dnda_ed_file');
+            $table->string('lyric_dnda_in_file');
+
             $table->string('lyric_text');
             
-            $table->string('audio_dnda_file');
-            $table->date('audio_dnda_date');
+            $table->string('lyric_file')->nullable();
             $table->string('audio_file')->nullable();
 
             $table->timestamps();
