@@ -50,4 +50,8 @@ USER www
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
+
+# Chequeo de Healthcheck
+HEALTHCHECK --interval=5s --timeout=3s CMD netstat -an | grep 9000 > /dev/null; if [ $? != 0 ]; then echo "[Healthcheck] probe failed."; exit 1; fi;
+
 CMD ["php-fpm"]
