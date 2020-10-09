@@ -52,6 +52,7 @@ services:
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
+    restart: "no"
     ports:
       - 8025:8025
     networks:
