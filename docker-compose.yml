@@ -2,7 +2,7 @@ version: "3"
 
 services:
   admin:
-    image: nginx:alpine
+    image: nginx:1.19-alpine
     restart: "no"
     ports:
       - 9000:80
@@ -31,7 +31,7 @@ services:
       - www.sadaic.org.ar:10.30.110.20
 
   database:
-    image: mariadb
+    image: mariadb:10.5.6-focal
     restart: "no"
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
@@ -45,14 +45,14 @@ services:
       MYSQL_PASSWORD: backoffice
 
   mailhog:
-    image: mailhog/mailhog
+    image: mailhog/mailhog:v1.0.1
     ports:
       - 8025:8025
     networks:
       - app-network
 
   adminer:
-    image: adminer
+    image: adminer:4.7.7
     restart: "no"
     ports:
       - 8306:8080
