@@ -20,18 +20,10 @@ services:
     depends_on:
       - php_back
       - database
-      - mailhog
 
   php_back:
-    build:
-      context: .
-      args:
-        - DEV
-      dockerfile: ./docker/php/Dockerfile
+    image: registry.gitlab.com/qkstudio/sadaic/backoffice:testing
     restart: "always"
-    volumes:
-      - ./src:/var/www
-      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
       - app-network
     extra_hosts:
@@ -51,29 +43,6 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE:-backoffice}
       MYSQL_USER: ${MYSQL_USER:-backoffice}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-backoffice}
-
-  mailhog:
-    image: mailhog/mailhog:v1.0.1
-    restart: "no"
-    ports:
-      - 8025:8025
-    networks:
-      - app-network
-
-  adminer:
-    image: adminer:4.7.7
-    restart: "no"
-    ports:
-      - 8306:8080
-    depends_on:
-      - database
-    environment:
-      ADMINER_DEFAULT_SERVER: ${ADMINER_DEFAULT_SERVER:-database}
-    volumes:
-      - ./docker/adminer/php.ini:/usr/local/etc/php/conf.d/0-upload_large_dumps.ini
-    networks:
-      - app-network
-
 
 networks:
   app-network:
