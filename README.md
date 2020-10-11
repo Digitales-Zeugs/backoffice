@@ -42,7 +42,7 @@ $ docker-compose -f docker-compose.yml -up -d
 
 - Fuentes: dentro de la imágen.
 
-- Instanciará además maildog y adminer.
+- Instanciará maildog y adminer.
 
 ```
 $ docker-compose -f docker-compose.yml -f docker-compose.test.yml -up -d 
@@ -56,7 +56,7 @@ $ docker-compose -f docker-compose.yml -f docker-compose.test.yml -up -d
 
 - Fuentes: local
 
-- Instanciará además maildog y adminer.
+- Instanciará maildog y adminer.
 
 ```
 $ docker-compose -f docker-compose.yml -f docker-compose.dev.yml -up -d 
