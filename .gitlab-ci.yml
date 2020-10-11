@@ -16,7 +16,7 @@ build_image_base:
   allow_failure: false
   script:
     - export IMAGE_NAME=${CI_COMMIT_REF_NAME%-*}
-    - docker pull $CI_REGISTRY_IMAGE:test || true
-    - docker build -f docker/php/Dockerfile --cache-from $CI_REGISTRY_IMAGE:test -t $CI_REGISTRY_IMAGE:${IMAGE_NAME} -t $CI_REGISTRY_IMAGE:test .
+    - docker pull $CI_REGISTRY_IMAGE:testing || true
+    - docker build -f docker/php/Dockerfile --cache-from $CI_REGISTRY_IMAGE:testing -t $CI_REGISTRY_IMAGE:${IMAGE_NAME} -t $CI_REGISTRY_IMAGE:testing .
     - docker push $CI_REGISTRY_IMAGE:${IMAGE_NAME}
     - docker push $CI_REGISTRY_IMAGE:test
