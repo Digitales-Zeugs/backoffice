@@ -1,3 +1,24 @@
+# Vue
+FROM node:14.13.1-alpine3.12 AS nodebuild
+
+ARG DEV
+
+ENV NODE_ENV=production
+
+ENV NODE_ENV=${DEV:+development}
+
+WORKDIR /app
+
+COPY src/package.json src/package.lock ./
+
+RUN npm install
+
+COPY src/ /app
+
+RUN npm run ${NODE_ENV}
+
+# Laravel
+
 FROM php:7.2-fpm
 
 # Si existe DEV instala DEV_DEPS
@@ -40,7 +61,7 @@ RUN groupadd -g 1000 www
 RUN useradd -u 1000 -ms /bin/bash -g www www
 
 # Copy existing application directory contents
-COPY src/ /var/www
+COPY --from=nodebuild /app /var/www
 
 COPY .env* /var/www/
 
