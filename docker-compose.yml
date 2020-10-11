@@ -19,7 +19,7 @@ services:
       retries: 3
       start_period: 10s
     depends_on:
-      - php_back
+      - php_backoffice
       - database
 
   php_backoffice:

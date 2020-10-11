@@ -6,7 +6,7 @@ services:
     env_file:
       - .env.testing
     depends_on:
-      - php_back
+      - php_backoffice
       - database
       - mailhog
 
