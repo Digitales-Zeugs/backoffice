@@ -31,7 +31,7 @@ Generará la imágen: _registry.gitlab.com/qkstudio/sadaic/backoffice:1.1.0_
 - Fuentes: dentro de la imágen.
 
 ```
-$ docker-comose -f docker-compose.yml -up -d 
+$ docker-compose -f docker-compose.yml -up -d 
 ```
 
 #### Ejecución del ambiente de testing
@@ -45,7 +45,7 @@ $ docker-comose -f docker-compose.yml -up -d
 - Instanciará además maildog y adminer.
 
 ```
-$ docker-comose -f docker-compose.yml -f docker-compose.test.yml -up -d 
+$ docker-compose -f docker-compose.yml -f docker-compose.test.yml -up -d 
 ```
 
 #### Ejecución del ambiente de desarrollo
@@ -59,12 +59,12 @@ $ docker-comose -f docker-compose.yml -f docker-compose.test.yml -up -d
 - Instanciará además maildog y adminer.
 
 ```
-$ docker-comose -f docker-compose.yml -f docker-compose.dev.yml -up -d 
+$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml -up -d 
 ```
 
 Es posible forzar el build de la siguiente manera:
 
 ```
-$ docker-comose -f docker-compose.yml -f docker-compose.dev.yml -up --build -d 
+$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml -up --build -d 
 ```
 
