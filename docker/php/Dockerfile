@@ -9,7 +9,7 @@ ENV NODE_ENV=${DEV:+development}
 
 WORKDIR /app
 
-COPY src/package.json src/package.lock ./
+COPY src/package.json src/package-lock.json ./
 
 RUN npm install
 
