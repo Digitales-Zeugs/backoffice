@@ -16,7 +16,7 @@ services:
 
   php_registro_obras:
     env_file:
-      - ../registro-obras/.env.test
+      - ../registro-obras/.env.testing
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras:testing
 
   mailhog:
