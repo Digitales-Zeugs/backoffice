@@ -1,6 +1,7 @@
 version: "3.8"
 
 services:
+  
   nginx:
     image: nginx:1.19-alpine
     restart: "no"
