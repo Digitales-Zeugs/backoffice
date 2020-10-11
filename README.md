@@ -66,7 +66,7 @@ $ docker-compose --env-file=env/test -up -d
 
 - Variables de entorno: .env.development
 
-- Fuentes: local
+- Fuentes: local (a pesar del build que agrega herramientas y demás los fuentes que utiliza son los locales)
 
 - Instanciará mailhog y adminer.
 
@@ -86,8 +86,19 @@ Es posible forzar el build de la siguiente manera:
 $ docker-compose -f docker-compose.yml -f docker-compose.dev.yml -up --build -d 
 ```
 
-o analogamente
+o análogamente
 
 ```
 $ docker-compose --env-file=env/dev -up --build -d 
+```
+
+Como los fuentes que utiliza son los locales, es necesario instalar las dependencias de php con composer y las de node con npm.
+
+```
+$ docker-compose --env-file=env/dev exec php_backoffice composer install
+$ docker-compose --env-file=env/dev exec php_registro_obras composer install
+$ docker-compose --env-file=env/dev exec node_backoffice npm install
+$ docker-compose --env-file=env/dev exec node_backoffice npm run development
+$ docker-compose --env-file=env/dev exec node_registro_obras npm install
+$ docker-compose --env-file=env/dev exec node_registro_obras npm run development
 ```

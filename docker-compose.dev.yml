@@ -62,3 +62,19 @@ services:
       - ./docker/adminer/php.ini:/usr/local/etc/php/conf.d/0-upload_large_dumps.ini
     networks:
       - app-network
+
+  node_backoffice:
+    image: node:14.13.1-alpine3.12
+    command: /bin/sh
+    tty: true
+    working_dir: /app
+    volumes:
+      - ./src:/app
+
+  node_registro_obras:
+    image: node:14.13.1-alpine3.12
+    command: /bin/sh
+    tty: true
+    working_dir: /app
+    volumes:
+      - ../registro-obras/src:/app
