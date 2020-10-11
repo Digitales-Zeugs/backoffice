@@ -27,16 +27,15 @@ services:
       context: ../registro-obras
       args:
         - DEV
-      dockerfile: ../registro-obras/docker/php/Dockerfile
+      dockerfile: ./docker/php/Dockerfile
+    env_file:
+      - .env.development
     volumes:
       - ../registro-obras/src:/var/www
       - ../registro-obras/docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
     extra_hosts:
       - sadaic.org.ar:10.30.110.20
       - www.sadaic.org.ar:10.30.110.20
-    external_links:
-      - database:backoffice_database
-      - mailhog:backoffice_mailhog
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
