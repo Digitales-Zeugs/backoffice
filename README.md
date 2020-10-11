@@ -48,7 +48,7 @@ $ docker-compose --env-file=env/prod -up -d
 
 - Fuentes: dentro de la imágen.
 
-- Instanciará maildog y adminer.
+- Instanciará mailhog y adminer.
 
 ```
 $ docker-compose -f docker-compose.yml -f docker-compose.test.yml -up -d 
@@ -68,7 +68,7 @@ $ docker-compose --env-file=env/test -up -d
 
 - Fuentes: local
 
-- Instanciará maildog y adminer.
+- Instanciará mailhog y adminer.
 
 ```
 $ docker-compose -f docker-compose.yml -f docker-compose.dev.yml -up -d 
