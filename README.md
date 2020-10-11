@@ -34,6 +34,12 @@ Generará la imágen: _registry.gitlab.com/qkstudio/sadaic/backoffice:1.1.0_
 $ docker-compose -f docker-compose.yml -up -d 
 ```
 
+o también
+
+```
+$ docker-compose --env-file=env/prod -up -d 
+```
+
 #### Ejecución del ambiente de testing
 
 - Imágen: _registry.gitlab.com/qkstudio/sadaic/backoffice:testing_  
@@ -46,6 +52,12 @@ $ docker-compose -f docker-compose.yml -up -d
 
 ```
 $ docker-compose -f docker-compose.yml -f docker-compose.test.yml -up -d 
+```
+
+o también
+
+```
+$ docker-compose --env-file=env/test -up -d 
 ```
 
 #### Ejecución del ambiente de desarrollo
@@ -62,9 +74,20 @@ $ docker-compose -f docker-compose.yml -f docker-compose.test.yml -up -d
 $ docker-compose -f docker-compose.yml -f docker-compose.dev.yml -up -d 
 ```
 
+o también
+
+```
+$ docker-compose --env-file=env/dev -up -d 
+```
+
 Es posible forzar el build de la siguiente manera:
 
 ```
 $ docker-compose -f docker-compose.yml -f docker-compose.dev.yml -up --build -d 
 ```
 
+o analogamente
+
+```
+$ docker-compose --env-file=env/dev -up --build -d 
+```

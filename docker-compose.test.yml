@@ -6,14 +6,18 @@ services:
     env_file:
       - .env.testing
     depends_on:
-      - php_backoffice
       - database
       - mailhog
 
   php_backoffice:
     env_file:
-      - .env.test
+      - .env.testing
     image: registry.gitlab.com/qkstudio/sadaic/backoffice:testing
+
+  php_registro_obras:
+    env_file:
+      - ../registro-obras/.env.test
+    image: registry.gitlab.com/qkstudio/sadaic/registro-obras:testing
 
   mailhog:
     image: mailhog/mailhog:v1.0.1

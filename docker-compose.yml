@@ -6,24 +6,30 @@ services:
     image: nginx:1.19-alpine
     restart: "no"
     ports:
-      - 9000:80
+      - 9000:9000
+      - 8000:8000
     volumes:
-      - ./src:/var/www
-      - ./docker/nginx/app.conf:/etc/nginx/conf.d/default.conf
+      - ./src:/var/www/backoffice
+      - ./docker/nginx/app.conf:/etc/nginx/conf.d/backoffice.conf
+      - ../registro-obras/src:/var/www/registro-obras
+      - ../registro-obras/docker/nginx/app.conf:/etc/nginx/conf.d/registro-obras.conf
     networks:
       - app-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
-      interval: 5s
-      timeout: 1s
-      retries: 3
-      start_period: 10s
     depends_on:
       - php_backoffice
       - database
 
   php_backoffice:
     image: registry.gitlab.com/qkstudio/sadaic/backoffice:latest
+    restart: "always"
+    networks:
+      - app-network
+    extra_hosts:
+      - sadaic.org.ar:10.30.110.20
+      - www.sadaic.org.ar:10.30.110.20
+
+  php_registro_obras:
+    image: registry.gitlab.com/qkstudio/sadaic/registro-obras:latest
     restart: "always"
     networks:
       - app-network
