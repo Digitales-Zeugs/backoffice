@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  
+
   nginx:
     image: nginx:1.19-alpine
     restart: "no"
@@ -22,8 +22,8 @@ services:
       - php_back
       - database
 
-  php_back:
-    image: registry.gitlab.com/qkstudio/sadaic/backoffice:testing
+  php_backoffice:
+    image: registry.gitlab.com/qkstudio/sadaic/backoffice:latest
     restart: "always"
     networks:
       - app-network
