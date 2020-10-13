@@ -7,7 +7,7 @@ stages:
   - build
 
 before_script:
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD $CI_REGISTRY
 
 build_image_base:
   only:
@@ -15,10 +15,11 @@ build_image_base:
   stage: build
   allow_failure: false
   script:
-    - export IMAGE_NAME=${CI_COMMIT_REF_NAME%-*}
+    - export REF_NAME=${CI_COMMIT_REF_NAME%-*}
+    - export REGISTRY_IMAGE=${CI_REGISTRY_IMAGE}/backoffice
     - export VERSION_DUMP=$(echo `git branch --show-current` "(build "`date +'%Y%m%d%H%M%S'`")")
-    - docker pull $CI_REGISTRY_IMAGE:testing || true
+    - docker pull ${REGISTRY_IMAGE}:testing || true
     - echo $VERSION_DUMP > VERSION
-    - docker build -f docker/php/Dockerfile --cache-from $CI_REGISTRY_IMAGE:testing -t $CI_REGISTRY_IMAGE:${IMAGE_NAME} -t $CI_REGISTRY_IMAGE:testing .
-    - docker push $CI_REGISTRY_IMAGE:${IMAGE_NAME}
-    - docker push $CI_REGISTRY_IMAGE:testing
+    - docker build -f docker/php/Dockerfile --cache-from ${REGISTRY_IMAGE}:testing -t ${REGISTRY_IMAGE}:${REF_NAME} -t ${REGISTRY_IMAGE}:testing .
+    - docker push ${REGISTRY_IMAGE}:${REF_NAME}
+    - docker push ${REGISTRY_IMAGE}:testing

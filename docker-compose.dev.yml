@@ -15,7 +15,7 @@ services:
       args:
         - DEV
       dockerfile: ./docker/php/Dockerfile
-    image: registry.gitlab.com/qkstudio/sadaic/backoffice:develop
+    image: registry.gitlab.com/qkstudio/sadaic/registro-obras/backoffice:develop
     env_file:
       - .env.development
     volumes:
@@ -28,6 +28,7 @@ services:
       args:
         - DEV
       dockerfile: ./docker/php/Dockerfile
+    image: registry.gitlab.com/qkstudio/sadaic/registro-obras:develop
     env_file:
       - ../registro-obras/.env.development
     volumes:
