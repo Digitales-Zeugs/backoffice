@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use App\Jobs\ProcessImports;
+use App\Jobs\NormalizeCities;
 
 class SADAICSyncCommand extends Command
 {
@@ -41,11 +42,13 @@ class SADAICSyncCommand extends Command
     {
         $files = Storage::disk('local')->allFiles('sadaic');
 
+        $updateCities = false;
         foreach($files as $file) {
             $table = "";
             switch($file) {
                 case 'sadaic/DIV_ADMINISTRATIVAS.csv':
                     $table = "source_cities";
+                    $updateCities = true;
                 break;
                 case 'sadaic/DOC_MW_REF_INT_GENRE.csv':
                     $table = "source_genres";
@@ -71,6 +74,10 @@ class SADAICSyncCommand extends Command
             if ($table != "") {
                 ProcessImports::dispatch($file, $table);
             }
+        }
+
+        if ($updateCities) {
+            NormalizeCities::dispatch();
         }
 
         return 0;

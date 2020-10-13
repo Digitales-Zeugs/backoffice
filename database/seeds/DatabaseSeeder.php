@@ -13,5 +13,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(ProfileUpdatesStatusSeeder::class);
         $this->call(WorkLogActionsSeeder::class);
+        $this->call(MemberSeeder::class);
     }
 }

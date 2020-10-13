@@ -16,12 +16,20 @@ class CreateWorksDistributionTable extends Migration
         Schema::create('works_distribution', function (Blueprint $table) {
             $table->id();
             $table->foreignId('registration_id')->constrained('works_registration');
-            $table->string('function', 5);
-            $table->string('member');
-            $table->string('name');
-            $table->string('dni');
-            $table->string('amount');
+
+            $table->enum('type', ['member', 'no-member']);
+
+            $table->string('fn', 5);
+
+            $table->string('member_id', 20)->references('codanita')->on('source_members');
+            $table->string('doc_number', 20)->references('num_doc')->on('source_members');
+
+            $table->tinyInteger('public');
+            $table->tinyInteger('mechanic');
+            $table->tinyInteger('sync');
+
             $table->boolean('response')->nullable()->default(null);
+
             $table->timestamps();
         });
     }
