@@ -1,4 +1,4 @@
-# Vue
+# Laravel Mix
 FROM node:14.13.1-alpine3.12 AS nodebuild
 
 ARG DEV
@@ -7,7 +7,8 @@ WORKDIR /app
 
 COPY src/package.json src/package-lock.json ./
 
-RUN npm install
+# Only in prod
+RUN if [ -z ${DEV+x} ] ; then npm install ; fi
 
 COPY src/ /app
 
@@ -15,7 +16,7 @@ RUN if [ -z ${DEV+x} ]; then npm run production; else npm run development; fi
 
 # Laravel
 
-FROM php:7.2-fpm
+FROM php:7.3-fpm
 
 # Si existe DEV instala DEV_DEPS
 ARG DEV
@@ -61,8 +62,8 @@ COPY --from=nodebuild /app /var/www
 
 COPY .env* /var/www/
 
-# Running composer
-RUN /usr/bin/composer install
+# Running composer only in prod
+RUN if [ -z ${DEV+x} ] ; then /usr/bin/composer install ; fi
 
 # Copy existing application directory permissions
 COPY --chown=www:www . /var/www
