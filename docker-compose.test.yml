@@ -19,11 +19,15 @@ services:
       - ../registro-obras/.env.testing
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras:testing
 
+  database:
+    volumes:
+      - ./database/:/docker-entrypoint-initdb.d/
+    env_file:
+      - .env.testing
+
   mailhog:
     image: mailhog/mailhog:v1.0.1
     restart: "no"
-    ports:
-      - 8025:8025
     env_file:
       - .env.testing
     networks:
@@ -32,8 +36,6 @@ services:
   adminer:
     image: adminer:4.7.7
     restart: "no"
-    ports:
-      - 8306:8080
     depends_on:
       - database
     env_file:
