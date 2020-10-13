@@ -41,9 +41,9 @@ services:
       - app-network
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-toor}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-backoffice}
-      MYSQL_USER: ${MYSQL_USER:-backoffice}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-backoffice}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-sadaic}
+      MYSQL_USER: ${MYSQL_USER:-sadaic}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-sadaic}
 
 networks:
   app-network:
