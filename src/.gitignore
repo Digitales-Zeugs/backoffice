@@ -1,19 +1,10 @@
-<<<<<<< HEAD
 .vscode
-node_modules
-public/hot
-public/storage
-public/fonts/vendor
-public/js/app.js
-public/css/app.css
-=======
 node_modules
 public/hot
 public/storage
 public/js
 public/css
 public/fonts
->>>>>>> testing
 storage/*.key
 vendor
 .env
