@@ -8,6 +8,9 @@ services:
       - 8000:8000
     env_file:
       - .env.development
+    volumes:
+      - ./src:/var/www/backoffice
+      - ../registro-obras/src:/var/www/registro-obras
     depends_on:
       - database
       - mailhog
