@@ -16,7 +16,7 @@ build_image_base:
   allow_failure: false
   script:
     - export REF_NAME=${CI_COMMIT_REF_NAME%-*}
-    - export REGISTRY_IMAGE=${CI_REGISTRY_IMAGE}/backoffice
+    - export REGISTRY_IMAGE=$(echo "registry.gitlab.com/qkstudio/sadaic/backoffice" | sed -r 's/(.*)\//\1\/registro-obras\//')
     - export VERSION_DUMP=$(echo `git branch --show-current` "(build "`date +'%Y%m%d%H%M%S'`")")
     - docker pull ${REGISTRY_IMAGE}:testing || true
     - echo $VERSION_DUMP > VERSION
