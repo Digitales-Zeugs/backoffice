@@ -58,7 +58,7 @@ Generará la imágen: _registry.gitlab.com/qkstudio/sadaic/backoffice:1.1.0_
 - Fuentes: dentro de la imágen.
 
 ```
-backoffice/ $ docker-compose -f docker-compose.yml -up -d 
+backoffice/ $ docker-compose -f docker-compose.yml -f docker-compose.prod.yml -up -d 
 ```
 
 o también
