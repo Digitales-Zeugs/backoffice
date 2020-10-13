@@ -5,13 +5,18 @@ services:
   nginx:
     image: nginx:1.19-alpine
     restart: "no"
-    ports:
-      - 9000:9000
-      - 8000:8000
     volumes:
-      - ./src:/var/www/backoffice
+      - type: volume
+        source: code-registro-obras
+        target: /var/www/registro-obras
+        volume:
+          nocopy: true
+      - type: volume
+        source: code-backoffice
+        target: /var/www/backoffice
+        volume:
+          nocopy: true
       - ./docker/nginx/app.conf:/etc/nginx/conf.d/backoffice.conf
-      - ../registro-obras/src:/var/www/registro-obras
       - ../registro-obras/docker/nginx/app.conf:/etc/nginx/conf.d/registro-obras.conf
     networks:
       - app-network
@@ -24,6 +29,8 @@ services:
     restart: "always"
     networks:
       - app-network
+    volumes:
+      - code-backoffice:/var/www
     extra_hosts:
       - sadaic.org.ar:10.30.110.20
       - www.sadaic.org.ar:10.30.110.20
@@ -33,6 +40,8 @@ services:
     restart: "always"
     networks:
       - app-network
+    volumes:
+      - code-registro-obras:/var/www
     extra_hosts:
       - sadaic.org.ar:10.30.110.20
       - www.sadaic.org.ar:10.30.110.20
@@ -57,5 +66,7 @@ networks:
     name: sadaic-network
 
 volumes:
+  code-backoffice:
+  code-registro-obras:
   dbdata:
     name: sadaic-dbdata
