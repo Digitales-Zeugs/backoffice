@@ -1,0 +1,84 @@
+version: "3.8"
+
+services:
+
+  nginx:
+    env_file:
+      - .env.development
+    depends_on:
+      - database
+      - mailhog
+
+  php_backoffice:
+    build:
+      context: .
+      args:
+        - DEV
+      dockerfile: ./docker/php/Dockerfile
+    image: registry.gitlab.com/qkstudio/sadaic/registro-obras/backoffice:develop
+    env_file:
+      - .env.development
+    volumes:
+      - ./src:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    extra_hosts:
+      - sadaic.org.ar:10.30.110.20
+      - www.sadaic.org.ar:10.30.110.20
+
+  php_registro_obras:
+    build:
+      context: ../registro-obras
+      args:
+        - DEV
+      dockerfile: ./docker/php/Dockerfile
+    image: registry.gitlab.com/qkstudio/sadaic/registro-obras:develop
+    env_file:
+      - ../registro-obras/.env.development
+    volumes:
+      - ../registro-obras/src:/var/www
+      - ../registro-obras/docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    extra_hosts:
+      - sadaic.org.ar:10.30.110.20
+      - www.sadaic.org.ar:10.30.110.20
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    restart: "no"
+    ports:
+      - 8025:8025
+    env_file:
+      - .env.development
+    networks:
+      - app-network
+
+  adminer:
+    image: adminer:4.7.7
+    restart: "no"
+    ports:
+      - 8306:8080
+    depends_on:
+      - database
+    env_file:
+      - .env.development
+    environment:
+      ADMINER_DEFAULT_SERVER: ${ADMINER_DEFAULT_SERVER:-database}
+    volumes:
+      - ./docker/adminer/php.ini:/usr/local/etc/php/conf.d/0-upload_large_dumps.ini
+    networks:
+      - app-network
+
+  node_backoffice:
+    image: node:14.13.1-alpine3.12
+    command: /bin/sh
+    tty: true
+    working_dir: /app
+    volumes:
+      - ./src:/app
+
+  node_registro_obras:
+    image: node:14.13.1-alpine3.12
+    command: /bin/sh
+    tty: true
+    working_dir: /app
+    volumes:
+      - ../registro-obras/src:/app

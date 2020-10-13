@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+
+  nginx:
+    env_file:
+      - .env.testing
+    depends_on:
+      - database
+      - mailhog
+
+  php_backoffice:
+    env_file:
+      - .env.testing
+    image: registry.gitlab.com/qkstudio/sadaic/registro-obras/backoffice:testing
+
+  php_registro_obras:
+    env_file:
+      - ../registro-obras/.env.testing
+    image: registry.gitlab.com/qkstudio/sadaic/registro-obras:testing
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    restart: "no"
+    ports:
+      - 8025:8025
+    env_file:
+      - .env.testing
+    networks:
+      - app-network
+
+  adminer:
+    image: adminer:4.7.7
+    restart: "no"
+    ports:
+      - 8306:8080
+    depends_on:
+      - database
+    env_file:
+      - .env.testing
+    environment:
+      ADMINER_DEFAULT_SERVER: ${ADMINER_DEFAULT_SERVER:-database}
+    volumes:
+      - ./docker/adminer/php.ini:/usr/local/etc/php/conf.d/0-upload_large_dumps.ini
+    networks:
+      - app-network
