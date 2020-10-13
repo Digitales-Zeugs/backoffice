@@ -31,9 +31,6 @@ services:
       - app-network
     volumes:
       - code-backoffice:/var/www
-    extra_hosts:
-      - sadaic.org.ar:10.30.110.20
-      - www.sadaic.org.ar:10.30.110.20
 
   php_registro_obras:
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras:latest
@@ -42,9 +39,6 @@ services:
       - app-network
     volumes:
       - code-registro-obras:/var/www
-    extra_hosts:
-      - sadaic.org.ar:10.30.110.20
-      - www.sadaic.org.ar:10.30.110.20
 
   database:
     image: mariadb:10.5.6-focal
