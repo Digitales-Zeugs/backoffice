@@ -24,9 +24,6 @@ services:
     volumes:
       - ./src:/var/www
       - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
-    extra_hosts:
-      - sadaic.org.ar:10.30.110.20
-      - www.sadaic.org.ar:10.30.110.20
 
   php_registro_obras:
     build:
@@ -40,9 +37,6 @@ services:
     volumes:
       - ../registro-obras/src:/var/www
       - ../registro-obras/docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
-    extra_hosts:
-      - sadaic.org.ar:10.30.110.20
-      - www.sadaic.org.ar:10.30.110.20
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
