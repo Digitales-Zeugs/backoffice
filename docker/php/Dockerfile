@@ -40,6 +40,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
     locales \
+    libzip-dev \
     zip \
     jpegoptim optipng pngquant gifsicle \
     unzip \
