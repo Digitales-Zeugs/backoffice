@@ -21,4 +21,4 @@ build_image_base:
     - echo $VERSION_DUMP > VERSION
     - docker build -f docker/php/Dockerfile --cache-from $CI_REGISTRY_IMAGE:testing -t $CI_REGISTRY_IMAGE:${IMAGE_NAME} -t $CI_REGISTRY_IMAGE:testing .
     - docker push $CI_REGISTRY_IMAGE:${IMAGE_NAME}
-    - docker push $CI_REGISTRY_IMAGE:test
+    - docker push $CI_REGISTRY_IMAGE:testing
