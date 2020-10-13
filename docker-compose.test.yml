@@ -12,7 +12,7 @@ services:
   php_backoffice:
     env_file:
       - .env.testing
-    image: registry.gitlab.com/qkstudio/sadaic/backoffice:testing
+    image: registry.gitlab.com/qkstudio/sadaic/registro-obras/backoffice:testing
 
   php_registro_obras:
     env_file:
