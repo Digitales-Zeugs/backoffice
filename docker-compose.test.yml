@@ -19,6 +19,12 @@ services:
       - ../registro-obras/.env.testing
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras:testing
 
+  database:
+    volumes:
+      - ./database/:/docker-entrypoint-initdb.d/
+    env_file:
+      - .env.testing
+
   mailhog:
     image: mailhog/mailhog:v1.0.1
     restart: "no"

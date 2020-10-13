@@ -44,6 +44,12 @@ services:
       - sadaic.org.ar:10.30.110.20
       - www.sadaic.org.ar:10.30.110.20
 
+  database:
+    volumes:
+      - ./database/:/docker-entrypoint-initdb.d/
+    env_file:
+      - .env.development
+
   mailhog:
     image: mailhog/mailhog:v1.0.1
     restart: "no"
