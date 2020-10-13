@@ -3,10 +3,6 @@ FROM node:14.13.1-alpine3.12 AS nodebuild
 
 ARG DEV
 
-ENV NODE_ENV=production
-
-ENV NODE_ENV=${DEV:+development}
-
 WORKDIR /app
 
 COPY src/package.json src/package-lock.json ./
@@ -15,7 +11,7 @@ RUN npm install
 
 COPY src/ /app
 
-RUN npm run ${NODE_ENV}
+RUN if [ -z ${DEV+x} ]; then npm run production; else npm run development; fi
 
 # Laravel
 
