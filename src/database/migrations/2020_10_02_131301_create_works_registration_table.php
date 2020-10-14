@@ -23,12 +23,12 @@ class CreateWorksRegistrationTable extends Migration
             $table->unsignedBigInteger('genre_id')->references('cod_int_gen')->on('source_genres');
             $table->string('duration', 5);
             
-            $table->date('audio_dnda_ed_date')->nullable();
+            $table->date('dnda_ed_date')->nullable();
             $table->string('audio_dnda_ed_file');
-            $table->string('audio_dnda_in_file');
-
-            $table->date('lyric_dnda_ed_date')->nullable();
             $table->string('lyric_dnda_ed_file');
+            
+            $table->date('dnda_in_date')->nullable();
+            $table->string('audio_dnda_in_file');
             $table->string('lyric_dnda_in_file');
 
             $table->string('lyric_text');
