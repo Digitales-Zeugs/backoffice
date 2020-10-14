@@ -17,7 +17,8 @@ class CreateWorksRegistrationTable extends Migration
             $table->id();
             $table->string('title');
 
-            $table->foreignId('initiator_id')->constrained('members');
+            $table->foreignId('member_id')->nullable()->constrained('members');
+            $table->foreignId('user_id')->nullable()->constrained('users');
 
             $table->unsignedBigInteger('genre_id')->references('cod_int_gen')->on('source_genres');
             $table->string('duration', 5);
