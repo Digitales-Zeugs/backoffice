@@ -15,6 +15,8 @@ class CreateMembersRegistrationTable extends Migration
     {
         Schema::create('members_registration', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users');
+            $table->tinyInteger('status');
             $table->string('name');
             $table->date('birth_date');
             $table->string('birth_city', 50);
