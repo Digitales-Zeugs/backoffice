@@ -59,15 +59,12 @@ RUN groupadd -g 1000 www
 RUN useradd -u 1000 -ms /bin/bash -g www www
 
 # Copy existing application directory contents
-COPY --from=nodebuild /app /var/www
+COPY --chown=www:www --from=nodebuild /app /var/www
 
 COPY .env* /var/www/
 
 # Running composer only in prod
 RUN if [ -z ${DEV+x} ] ; then /usr/bin/composer install ; fi
-
-# Copy existing application directory permissions
-COPY --chown=www:www . /var/www
 
 # Change current user to www
 USER www
