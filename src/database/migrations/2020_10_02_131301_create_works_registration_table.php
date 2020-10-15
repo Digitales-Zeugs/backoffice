@@ -15,23 +15,23 @@ class CreateWorksRegistrationTable extends Migration
     {
         Schema::create('works_registration', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->default('');
 
             $table->foreignId('member_id')->nullable()->constrained('members');
             $table->foreignId('user_id')->nullable()->constrained('users');
 
-            $table->unsignedBigInteger('genre_id')->references('cod_int_gen')->on('source_genres');
-            $table->string('duration', 5);
+            $table->unsignedBigInteger('genre_id')->references('cod_int_gen')->on('source_genres')->nullable();
+            $table->string('duration', 5)->default('0:00');
             
             $table->date('dnda_ed_date')->nullable();
-            $table->string('audio_dnda_ed_file');
-            $table->string('lyric_dnda_ed_file');
+            $table->string('audio_dnda_ed_file')->nullable();
+            $table->string('lyric_dnda_ed_file')->nullable();
             
             $table->date('dnda_in_date')->nullable();
-            $table->string('audio_dnda_in_file');
-            $table->string('lyric_dnda_in_file');
+            $table->string('audio_dnda_in_file')->nullable();
+            $table->string('lyric_dnda_in_file')->nullable();
 
-            $table->string('lyric_text');
+            $table->string('lyric_text')->default('');
             
             $table->string('lyric_file')->nullable();
             $table->string('audio_file')->nullable();
