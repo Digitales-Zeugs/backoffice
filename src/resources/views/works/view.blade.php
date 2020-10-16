@@ -30,43 +30,60 @@
         </tr>
         <tr>
             <th>Fecha</th>
-            <td>{{ $registration->created_at->format('d/m/Y H:i') }}</td>
+            <td>{{ optional($registration->created_at)->format('d/m/Y H:i') }}</td>
         </tr>
         <tr>
-            <th colspan="2" class="table-inner-title">Letra</th>
+            <th colspan="2" class="table-inner-title">DNDA</th>
         </tr>
         <tr>
-            <th>N° Expediente DNDA</th>
-            <td>{{ $registration->lyric_dnda_file }}</td>
+            <th colspan="2" class="table-inner-subtitle">Inédito</th>
         </tr>
         <tr>
-            <th>Fecha DNDA</th>
-            <td>{{ $registration->lyric_dnda_date->format('d/m/Y') }}</td>
+            <th>N° Expediente (Audio)</th>
+            <td>{{ $registration->audio_dnda_in_file }}</td>
+        </tr>
+        <tr>
+            <th>N° Expediente (Letra)</th>
+            <td>{{ $registration->lyric_dnda_in_file }}</td>
+        </tr>
+        <tr>
+            <th>Fecha</th>
+            <td>{{ optional($registration->dnda_in_date)->format('d/m/Y') }}</td>
+        </tr>
+        <tr>
+            <th colspan="2" class="table-inner-subtitle">Editado</th>
+        </tr>
+        <tr>
+            <th>N° Expediente (Audio)</th>
+            <td>{{ $registration->audio_dnda_ed_file }}</td>
+        </tr>
+        <tr>
+            <th>N° Expediente (Letra)</th>
+            <td>{{ $registration->lyric_dnda_ed_file }}</td>
+        </tr>
+        <tr>
+            <th>Fecha</th>
+            <td>{{ $registration->dnda_ed_date->format('d/m/Y') }}</td>
         </tr>
         <tr>
             <th>Transcripción</th>
             <td>{!! nl2br(e($registration->lyric_text)) !!}</td>
         </tr>
         <tr>
-            <th colspan="2" class="table-inner-title">Audio</th>
-        </tr>
-        <tr>
-            <th>N° Expediente DNDA</th>
-            <td>{{ $registration->audio_dnda_file }}</td>
-        </tr>
-        <tr>
-            <th>Fecha DNDA</th>
-            <td>{{ $registration->audio_dnda_date->format('d/m/Y') }}</td>
-        </tr>
-        <tr>
             <th colspan="2" class="table-inner-title">Distribución</th>
         </tr>
         @foreach ($registration->distribution as $distribution)
         <tr>
-            <th>{{ $distribution->name }}<br><small>Socio n° {{ $distribution->member }}</small></th>
+            @if ($distribution->type == 'member')
+            <th>{{ $distribution->member->nombre }}<br><small>Socio n° {{ $distribution->member_id }}</small></th>
+            @else
+            <th>{{ $distribution->meta->name }}<br><small>DNI n° {{ $distribution->doc_number }}</small></th>
+            @endif
             <td>
-                <strong>DNI:</strong> {{ $distribution->dni }}<br>
-                <strong>Porcentaje:</strong> {{ $distribution->amount }}%<br>
+                <strong>DNI:</strong> {{ $distribution->doc_number }}<br>
+                <strong>Distribución Pública:</strong> {{ $distribution->public }}%<br>
+                <strong>Distribución Mecánica:</strong> {{ $distribution->mechanic }}%<br>
+                <strong>Distribución Sincronización:</strong> {{ $distribution->sync }}%<br>
                 <strong>Respuesta:</strong>
                 @if ($distribution->response === null) No Respondió
                 @elseif ($distribution->response === 0) Rechazado ({{ $distribution->updated_at->format('d/m/Y H:i') }})

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\WorkRegistration;
+use App\Models\Work\Registration;
 
 class WorksController extends Controller
 {
@@ -15,7 +15,7 @@ class WorksController extends Controller
 
     public function index()
     {
-        $requests = WorkRegistration::whereIn('id', function($query) {
+        $requests = Registration::whereIn('id', function($query) {
             $query->select('registration_id')
             ->from('works_distribution')
             ->groupBy('registration_id')
@@ -23,5 +23,10 @@ class WorksController extends Controller
         })->get();
 
         return view('works.index', ['requests' => $requests]);
+    }
+
+    public function showView(Registration $registration)
+    {
+        return view('works.view', ['registration' => $registration]);
     }
 }
