@@ -15,9 +15,6 @@ services:
     depends_on:
       - database
       - mailhog
-    volumes:
-      - ../registro-obras/src:/var/www/registro-obras
-      - ./src:/var/www/backoffice
 
   php_backoffice:
     build:
