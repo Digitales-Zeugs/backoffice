@@ -11,6 +11,7 @@ services:
     volumes:
       - ./src:/var/www/backoffice
       - ../registro-obras/src:/var/www/registro-obras
+      - ./docker/nginx/app.conf:/etc/nginx/conf.d/backoffice.conf
     depends_on:
       - database
       - mailhog
