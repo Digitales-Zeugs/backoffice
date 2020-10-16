@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Work;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WorkLogActions extends Model
+class LogAction extends Model
 {
     protected $table = 'works_logs_actions';
 
