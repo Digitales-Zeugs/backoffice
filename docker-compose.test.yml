@@ -5,6 +5,8 @@ services:
   nginx:
     env_file:
       - .env.testing
+    volumes:
+      - ./docker/nginx/app-ssl.conf:/etc/nginx/conf.d/backoffice.conf
     depends_on:
       - database
       - mailhog
