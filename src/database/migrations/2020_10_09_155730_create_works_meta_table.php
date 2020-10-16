@@ -17,14 +17,14 @@ class CreateWorksMetaTable extends Migration
             $table->id();
             $table->foreignId('distribution_id')->constrained('works_distribution');
 
-            $table->string('address_country')->references('tis_n')->on('source_countries');
-            $table->foreignId('address_state')->constrained('states');
-            $table->foreignId('address_city')->constrained('cities');
+            $table->string('address_country', 10)->references('tis_n')->on('source_countries')->nullable();
+            $table->foreignId('address_state')->nullable()->constrained('states');
+            $table->foreignId('address_city')->nullable()->constrained('cities');
             $table->string('address_zip', 10);
             $table->string('apartment', 20);
-            $table->string('birth_country', 10)->references('tis_n')->on('source_countries');
-            $table->date('birth_date');
-            $table->string('doc_type', 10)->references('code')->on('source_types');
+            $table->string('birth_country', 10)->references('tis_n')->on('source_countries')->nullable();
+            $table->date('birth_date')->nullable();
+            $table->string('doc_type', 10)->references('code')->on('source_types')->nullable();
             $table->string('email', 254);
             $table->string('floor', 20);
             $table->string('name', 100);
