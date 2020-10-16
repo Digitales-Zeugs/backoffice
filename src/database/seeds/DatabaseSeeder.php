@@ -12,8 +12,9 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(ProfileUpdatesStatusSeeder::class);
-        $this->call(WorkLogActionsSeeder::class);
+        $this->call(WorkLogActionSeeder::class);
         $this->call(MemberSeeder::class);
         $this->call(UserSeeder::class);
+        $this->call(WorkStatusSeeder::class);
     }
 }
