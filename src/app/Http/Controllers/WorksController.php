@@ -5,27 +5,45 @@ namespace App\Http\Controllers;
 use App\Mail\NotifyDistribution;
 use App\Mail\NotifyRejection;
 use App\Models\Work\Registration;
+use App\Models\Work\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class WorksController extends Controller
 {
+    public $datatablesModel = Registration::class;
+
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('datatables')->only('datatables');
     }
 
     public function index()
     {
         $requests = Registration::where('status_id', 1)->get();
+        $status = Status::all();
 
-        return view('works.index', ['requests' => $requests]);
+        return view('works.index', [
+            'requests' => $requests,
+            'status'   => $status
+        ]);
     }
 
     public function showView(Registration $registration)
     {
         return view('works.view', ['registration' => $registration]);
+    }
+
+    public function datatables(Request $request)
+    {
+        $query = $request->datatablesQuery;
+        $requests = $query->get();
+
+        $response = response(null);
+        $response->datatablesOutput = $requests;
+        return $response;
     }
 
     public function changeStatus(Request $request, Registration $registration)

@@ -10,6 +10,7 @@ Route::get('/profiles/{profile}', 'ProfilesController@view');
 Route::post('/profiles/{profile}/status', 'ProfilesController@changeStatus');
 
 Route::get('/works', 'WorksController@index');
+Route::get('/works/datatables', 'WorksController@datatables');
 Route::get('/works/{registration}', 'WorksController@showView');
 
 Route::post('/works/{registration}/status', 'WorksController@changeStatus');
