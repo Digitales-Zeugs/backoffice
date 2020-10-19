@@ -58,7 +58,7 @@ class ProcessImports implements ShouldQueue
         DB::table($this->table)->truncate();
 
         // Cargo el archivo
-        $sql = "LOAD DATA LOCAL INFILE '" . addslashes($prefix . $this->file) . "' INTO TABLE $this->table CHARACTER SET LATIN1 FIELDS TERMINATED BY ';' IGNORE 1 LINES";
+        $sql = "LOAD DATA LOCAL INFILE '" . addslashes($prefix . $this->file) . "' INTO TABLE $this->table CHARACTER SET LATIN1 FIELDS TERMINATED BY ';' LINES TERMINATED BY '\\r\\n' IGNORE 1 LINES";
         DB::connection()->getpdo()->exec($sql); // https://stackoverflow.com/a/44426882
 
         // Si no estamos trabajando en local
