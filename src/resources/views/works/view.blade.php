@@ -96,6 +96,45 @@
             </td>
         </tr>
         @endforeach
+        <tr>
+            <th colspan="2" class="table-inner-title">Archivos</th>
+        </tr>
+        @foreach ($registration->files as $file)
+            @php
+            $desc = '';
+            switch($file->name) {
+                case 'lyric_file': $desc = 'Archivo Partitura'; break;
+                case 'audio_file': $desc = 'Archivo de Audio'; break;
+                case 'dnda_file': $desc = 'Archivo DNDA'; break;
+                default: 
+                    $name = explode('_', $file->name);
+
+                    if ($name[1] == 'editor' || $name[1] == 'subeditor') {
+                        if ($name[2] == 'contract') {
+                            $desc = 'Contrato';
+                        } elseif ($name[2] == 'triage') {
+                            $desc = 'Contrato de triaje';
+                        }
+                    } elseif ($name[1] == 'no-member') {
+                        $desc = 'Documento';
+                    }
+
+                    $desc .= ' <strong>';
+
+                    if ($file->distribution->member_id) {
+                        $desc .= $file->distribution->member->nombre;
+                    } else {
+                        $desc .= $file->distribution->meta->name;
+                    }
+
+                    $desc .= '</strong>';
+                }
+            @endphp
+            <tr>
+                <th>{!! $desc !!}</th>
+                <td><a href="/works/files?file={{ $file->path }}">Descargar</a></td>
+            </tr>
+        @endforeach
     </table>
     <br /><br />
     {{-- Trámite Nuevo --}}

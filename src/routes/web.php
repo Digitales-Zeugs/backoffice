@@ -11,8 +11,9 @@ Route::post('/profiles/{profile}/status', 'ProfilesController@changeStatus');
 
 Route::get('/works', 'WorksController@index');
 Route::get('/works/datatables', 'WorksController@datatables');
-Route::get('/works/{registration}', 'WorksController@showView');
+Route::get('/works/files', 'WorksController@downloadFile');
 
+Route::get('/works/{registration}', 'WorksController@showView');
 Route::post('/works/{registration}/status', 'WorksController@changeStatus');
 
 Route::get('/login', 'AuthController@login')->name('login');

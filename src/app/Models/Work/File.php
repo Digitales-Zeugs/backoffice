@@ -16,4 +16,9 @@ class File extends Model
     ];
 
     public $timestamps = false;
+
+    public function distribution()
+    {
+        return $this->belongsTo('App\Models\Work\Distribution', 'distribution_id');
+    }
 }

@@ -9,6 +9,7 @@ use App\Models\Work\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class WorksController extends Controller
 {
@@ -69,6 +70,30 @@ class WorksController extends Controller
             break;
             default:
                 abort(403);
+        }
+    }
+
+    public function downloadFile(Request $request)
+    {
+        try {
+            $path = explode('/', $request->input('file'));
+            if ($path[0] != 'files') abort(403);
+            if ($path[1] != 'users') abort(403);
+
+            if (!Storage::exists($request->input('file'))) {
+                abort(404);
+            }
+
+            return Storage::download($request->input('file'));
+        } catch (Throwable $t) {
+            Log::error("Error descargando archivo de registro de obra",
+                [
+                    "error" => $t,
+                    "data"  => json_encode($request->all(), JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_INVALID_UTF8_IGNORE )
+                ]
+            );
+
+            abort(500);
         }
     }
 
