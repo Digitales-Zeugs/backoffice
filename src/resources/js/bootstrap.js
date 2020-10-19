@@ -1,5 +1,10 @@
 window._ = require('lodash');
 window.$ = window.jQuery = require('jquery');
+window.toastr = require('toastr');
+
+toastr.options = {
+    "positionClass": "toast-bottom-right"
+}
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests

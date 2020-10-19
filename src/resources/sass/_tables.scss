@@ -1,4 +1,11 @@
 .table-inner-title {
     text-align: center;
-    font-size: 1.2em;
+    font-size: 1.4rem;
+    padding: 1rem !important;
+    background-color: hsl(216, 29.4, 91.7);
+}
+
+.table-inner-subtitle {
+    text-align: center;
+    font-style: italic;
 }
