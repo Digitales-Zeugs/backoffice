@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\NotifyDistribution;
+use App\Mail\NotifyRejection;
 use App\Models\Work\Registration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -36,7 +37,7 @@ class WorksController extends Controller
                 return $this->beginAction($registration);
             break;
             case 'rejectAction':
-                return $this->rejectAction($request, $registration);
+                return $this->rejectAction($registration);
             break;
             case 'sendToInternal':
                 return $this->sendToInternal($request, $registration);
@@ -93,10 +94,31 @@ class WorksController extends Controller
         ];
     }
 
-    private function rejectAction()
+    private function rejectAction(Registration $registration)
     {
-        // Cambiar estado en la BBDD
-        // Enviar mail al iniciador
+        // Cambio estado en la BBDD
+        $registration->status_id = 8; // Rechazado
+        $registration->save();
+
+        // Notificación
+        if (trim($registration->initiator->email) == "") {
+            return [
+                'status'  => 'success',
+                'warning' => 'No se pudo notificar al iniciador del trámite porque no tiene configurada dirección de correo electrónico'
+            ];
+        } else {
+            if (!filter_var($registration->initiator->email, FILTER_VALIDATE_EMAIL)) {
+                return [
+                    'status'  => 'success',
+                    'warning' => 'No se pudo notificar al iniciador del trámite porque tiene una dirección de correo electrónica errónea: ' . $distribution->initiator->email
+                ];
+            } else {
+                Mail::to($registration->initiator->email)->send(new NotifyRejection($registration));
+                return [
+                    'status'  => 'success'
+                ];
+            }
+        }
     }
 
     private function sendToIntenal()

@@ -134,7 +134,7 @@ $('#beginAction').on('click', () => {
     })
     .then(({ data }) => {
         if (data.status == 'failed') {
-            toastr.error('No se puede realizar iniciar el proceso de la solicitud.');
+            toastr.error('No se puede iniciar el proceso de la solicitud.');
 
             data.errors.forEach(e => {
                 toastr.warning(e);
@@ -149,6 +149,23 @@ $('#beginAction').on('click', () => {
 $('#rejectAction').on('click', () => {
     axios.post('/works/{{ $registration->id }}/status', {
         status: 'rejectAction'
+    })
+    .then(({ data }) => {
+        if (data.status == 'failed') {
+            toastr.error('No se pudo realizar el rechazo de la solicitud.');
+
+            data.errors.forEach(e => {
+                toastr.warning(e);
+            });
+        } else if (data.status == 'success') {
+            toastr.success('Rechazo guardado correctamente');
+
+            if (data.warnings) {
+                data.warnings.forEach(e => {
+                    toastr.warning(e);
+                });
+            }
+        }
     });
 });
 
