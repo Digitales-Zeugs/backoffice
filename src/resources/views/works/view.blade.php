@@ -138,7 +138,10 @@ $('#beginAction').on('click', () => {
 
             data.errors.forEach(e => {
                 toastr.warning(e);
-            })
+            });
+        } else if (data.status == 'success') {
+            toastr.success('Proceso iniciado correctamente');
+            setTimeout(() => { location.reload() }, 1000);
         }
     });
 });
