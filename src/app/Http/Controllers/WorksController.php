@@ -39,6 +39,7 @@ class WorksController extends Controller
     public function datatables(Request $request)
     {
         $query = $request->datatablesQuery;
+        $query->with('status');
         $requests = $query->get();
 
         $response = response(null);
