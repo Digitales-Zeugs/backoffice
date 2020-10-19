@@ -57,4 +57,9 @@ class Registration extends Model
             'name'            => $name
         ])->first();
     }
+
+    public function status()
+    {
+        return $this->hasOne('App\Models\Work\Status', 'id', 'status_id');
+    }
 }

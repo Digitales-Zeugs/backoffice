@@ -33,6 +33,10 @@
             <td>{{ optional($registration->created_at)->format('d/m/Y H:i') }}</td>
         </tr>
         <tr>
+            <th>Estado</th>
+            <td>{{ optional($registration->status)->name }}</td>
+        </tr>
+        <tr>
             <th colspan="2" class="table-inner-title">DNDA</th>
         </tr>
         <tr>
@@ -93,8 +97,65 @@
         </tr>
         @endforeach
     </table>
+    <br /><br />
+    {{-- Trámite Nuevo --}}
+    @if ($registration->status_id == 1)
+    <div class="row justify-content-center">
+        <div>
+            <button class="btn btn-success" id="beginAction">Iniciar Proceso</button>
+            <button class="btn btn-danger" id="rejectAction">Rechazar Solicitud</button>
+        </div>
+    </div>
+    {{-- Aprobado por todos los propietarios --}}
+    @elseif ($registration->status_id == 5)
+    <div class="row justify-content-center">
+        <div>
+            <button class="btn btn-primary" id="sendToInternal">Pase a Procesamiento Interno</button>
+        </div>
+    </div>
+    {{-- En sistema interno --}}
+    @elseif ($registration->status_id == 6)
+    <div class="row justify-content-center">
+        <div>
+            <button class="btn btn-success" id="approveRequest">Aprobar</button>
+            <button class="btn btn-danger" id="rejectRequest">Rechazar</button>
+        </div>
+    </div>
+    @endif
+    <br /><br />
 </section>
 @endsection
 
 @push('scripts')
+<script>
+$('#beginAction').on('click', () => {
+    axios.post('/works/{{ $registration->id }}/status', {
+        status: 'beginAction'
+    });
+});
+
+$('#rejectAction').on('click', () => {
+    axios.post('/works/{{ $registration->id }}/status', {
+        status: 'rejectAction'
+    });
+});
+
+$('#sendToInternal').on('click', () => {
+    axios.post('/works/{{ $registration->id }}/status', {
+        status: 'sendToInternal'
+    });
+});
+
+$('#approveRequest').on('click', () => {
+    axios.post('/works/{{ $registration->id }}/status', {
+        status: 'approveRequest'
+    });
+});
+
+$('#rejectRequest').on('click', () => {
+    axios.post('/works/{{ $registration->id }}/status', {
+        status: 'rejectRequest'
+    });
+});
+</script>
 @endpush
