@@ -63,7 +63,7 @@ class WorksController extends Controller
                     $errors[] = $distribution->member->nombre . " no tiene una dirección de correo electrónica configurada";
                 } else {
                     // Mail válido
-                    if (filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
+                    if (!filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
                         $errors[] = $distribution->member->nombre . " tiene una dirección de correo electrónica errónea: " . $distribution->member->email;
                     }
                 }
