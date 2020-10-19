@@ -21,7 +21,7 @@ class CreateWorksDistributionTable extends Migration
 
             $table->string('fn', 5);
 
-            $table->string('member_id', 20)->references('codanita')->on('source_members');
+            $table->string('member_id', 20)->nullable()->references('codanita')->on('source_members');
             $table->string('doc_number', 20)->references('num_doc')->on('source_members');
 
             $table->tinyInteger('public');
