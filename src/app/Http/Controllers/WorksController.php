@@ -86,6 +86,7 @@ class WorksController extends Controller
         }
 
         $registration->status_id = 2; // En proceso
+        $registration->save();
 
         return [
             'status' => 'success'
