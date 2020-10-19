@@ -131,6 +131,15 @@
 $('#beginAction').on('click', () => {
     axios.post('/works/{{ $registration->id }}/status', {
         status: 'beginAction'
+    })
+    .then(({ data }) => {
+        if (data.status == 'failed') {
+            toastr.error('No se puede realizar iniciar el proceso de la solicitud.');
+
+            data.errors.forEach(e => {
+                toastr.warning(e);
+            })
+        }
     });
 });
 

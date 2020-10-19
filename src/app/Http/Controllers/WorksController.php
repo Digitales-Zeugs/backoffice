@@ -54,6 +54,29 @@ class WorksController extends Controller
 
     private function beginAction(Registration $registration)
     {
+        $errors = [];
+        // 
+        foreach($registration->distribution as $distribution) {
+            if ($distribution->type == 'member') {
+                // Mail seteado
+                if (trim($distribution->member->email) == "") {
+                    $errors[] = $distribution->member->nombre . " no tiene una dirección de correo electrónica configurada";
+                } else {
+                    // Mail válido
+                    if (filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
+                        $errors[] = $distribution->member->nombre . " tiene una dirección de correo electrónica errónea: " . $distribution->member->email;
+                    }
+                }
+            }
+        }
+
+        if (count($errors) > 0) {
+            return [
+                'status' => 'failed',
+                'errors' => $errors
+            ];
+        }
+
         foreach($registration->distribution as $distribution) {
             if ($distribution->type == 'member') {
                 Mail::to($distribution->member->email)->send(new NotifyDistribution($distribution));
