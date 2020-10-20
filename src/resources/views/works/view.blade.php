@@ -109,7 +109,7 @@
                 default: 
                     $name = explode('_', $file->name);
 
-                    if ($name[1] == 'editor' || $name[1] == 'subeditor') {
+                    if ($name[1] == 'editor' || $name[1] == 'subeditor' || $name[1] == 'dnda') {
                         if ($name[2] == 'contract') {
                             $desc = 'Contrato';
                         } elseif ($name[2] == 'triage') {
@@ -121,10 +121,14 @@
 
                     $desc .= ' <strong>';
 
-                    if ($file->distribution->member_id) {
-                        $desc .= $file->distribution->member->nombre;
+                    if ($name[1] != 'dnda') {
+                        if ($file->distribution->member_id) {
+                            $desc .= $file->distribution->member->nombre;
+                        } else {
+                            $desc .= $file->distribution->meta->name;
+                        }
                     } else {
-                        $desc .= $file->distribution->meta->name;
+                        $desc .= 'DNDA';
                     }
 
                     $desc .= '</strong>';
