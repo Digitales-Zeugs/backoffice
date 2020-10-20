@@ -31,5 +31,5 @@ deploy:testing:
     - eval $(ssh-agent -s)
     - cat ${DEPLOY_TESTING_SSH_KEY} | ssh-add -
   script:    
-    - ssh ${DEPLOY_TESTING_USER}@${DEPLOY_TESTING_HOST} ./bin/deploy ${DEPLOY_TESTING_PROJECT_NAME} ${CI_COMMIT_REF_NAME}
+    - ssh -o StrictHostKeyChecking=no ${DEPLOY_TESTING_USER}@${DEPLOY_TESTING_HOST} ./bin/deploy ${DEPLOY_TESTING_PROJECT_NAME} ${CI_COMMIT_REF_NAME}
   when: manual
