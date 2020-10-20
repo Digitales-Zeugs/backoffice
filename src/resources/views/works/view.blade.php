@@ -96,6 +96,45 @@
             </td>
         </tr>
         @endforeach
+        <tr>
+            <th colspan="2" class="table-inner-title">Archivos</th>
+        </tr>
+        @foreach ($registration->files as $file)
+            @php
+            $desc = '';
+            switch($file->name) {
+                case 'lyric_file': $desc = 'Archivo Partitura'; break;
+                case 'audio_file': $desc = 'Archivo de Audio'; break;
+                case 'dnda_file': $desc = 'Archivo DNDA'; break;
+                default: 
+                    $name = explode('_', $file->name);
+
+                    if ($name[1] == 'editor' || $name[1] == 'subeditor') {
+                        if ($name[2] == 'contract') {
+                            $desc = 'Contrato';
+                        } elseif ($name[2] == 'triage') {
+                            $desc = 'Contrato de triaje';
+                        }
+                    } elseif ($name[1] == 'no-member') {
+                        $desc = 'Documento';
+                    }
+
+                    $desc .= ' <strong>';
+
+                    if ($file->distribution->member_id) {
+                        $desc .= $file->distribution->member->nombre;
+                    } else {
+                        $desc .= $file->distribution->meta->name;
+                    }
+
+                    $desc .= '</strong>';
+                }
+            @endphp
+            <tr>
+                <th>{!! $desc !!}</th>
+                <td><a href="/works/files?file={{ $file->path }}">Descargar</a></td>
+            </tr>
+        @endforeach
     </table>
     <br /><br />
     {{-- Trámite Nuevo --}}
@@ -131,12 +170,41 @@
 $('#beginAction').on('click', () => {
     axios.post('/works/{{ $registration->id }}/status', {
         status: 'beginAction'
+    })
+    .then(({ data }) => {
+        if (data.status == 'failed') {
+            toastr.error('No se puede iniciar el proceso de la solicitud.');
+
+            data.errors.forEach(e => {
+                toastr.warning(e);
+            });
+        } else if (data.status == 'success') {
+            toastr.success('Proceso iniciado correctamente');
+            setTimeout(() => { location.reload() }, 1000);
+        }
     });
 });
 
 $('#rejectAction').on('click', () => {
     axios.post('/works/{{ $registration->id }}/status', {
         status: 'rejectAction'
+    })
+    .then(({ data }) => {
+        if (data.status == 'failed') {
+            toastr.error('No se pudo realizar el rechazo de la solicitud.');
+
+            data.errors.forEach(e => {
+                toastr.warning(e);
+            });
+        } else if (data.status == 'success') {
+            toastr.success('Rechazo guardado correctamente');
+
+            if (data.warnings) {
+                data.warnings.forEach(e => {
+                    toastr.warning(e);
+                });
+            }
+        }
     });
 });
 

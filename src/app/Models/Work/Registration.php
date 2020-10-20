@@ -62,4 +62,13 @@ class Registration extends Model
     {
         return $this->hasOne('App\Models\Work\Status', 'id', 'status_id');
     }
+
+    public function initiator()
+    {
+        if ($this->member_id) {
+            return $this->belongsTo('App\Models\Member', 'member_id');
+        } else {
+            return $this->belongsTo('App\Models\User', 'user_id');
+        }
+    }
 }

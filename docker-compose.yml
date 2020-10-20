@@ -30,6 +30,7 @@ services:
       - app-network
     volumes:
       - code-backoffice:/var/www
+      - user-files:/var/www/storage/app/files
 
   php_registro_obras:
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras:latest
@@ -38,6 +39,7 @@ services:
       - app-network
     volumes:
       - code-registro-obras:/var/www
+      - user-files:/var/www/storage/app/files
 
   database:
     image: mariadb:10.5.6-focal
@@ -61,5 +63,7 @@ networks:
 volumes:
   code-backoffice:
   code-registro-obras:
+  user-files:
+    name: sadaic-files
   dbdata:
     name: sadaic-dbdata
