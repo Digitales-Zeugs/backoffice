@@ -29,7 +29,7 @@ deploy:testing:
   before_script:
     - apk add --update docker-compose
     - eval $(ssh-agent -s)
-    - ssh-add <(echo "${DEPLOY_TESTING_SSH_KEY}")
+    - ssh-add <(cat ${DEPLOY_TESTING_SSH_KEY})
   script:    
     - ssh ${DEPLOY_TESTING_USER}@${DEPLOY_TESTING_HOST} ./bin/deploy ${DEPLOY_TESTING_PROJECT_NAME} ${CI_COMMIT_REF_NAME}
   when: manual
