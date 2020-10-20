@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\NotifyDistribution;
 use App\Mail\NotifyRejection;
+use App\Models\Work\Log as InternalLog;
 use App\Models\Work\Registration;
 use App\Models\Work\Status;
 use Illuminate\Http\Request;
@@ -133,6 +134,12 @@ class WorksController extends Controller
         $registration->status_id = 2; // En proceso
         $registration->save();
 
+        InternalLog::create([
+            'registration_id' => $registration->id,
+            'action_id'       => 3, // REGISTRATION_ACEPTED
+            'time'            => now()
+        ]);
+
         return [
             'status' => 'success'
         ];
@@ -143,6 +150,12 @@ class WorksController extends Controller
         // Cambio estado en la BBDD
         $registration->status_id = 8; // Rechazado
         $registration->save();
+
+        InternalLog::create([
+            'registration_id' => $registration->id,
+            'action_id'       => 4, // REGISTRATION_REJECTED
+            'time'            => now()
+        ]);
 
         // Notificación
         if (trim($registration->initiator->email) == "") {
@@ -168,17 +181,37 @@ class WorksController extends Controller
     private function sendToIntenal()
     {
         // Cambiar estado en la BBDD
+
+
+        InternalLog::create([
+            'registration_id' => $registration->id,
+            'action_id'       => 8, // SEND_TO_INTERNAL
+            'time'            => now()
+        ]);
     }
 
     private function approveRequest()
     {
         // Cambiar estado en la BBDD
         // Enviar mail al iniciador
+
+        InternalLog::create([
+            'registration_id' => $registration->id,
+            'action_id'       => 9, // REQUEST_ACCEPTED
+            'time'            => now()
+        ]);
     }
 
     private function rejectRequest()
     {
         // Cambiar estado en la BBDD
         // Enviar mail al iniciador
+
+
+        InternalLog::create([
+            'registration_id' => $registration->id,
+            'action_id'       => 10, // REQUEST_REJECTED
+            'time'            => now()
+        ]);
     }
 }

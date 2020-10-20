@@ -139,6 +139,15 @@
                 <td><a href="/works/files?file={{ $file->path }}">Descargar</a></td>
             </tr>
         @endforeach
+        <tr>
+            <th colspan="2" class="table-inner-title">Registro</th>
+        </tr>
+        @foreach ($registration->logs as $log)
+        <tr>
+            <th>{{ $log->time->format('d/m/Y H:i') }}</th>
+            <td>{{ $log->action->description }}</td>
+        </tr>
+        @endforeach
     </table>
     <br /><br />
     {{-- Trámite Nuevo --}}

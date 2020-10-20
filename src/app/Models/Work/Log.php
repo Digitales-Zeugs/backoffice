@@ -16,5 +16,13 @@ class Log extends Model
         'action_data'
     ];
 
+    public $dates = [
+        'time'
+    ];
+
     public $timestamps = false;
+
+    public function action() {
+        return $this->hasOne('App\Models\Work\LogAction', 'id', 'action_id');
+    }
 }
