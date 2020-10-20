@@ -58,6 +58,11 @@ class Registration extends Model
         ])->first();
     }
 
+    public function logs()
+    {
+        return $this->hasMany('App\Models\Work\Log', 'registration_id', 'id');
+    }
+
     public function status()
     {
         return $this->hasOne('App\Models\Work\Status', 'id', 'status_id');
