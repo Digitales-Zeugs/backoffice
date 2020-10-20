@@ -16,11 +16,10 @@ build_image_base:
   stage: build
   allow_failure: false
   script:
-    - export REF_NAME=${CI_COMMIT_REF_NAME}
     - export REGISTRY_IMAGE=$(echo "${CI_REGISTRY_IMAGE}" | sed -r 's/(.*)\//\1\/registro-obras\//')
     - docker pull ${REGISTRY_IMAGE}:testing || true
-    - docker build -f docker/php/Dockerfile --cache-from ${REGISTRY_IMAGE}:testing -t ${REGISTRY_IMAGE}:${REF_NAME} -t ${REGISTRY_IMAGE}:testing .
-    - docker push ${REGISTRY_IMAGE}:${REF_NAME}
+    - docker build -f docker/php/Dockerfile --cache-from ${REGISTRY_IMAGE}:testing -t ${REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME} -t ${REGISTRY_IMAGE}:testing .
+    - docker push ${REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}
     - docker push ${REGISTRY_IMAGE}:testing
 
 deploy:testing:
@@ -32,5 +31,5 @@ deploy:testing:
     - eval $(ssh-agent -s)
     - ssh-add <(echo "${DEPLOY_TESTING_SSH_KEY}")
   script:    
-    - ssh ${DEPLOY_TESTING_USER}@${DEPLOY_TESTING_HOST} ./bin/deploy ${DEPLOY_TESTING_PROJECT_NAME}
+    - ssh ${DEPLOY_TESTING_USER}@${DEPLOY_TESTING_HOST} ./bin/deploy ${DEPLOY_TESTING_PROJECT_NAME} ${CI_COMMIT_REF_NAME}
   when: manual
