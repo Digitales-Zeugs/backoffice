@@ -40,7 +40,7 @@ services:
       dockerfile: ./docker/php/Dockerfile
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras:develop
     env_file:
-      - ../registro-obras/.env.development
+      - .env.development
     volumes:
       - ../registro-obras/src:/var/www
       - ../registro-obras/docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
