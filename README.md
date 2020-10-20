@@ -35,12 +35,12 @@ backoficce/ $ docker-compose (...)
 
 #### Generar una imágen de docker
 
-Se disparará la ejecución del proceso de contrucción de una imágen docker luego del evento _push-tag_ cuyo identificador termine en "-build".
+Se disparará la ejecución del proceso de contrucción de una imágen docker luego del evento _push-tag_.
 
 Ejemplo:
 
 ```
-backoffice/ (branch: 1.1.0)$ git push --tag 1.1.0-build 
+backoffice/ (branch: 1.1.0)$ git push --tag 1.1.0
 ```
 
 Generará la imágen: _registry.gitlab.com/qkstudio/sadaic/backoffice:1.1.0_

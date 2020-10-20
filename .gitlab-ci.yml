@@ -12,11 +12,11 @@ before_script:
 
 build_image_base:
   only:
-    - /.*-build/
+    - tags 
   stage: build
   allow_failure: false
   script:
-    - export REF_NAME=${CI_COMMIT_REF_NAME%-*}
+    - export REF_NAME=${CI_COMMIT_REF_NAME}
     - export REGISTRY_IMAGE=$(echo "${CI_REGISTRY_IMAGE}" | sed -r 's/(.*)\//\1\/registro-obras\//')
     - docker pull ${REGISTRY_IMAGE}:testing || true
     - docker build -f docker/php/Dockerfile --cache-from ${REGISTRY_IMAGE}:testing -t ${REGISTRY_IMAGE}:${REF_NAME} -t ${REGISTRY_IMAGE}:testing .
@@ -25,11 +25,12 @@ build_image_base:
 
 deploy:testing:
   stage: deploy
+  only:
+    - tags 
   before_script:
     - apk add --update docker-compose
     - eval $(ssh-agent -s)
-    - ssh-add <(echo "${DEPLOY_SSH_KEY}")
+    - ssh-add <(echo "${DEPLOY_TESTING_SSH_KEY}")
   script:    
-    - ssh ${DEPLOY_TESTING_USER}@${DEPLOY_TESTING_HOST} deploy ${DEPLOY_PROJECT_NAME}
+    - ssh ${DEPLOY_TESTING_USER}@${DEPLOY_TESTING_HOST} ./bin/deploy ${DEPLOY_TESTING_PROJECT_NAME}
   when: manual
-    

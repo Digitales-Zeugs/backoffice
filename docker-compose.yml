@@ -30,6 +30,7 @@ services:
       - app-network
     volumes:
       - code-backoffice:/var/www
+      - user-files:/var/www/storage/app/files
 
   php_registro_obras:
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras:latest
@@ -38,6 +39,7 @@ services:
       - app-network
     volumes:
       - code-registro-obras:/var/www
+      - user-files:/var/www/storage/app/files
 
   database:
     image: mariadb:10.5.6-focal
@@ -49,17 +51,13 @@ services:
       - app-network
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-toor}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-sadaic}
-      MYSQL_USER: ${MYSQL_USER:-sadaic}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-sadaic}
 
 networks:
   app-network:
     driver: bridge
-    name: sadaic-network
 
 volumes:
   code-backoffice:
   code-registro-obras:
+  user-files:
   dbdata:
-    name: sadaic-dbdata
