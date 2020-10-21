@@ -85,7 +85,7 @@
             <button type="submit" class="btn bg-info">Marcar como Recibido</button>
         </form>
         @endif
-        @if ($profile->status_id > 1)
+        @if ($profile->status_id == 2)
         <form action="/profiles/{{ $profile->id }}/status" method="POST">
             @csrf
             <input type="hidden" name="status" value="3" />
