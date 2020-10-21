@@ -14,7 +14,7 @@ services:
 
   php_registro_obras:
     env_file:
-      - ../registro-obras/.env
+      - .env
 
   database:
     volumes:

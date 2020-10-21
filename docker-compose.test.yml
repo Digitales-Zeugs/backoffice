@@ -18,7 +18,7 @@ services:
 
   php_registro_obras:
     env_file:
-      - ../registro-obras/.env.testing
+      - .env.testing
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras:testing
 
   database:
