@@ -3,6 +3,7 @@ version: "3.8"
 services:
 
   nginx:
+    restart: "always"
     env_file:
       - .env
     volumes:
@@ -10,14 +11,17 @@ services:
       - ../registro-obras/docker/nginx/app-ssl.conf:/etc/nginx/conf.d/registro-obras.conf
 
   php_backoffice:
+    restart: "always"
     env_file:
       - .env
 
   php_registro_obras:
+    restart: "always"
     env_file:
       - ../registro-obras/.env
 
   database:
+    restart: "always"
     volumes:
       - ./database/:/docker-entrypoint-initdb.d/
     env_file:

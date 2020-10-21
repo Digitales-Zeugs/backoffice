@@ -3,6 +3,7 @@ version: "3.8"
 services:
 
   nginx:
+    restart: "always"
     ports:
       - 9000:9000
       - 8000:8000
@@ -24,6 +25,7 @@ services:
         - DEV
       dockerfile: ./docker/php/Dockerfile
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras/backoffice:develop
+    restart: "always"
     env_file:
       - .env.development
     volumes:
@@ -40,6 +42,7 @@ services:
         - DEV
       dockerfile: ./docker/php/Dockerfile
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras:develop
+    restart: "always"
     env_file:
       - ../registro-obras/.env.development
     volumes:
@@ -50,6 +53,7 @@ services:
       - www.sadaic.org.ar:10.30.110.20
 
   database:
+    restart: "always"
     volumes:
       - ./database/:/docker-entrypoint-initdb.d/
     env_file:
@@ -57,7 +61,7 @@ services:
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
-    restart: "no"
+    restart: "always"
     ports:
       - 8025:8025
     env_file:
@@ -67,7 +71,7 @@ services:
 
   adminer:
     image: adminer:4.7.7
-    restart: "no"
+    restart: "always"
     ports:
       - 8306:8080
     depends_on:
@@ -83,6 +87,7 @@ services:
 
   node_backoffice:
     image: node:14.13.1-alpine3.12
+    restart: "always"
     command: /bin/sh
     tty: true
     working_dir: /app
@@ -91,6 +96,7 @@ services:
 
   node_registro_obras:
     image: node:14.13.1-alpine3.12
+    restart: "always"
     command: /bin/sh
     tty: true
     working_dir: /app
