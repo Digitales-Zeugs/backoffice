@@ -7,6 +7,7 @@ services:
       - .env
     volumes:
       - ./docker/nginx/app-ssl.conf:/etc/nginx/conf.d/backoffice.conf
+      - ../registro-obras/docker/nginx/app-ssl.conf:/etc/nginx/conf.d/registro-obras.conf
 
   php_backoffice:
     env_file:
@@ -14,7 +15,7 @@ services:
 
   php_registro_obras:
     env_file:
-      - .env
+      - ../registro-obras/.env
 
   database:
     volumes:
