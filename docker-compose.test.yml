@@ -7,6 +7,7 @@ services:
       - .env.testing
     volumes:
       - ./docker/nginx/app-ssl.conf:/etc/nginx/conf.d/backoffice.conf
+      - ../registro-obras/docker/nginx/app-ssl.conf:/etc/nginx/conf.d/registro-obras.conf
     depends_on:
       - database
       - mailhog
@@ -18,7 +19,7 @@ services:
 
   php_registro_obras:
     env_file:
-      - .env.testing
+      - ../registro-obras/.env.testing
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras:testing
 
   database:
