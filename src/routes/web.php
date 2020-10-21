@@ -5,7 +5,13 @@ use App\Models\ProfileUpdates;
 
 Route::get('/', 'DashboardController@index');
 
+Route::get('/members', 'MembersController@index');
+Route::get('/members/datatables', 'MembersController@datatables');
+Route::get('/members/{profile}', 'MembersController@view');
+Route::post('/members/{profile}/status', 'MembersController@changeStatus');
+
 Route::get('/profiles', 'ProfilesController@index');
+Route::get('/profiles/datatables', 'ProfilesController@datatables');
 Route::get('/profiles/{profile}', 'ProfilesController@view');
 Route::post('/profiles/{profile}/status', 'ProfilesController@changeStatus');
 

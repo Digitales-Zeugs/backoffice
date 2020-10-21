@@ -23,6 +23,12 @@
                         <p>Registros de Obras</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="/members" class="nav-link @if(Request::path() == 'members') active @endif">
+                        <i class="nav-icon fas fa-user-plus"></i>
+                        <p>Registros de Socios</p>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>
