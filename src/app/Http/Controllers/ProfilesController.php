@@ -4,19 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ProfileUpdates;
+use App\Models\ProfileUpdatesStatus;
 
 class ProfilesController extends Controller
 {
+    public $datatablesModel = ProfileUpdates::class;
+
     public function __construct()
     {
+        $this->middleware('datatables')->only('datatables');
         $this->middleware('auth');
     }
 
     public function index()
     {
-        $updates = ProfileUpdates::where('status_id', 1)->get();
+        $status = ProfileUpdatesStatus::all();
 
-        return view('profiles.index', ['updates' => $updates]);
+        return view('profiles.index', ['status' => $status]);
     }
 
     public function view(ProfileUpdates $profile)
@@ -42,5 +46,16 @@ class ProfilesController extends Controller
                 ['profile' => $profile->id]
             );
         }
+    }
+
+    public function datatables(Request $request)
+    {
+        $query = $request->datatablesQuery;
+        $query->with('status');
+        $requests = $query->get();
+
+        $response = response(null);
+        $response->datatablesOutput = $requests;
+        return $response;
     }
 }

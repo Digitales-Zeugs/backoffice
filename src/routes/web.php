@@ -6,6 +6,7 @@ use App\Models\ProfileUpdates;
 Route::get('/', 'DashboardController@index');
 
 Route::get('/profiles', 'ProfilesController@index');
+Route::get('/profiles/datatables', 'ProfilesController@datatables');
 Route::get('/profiles/{profile}', 'ProfilesController@view');
 Route::post('/profiles/{profile}/status', 'ProfilesController@changeStatus');
 
