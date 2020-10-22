@@ -126,8 +126,6 @@ class WorksController extends Controller
         foreach($registration->distribution as $distribution) {
             if ($distribution->type == 'member') {
                 Mail::to($distribution->member->email)->send(new NotifyDistribution($distribution));
-            } else {
-                Mail::to($distribution->meta->email)->send(new NotifyDistribution($distribution));
             }
         }
 
