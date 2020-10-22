@@ -73,10 +73,6 @@
             </tr>
             @endif
             <tr>
-                <th>Transcripción</th>
-                <td>{!! nl2br(e($registration->lyric_text)) !!}</td>
-            </tr>
-            <tr>
                 <th colspan="2" class="table-inner-title">Distribución</th>
             </tr>
             @foreach ($registration->distribution as $distribution)

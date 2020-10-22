@@ -21,9 +21,6 @@ class Registration extends Model
         'dnda_in_date',
         'audio_dnda_in_file',
         'lyric_dnda_in_file',
-        'lyric_text',
-        'lyric_file',
-        'audio_file',
     ];
 
     protected $dates = [

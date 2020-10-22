@@ -31,11 +31,6 @@ class CreateWorksRegistrationTable extends Migration
             $table->string('audio_dnda_in_file')->nullable();
             $table->string('lyric_dnda_in_file')->nullable();
 
-            $table->string('lyric_text')->default('');
-            
-            $table->string('lyric_file')->nullable();
-            $table->string('audio_file')->nullable();
-
             $table->boolean('submitted')->default(false);
 
             $table->timestamps();
