@@ -38,6 +38,7 @@
             <tr>
                 <th colspan="2" class="table-inner-title">DNDA</th>
             </tr>
+            @if ($registration->dnda_in_date)
             <tr>
                 <th colspan="2" class="table-inner-subtitle">Inédito</th>
             </tr>
@@ -53,6 +54,8 @@
                 <th>Fecha</th>
                 <td>{{ optional($registration->dnda_in_date)->format('d/m/Y') }}</td>
             </tr>
+            @endif
+            @if ($registration->dnda_ed_date)
             <tr>
                 <th colspan="2" class="table-inner-subtitle">Editado</th>
             </tr>
@@ -68,6 +71,7 @@
                 <th>Fecha</th>
                 <td>{{ $registration->dnda_ed_date->format('d/m/Y') }}</td>
             </tr>
+            @endif
             <tr>
                 <th>Transcripción</th>
                 <td>{!! nl2br(e($registration->lyric_text)) !!}</td>
