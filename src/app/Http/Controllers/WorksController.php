@@ -8,6 +8,7 @@ use App\Models\Work\Log as InternalLog;
 use App\Models\Work\Registration;
 use App\Models\Work\Status;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -279,5 +280,83 @@ class WorksController extends Controller
             'action_id'       => 10, // REQUEST_REJECTED
             'time'            => now()
         ]);
+    }
+
+    public function response(Request $request, Registration $registration)
+    {
+        try {
+            if (!$request->has('response') || !$request->has('distribution_id')) {
+                abort(403);
+            }
+
+            if ($request->input('response') != 'accept' && $request->input('response') != 'reject') {
+                abort(403);
+            }
+
+            $distribution_id = $request->input('distribution_id');
+
+            $distribution = $registration->distribution->where('id', $distribution_id)->first();
+
+            // Si el socio no es parte de la distribución del registro
+            if (!$distribution) {
+                abort(403);
+            }
+
+            // Si ya respondió que si, no se puede cambiar
+            if ($distribution->response == true) {
+                return [
+                    'status' => 'failed',
+                    'errors' => [
+                        'No se puede cambiar la respuesta a una solicitud de registro ya aceptada'
+                    ]
+                ];
+            }
+
+            $distribution->response = $request->input('response') == 'accept';
+            $distribution->save();
+
+            // action_id = 6 -> DISTRIBUTION_CONFIRMED
+            // action_id = 7 -> DISTRIBUTION_REJECTED
+            InternalLog::create([
+                'registration_id' => $registration->id,
+                'distribution_id' => $distribution->id,
+                'action_id'       => $request->input('response') == 'accept' ? 6 : 7,
+                'action_data'     => json_encode(['operator_id' => Auth::user()->usuarioid]),
+                'time'            => now()
+            ]);
+
+            // Chequeamos si todas las partes aprobaron el trámite
+            $finished = $registration->distribution->every(function ($current, $key) {
+                return !!$current->response;
+            });
+
+            // Si el trámite está terminado...
+            if ($finished) {
+                $registration->status_id = 5; // Aprobado Propietarios
+            // Si la respuesta fue negativa
+            } elseif (!$distribution->response) {
+                $registration->status_id = 3; // Disputa Propietarios
+            }
+
+            $registration->save();
+
+            return [
+                'status' => 'success'
+            ];
+        } catch (Throwable $t) {
+            Log::error("Error registrando respuesta de socio a un solicitud de registro de obra",
+                [
+                    "error" => $t,
+                    "data"  => json_encode($request->all(), JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_INVALID_UTF8_IGNORE )
+                ]
+            );
+
+            return [
+                'status' => 'failed',
+                'errors' => [
+                    'Se produjo un error desconocido al momento de registrar su respuesta'
+                ]
+            ];
+        }
     }
 }

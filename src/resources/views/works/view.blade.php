@@ -91,11 +91,15 @@
                     <strong>Distribución Pública:</strong> {{ $distribution->public }}%<br>
                     <strong>Distribución Mecánica:</strong> {{ $distribution->mechanic }}%<br>
                     <strong>Distribución Sincronización:</strong> {{ $distribution->sync }}%<br>
-                    <strong>Respuesta:</strong>
-                    @if ($distribution->response === null) No Respondió
+                    <div class="d-flex flex-row align-items-center">
+                    <strong>Respuesta:</strong>&nbsp;
+                    @if ($distribution->response === null)
+                    <button class="btn btn-link text-success" id="acceptDistribution" data-did="{{ $distribution->id }}">Aceptar</button>&nbsp;&nbsp;
+                    <button class="btn btn-link text-danger" id="rejectDistribution" data-did="{{ $distribution->id }}">Rechazar</button>
                     @elseif ($distribution->response === 0) Rechazado ({{ $distribution->updated_at->format('d/m/Y H:i') }})
                     @elseif ($distribution->response === 1) Aceptado ({{ $distribution->updated_at->format('d/m/Y H:i') }})
                     @endif
+                    </div>
                 </td>
             </tr>
             @endforeach
@@ -271,6 +275,28 @@ $('#approveRequest').on('click', () => {
 $('#rejectRequest').on('click', () => {
     axios.post('/works/{{ $registration->id }}/status', {
         status: 'rejectRequest'
+    });
+});
+
+$('#acceptDistribution').on('click', (event) => {
+    axios.post('/works/{{ $registration->id }}/response', {
+        response: 'accept',
+        distribution_id: $(event.target).data('did')
+    })
+    .catch((err) => {
+        toastr.error('Se encontró un problema mientras se realizaba la solicitud')
+    })
+    .then(({ data }) => {
+        if (data.status == 'failed') {
+            toastr.error('No se puedo cambiar la respuesta a la solicitud.');
+
+            data.errors.forEach(e => {
+                toastr.warning(e);
+            });
+        } else if (data.status == 'success') {
+            toastr.success('Respuesta cambiada correctamente');
+            setTimeout(() => { location.reload() }, 1000);
+        }
     });
 });
 </script>
