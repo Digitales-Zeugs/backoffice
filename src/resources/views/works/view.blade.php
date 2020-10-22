@@ -38,6 +38,7 @@
             <tr>
                 <th colspan="2" class="table-inner-title">DNDA</th>
             </tr>
+            @if ($registration->dnda_in_date)
             <tr>
                 <th colspan="2" class="table-inner-subtitle">Inédito</th>
             </tr>
@@ -53,6 +54,8 @@
                 <th>Fecha</th>
                 <td>{{ optional($registration->dnda_in_date)->format('d/m/Y') }}</td>
             </tr>
+            @endif
+            @if ($registration->dnda_ed_date)
             <tr>
                 <th colspan="2" class="table-inner-subtitle">Editado</th>
             </tr>
@@ -68,10 +71,7 @@
                 <th>Fecha</th>
                 <td>{{ $registration->dnda_ed_date->format('d/m/Y') }}</td>
             </tr>
-            <tr>
-                <th>Transcripción</th>
-                <td>{!! nl2br(e($registration->lyric_text)) !!}</td>
-            </tr>
+            @endif
             <tr>
                 <th colspan="2" class="table-inner-title">Distribución</th>
             </tr>
@@ -87,11 +87,18 @@
                     <strong>Distribución Pública:</strong> {{ $distribution->public }}%<br>
                     <strong>Distribución Mecánica:</strong> {{ $distribution->mechanic }}%<br>
                     <strong>Distribución Sincronización:</strong> {{ $distribution->sync }}%<br>
-                    <strong>Respuesta:</strong>
-                    @if ($distribution->response === null) No Respondió
+                    <div class="d-flex flex-row align-items-center">
+                    <strong>Respuesta:</strong>&nbsp;
+                    @if ($distribution->response === null)
+                        @if ($distribution->type == 'member' || $registration->status_id == 1) Sin respuesta
+                        @else
+                            <button class="btn btn-link text-success" id="acceptDistribution" data-did="{{ $distribution->id }}">Aceptar</button>&nbsp;&nbsp;
+                            <button class="btn btn-link text-danger" id="rejectDistribution" data-did="{{ $distribution->id }}">Rechazar</button>
+                        @endif
                     @elseif ($distribution->response === 0) Rechazado ({{ $distribution->updated_at->format('d/m/Y H:i') }})
                     @elseif ($distribution->response === 1) Aceptado ({{ $distribution->updated_at->format('d/m/Y H:i') }})
                     @endif
+                    </div>
                 </td>
             </tr>
             @endforeach
@@ -104,6 +111,7 @@
                 switch($file->name) {
                     case 'lyric_file': $desc = 'Archivo Partitura'; break;
                     case 'audio_file': $desc = 'Archivo de Audio'; break;
+                    case 'script_file': $desc = 'Archivo Letra'; break;
                     case 'dnda_file': $desc = 'Archivo DNDA'; break;
                     default: 
                         $name = explode('_', $file->name);
@@ -144,7 +152,28 @@
             @foreach ($registration->logs as $log)
             <tr>
                 <th>{{ $log->time->format('d/m/Y H:i') }}</th>
-                <td>{{ $log->action->description }}</td>
+                @switch($log->action->name)
+                    @case('REGISTRATION_ACCEPTED')
+                        <td>{{ $log->action->description }} {{ isset($log->action_data['forced']) ? '(Forzado)' : '' }}</td>
+                        @break
+                    @case('DISTRIBUTION_CONFIRMED')
+                    @case('DISTRIBUTION_REJECTED')
+                        <td>{{ $log->action->description }} ({{
+                            $log->distribution->member_id
+                            ? $log->distribution->member->nombre
+                            : $log->distribution->meta->name
+                            }}{{ isset($log->action_data['operator_id']) ? ' por ' . $log->action_data['operator_id'] : '' }})</td>
+                        @break
+                    @case('REGISTRATION_NOT_NOTIFIED')
+                        <td>{{ $log->action->description }} ({{
+                            $log->distribution->member_id
+                            ? $log->distribution->member->nombre
+                            : $log->distribution->meta->name
+                            }})</td>
+                        @break
+                    @default
+                        <td>{{ $log->action->description }}</td>
+                @endswitch
             </tr>
             @endforeach
         </table>
@@ -154,6 +183,7 @@
         <div class="row justify-content-center">
             <div>
                 <button class="btn btn-success" id="beginAction">Iniciar Proceso</button>
+                <button class="btn btn-warning" id="beginForceAction" style="display: none">Iniciar Proceso a pesar de los errores</button>
                 <button class="btn btn-danger" id="rejectAction">Rechazar Solicitud</button>
             </div>
         </div>
@@ -182,6 +212,36 @@
 $('#beginAction').on('click', () => {
     axios.post('/works/{{ $registration->id }}/status', {
         status: 'beginAction'
+    })
+    .catch((err) => {
+        toastr.error('Se encontró un problema mientras se realizaba la solicitud')
+    })
+    .then(({ data }) => {
+        if (data.status == 'failed') {
+            toastr.error('No se puede iniciar el proceso de la solicitud.');
+
+            data.errors.forEach(e => {
+                toastr.warning(e);
+            });
+
+            if (data.continue) {
+                $('#beginAction').css('display', 'none');
+                $('#beginForceAction').css('display', 'inline-block');
+            }
+        } else if (data.status == 'success') {
+            toastr.success('Proceso iniciado correctamente');
+            setTimeout(() => { location.reload() }, 1000);
+        }
+    });
+});
+
+$('#beginForceAction').on('click', () => {
+    axios.post('/works/{{ $registration->id }}/status', {
+        status: 'beginAction',
+        force: true
+    })
+    .catch((err) => {
+        toastr.error('Se encontró un problema mientras se realizaba la solicitud')
     })
     .then(({ data }) => {
         if (data.status == 'failed') {
@@ -223,6 +283,18 @@ $('#rejectAction').on('click', () => {
 $('#sendToInternal').on('click', () => {
     axios.post('/works/{{ $registration->id }}/status', {
         status: 'sendToInternal'
+    })
+    .then(({ data }) => {
+        if (data.status == 'failed') {
+            toastr.error('No se pudo registrar el pase a sistema interno de la solicitud.');
+
+            data.errors.forEach(e => {
+                toastr.warning(e);
+            });
+        } else if (data.status == 'success') {
+            toastr.success('Pase registrado correctamente');
+            setTimeout(() => { location.reload() }, 1000);
+        }
     });
 });
 
@@ -235,6 +307,28 @@ $('#approveRequest').on('click', () => {
 $('#rejectRequest').on('click', () => {
     axios.post('/works/{{ $registration->id }}/status', {
         status: 'rejectRequest'
+    });
+});
+
+$('#acceptDistribution').on('click', (event) => {
+    axios.post('/works/{{ $registration->id }}/response', {
+        response: 'accept',
+        distribution_id: $(event.target).data('did')
+    })
+    .catch((err) => {
+        toastr.error('Se encontró un problema mientras se realizaba la solicitud')
+    })
+    .then(({ data }) => {
+        if (data.status == 'failed') {
+            toastr.error('No se puedo cambiar la respuesta a la solicitud.');
+
+            data.errors.forEach(e => {
+                toastr.warning(e);
+            });
+        } else if (data.status == 'success') {
+            toastr.success('Respuesta cambiada correctamente');
+            setTimeout(() => { location.reload() }, 1000);
+        }
     });
 });
 </script>
