@@ -188,6 +188,9 @@ $('#beginAction').on('click', () => {
     axios.post('/works/{{ $registration->id }}/status', {
         status: 'beginAction'
     })
+    .catch((err) => {
+        toastr.error('Se encontró un problema mientras se realizaba la solicitud')
+    })
     .then(({ data }) => {
         if (data.status == 'failed') {
             toastr.error('No se puede iniciar el proceso de la solicitud.');
