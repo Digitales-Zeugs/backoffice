@@ -108,6 +108,7 @@
                 switch($file->name) {
                     case 'lyric_file': $desc = 'Archivo Partitura'; break;
                     case 'audio_file': $desc = 'Archivo de Audio'; break;
+                    case 'script_file': $desc = 'Archivo Letra'; break;
                     case 'dnda_file': $desc = 'Archivo DNDA'; break;
                     default: 
                         $name = explode('_', $file->name);
