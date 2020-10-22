@@ -94,8 +94,11 @@
                     <div class="d-flex flex-row align-items-center">
                     <strong>Respuesta:</strong>&nbsp;
                     @if ($distribution->response === null)
-                    <button class="btn btn-link text-success" id="acceptDistribution" data-did="{{ $distribution->id }}">Aceptar</button>&nbsp;&nbsp;
-                    <button class="btn btn-link text-danger" id="rejectDistribution" data-did="{{ $distribution->id }}">Rechazar</button>
+                        @if ($distribution->type == 'member') Sin respuesta
+                        @else
+                            <button class="btn btn-link text-success" id="acceptDistribution" data-did="{{ $distribution->id }}">Aceptar</button>&nbsp;&nbsp;
+                            <button class="btn btn-link text-danger" id="rejectDistribution" data-did="{{ $distribution->id }}">Rechazar</button>
+                        @endif
                     @elseif ($distribution->response === 0) Rechazado ({{ $distribution->updated_at->format('d/m/Y H:i') }})
                     @elseif ($distribution->response === 1) Aceptado ({{ $distribution->updated_at->format('d/m/Y H:i') }})
                     @endif
@@ -153,7 +156,28 @@
             @foreach ($registration->logs as $log)
             <tr>
                 <th>{{ $log->time->format('d/m/Y H:i') }}</th>
-                <td>{{ $log->action->description }}</td>
+                @switch($log->action->name)
+                    @case('REGISTRATION_ACCEPTED')
+                        <td>{{ $log->action->description }} {{ isset($log->action_data['forced']) ? '(Forzado)' : '' }}</td>
+                        @break
+                    @case('DISTRIBUTION_CONFIRMED')
+                    @case('DISTRIBUTION_REJECTED')
+                        <td>{{ $log->action->description }} ({{
+                            $log->distribution->member_id
+                            ? $log->distribution->member->nombre
+                            : $log->distribution->meta->name
+                            }}{{ isset($log->action_data['operator_id']) ? ' por ' . $log->action_data['operator_id'] : '' }})</td>
+                        @break
+                    @case('REGISTRATION_NOT_NOTIFIED')
+                        <td>{{ $log->action->description }} ({{
+                            $log->distribution->member_id
+                            ? $log->distribution->member->nombre
+                            : $log->distribution->meta->name
+                            }})</td>
+                        @break
+                    @default
+                        <td>{{ $log->action->description }}</td>
+                @endswitch
             </tr>
             @endforeach
         </table>

@@ -167,6 +167,16 @@ class WorksController extends Controller
     private function beginActionForce(Registration $registration)
     {
         try {
+            $registration->status_id = 2; // En proceso
+            $registration->save();
+
+            InternalLog::create([
+                'registration_id' => $registration->id,
+                'action_id'       => 3, // REGISTRATION_ACEPTED
+                'time'            => now(),
+                'action_data'     => ['forced' => true]
+            ]);
+
             foreach($registration->distribution as $distribution) {
                 if ($distribution->type == 'member') {
                     if (trim($distribution->member->email) != "" && filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
@@ -176,23 +186,14 @@ class WorksController extends Controller
                         // Si no, logeamos
                         InternalLog::create([
                             'registration_id' => $registration->id,
+                            'distribution_id' => $distribution->id,
                             'action_id'       => 11, // REGISTRATION_NOT_NOTIFIED
                             'time'            => now(),
-                            'action_data'     => json_encode(['member' => $distribution->member_id])
+                            'action_data'     => ['member' => $distribution->member_id]
                         ]);
                     }
                 }
             }
-
-            $registration->status_id = 2; // En proceso
-            $registration->save();
-
-            InternalLog::create([
-                'registration_id' => $registration->id,
-                'action_id'       => 3, // REGISTRATION_ACEPTED
-                'time'            => now(),
-                'action_data'     => json_encode(['forced' => true])
-            ]);
 
             return [
                 'status' => 'success'
@@ -321,7 +322,7 @@ class WorksController extends Controller
                 'registration_id' => $registration->id,
                 'distribution_id' => $distribution->id,
                 'action_id'       => $request->input('response') == 'accept' ? 6 : 7,
-                'action_data'     => json_encode(['operator_id' => Auth::user()->usuarioid]),
+                'action_data'     => ['operator_id' => Auth::user()->usuarioid],
                 'time'            => now()
             ]);
 
