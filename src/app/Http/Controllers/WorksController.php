@@ -66,7 +66,7 @@ class WorksController extends Controller
                 return $this->rejectAction($registration);
             break;
             case 'sendToInternal':
-                return $this->sendToInternal($request, $registration);
+                return $this->sendToInternal($registration);
             break;
             case 'approveRequest':
                 return $this->approveRequest($request, $registration);
@@ -246,16 +246,34 @@ class WorksController extends Controller
         }
     }
 
-    private function sendToIntenal()
+    private function sendToInternal(Registration $registration)
     {
-        // Cambiar estado en la BBDD
+        try {
+            $registration->status_id = 6;
+            $registration->save();
 
+            InternalLog::create([
+                'registration_id' => $registration->id,
+                'action_id'       => 8, // SEND_TO_INTERNAL
+                'action_data'     => ['operator_id' => Auth::user()->usuarioid],
+                'time'            => now()
+            ]);
 
-        InternalLog::create([
-            'registration_id' => $registration->id,
-            'action_id'       => 8, // SEND_TO_INTERNAL
-            'time'            => now()
-        ]);
+            return [
+                'status'   => 'success'
+            ];
+        } catch (Throwable $t) {
+            Log::error("Error enviando trámite de registro de obra al sistema interno",
+                [
+                    "error" => $t,
+                    "data"  => json_encode($request->all(), JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_INVALID_UTF8_IGNORE )
+                ]
+            );
+
+            return [
+                'status'   => 'failed'
+            ];
+        }
     }
 
     private function approveRequest()

@@ -287,6 +287,18 @@ $('#rejectAction').on('click', () => {
 $('#sendToInternal').on('click', () => {
     axios.post('/works/{{ $registration->id }}/status', {
         status: 'sendToInternal'
+    })
+    .then(({ data }) => {
+        if (data.status == 'failed') {
+            toastr.error('No se pudo registrar el pase a sistema interno de la solicitud.');
+
+            data.errors.forEach(e => {
+                toastr.warning(e);
+            });
+        } else if (data.status == 'success') {
+            toastr.success('Pase registrado correctamente');
+            setTimeout(() => { location.reload() }, 1000);
+        }
     });
 });
 
