@@ -159,6 +159,7 @@
         <div class="row justify-content-center">
             <div>
                 <button class="btn btn-success" id="beginAction">Iniciar Proceso</button>
+                <button class="btn btn-warning" id="beginForceAction" style="display: none">Iniciar Proceso a pesar de los errores</button>
                 <button class="btn btn-danger" id="rejectAction">Rechazar Solicitud</button>
             </div>
         </div>
@@ -187,6 +188,33 @@
 $('#beginAction').on('click', () => {
     axios.post('/works/{{ $registration->id }}/status', {
         status: 'beginAction'
+    })
+    .catch((err) => {
+        toastr.error('Se encontró un problema mientras se realizaba la solicitud')
+    })
+    .then(({ data }) => {
+        if (data.status == 'failed') {
+            toastr.error('No se puede iniciar el proceso de la solicitud.');
+
+            data.errors.forEach(e => {
+                toastr.warning(e);
+            });
+
+            if (data.continue) {
+                $('#beginAction').css('display', 'none');
+                $('#beginForceAction').css('display', 'inline-block');
+            }
+        } else if (data.status == 'success') {
+            toastr.success('Proceso iniciado correctamente');
+            setTimeout(() => { location.reload() }, 1000);
+        }
+    });
+});
+
+$('#beginForceAction').on('click', () => {
+    axios.post('/works/{{ $registration->id }}/status', {
+        status: 'beginAction',
+        force: true
     })
     .catch((err) => {
         toastr.error('Se encontró un problema mientras se realizaba la solicitud')

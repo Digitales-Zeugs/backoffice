@@ -55,6 +55,10 @@ class WorksController extends Controller
 
         switch($request->input('status')) {
             case 'beginAction':
+                if ($request->input('force', false) === true) {
+                    return $this->beginActionForce($registration);
+                }
+
                 return $this->beginAction($registration);
             break;
             case 'rejectAction':
@@ -100,47 +104,111 @@ class WorksController extends Controller
 
     private function beginAction(Registration $registration)
     {
-        $errors = [];
-        // 
-        foreach($registration->distribution as $distribution) {
-            if ($distribution->type == 'member') {
-                // Mail seteado
-                if (trim($distribution->member->email) == "") {
-                    $errors[] = $distribution->member->nombre . " no tiene una dirección de correo electrónica configurada";
-                } else {
-                    // Mail válido
-                    if (!filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
-                        $errors[] = $distribution->member->nombre . " tiene una dirección de correo electrónica errónea: " . $distribution->member->email;
+        try {
+            $errors = [];
+
+            // Verificación de los mails
+            foreach($registration->distribution as $distribution) {
+                if ($distribution->type == 'member') {
+                    // Mail seteado
+                    if (trim($distribution->member->email) == "") {
+                        $errors[] = $distribution->member->nombre . " no tiene una dirección de correo electrónica configurada";
+                    } else {
+                        // Mail válido
+                        if (!filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
+                            $errors[] = $distribution->member->nombre . " tiene una dirección de correo electrónica errónea: " . $distribution->member->email;
+                        }
                     }
                 }
             }
-        }
 
-        if (count($errors) > 0) {
+            if (count($errors) > 0) {
+                return [
+                    'status'   => 'failed',
+                    'errors'   => $errors,
+                    'continue' => true
+                ];
+            }
+
+            foreach($registration->distribution as $distribution) {
+                if ($distribution->type == 'member') {
+                    Mail::to($distribution->member->email)->send(new NotifyDistribution($distribution));
+                }
+            }
+
+            $registration->status_id = 2; // En proceso
+            $registration->save();
+
+            InternalLog::create([
+                'registration_id' => $registration->id,
+                'action_id'       => 3, // REGISTRATION_ACEPTED
+                'time'            => now()
+            ]);
+
             return [
-                'status' => 'failed',
-                'errors' => $errors
+                'status' => 'success'
+            ];
+        } catch (Throwable $t) {
+            Log::error("Error iniciando trámite de registro de obra",
+                [
+                    "error" => $t,
+                    "data"  => json_encode($request->all(), JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_INVALID_UTF8_IGNORE )
+                ]
+            );
+
+            return [
+                'status'   => 'failed',
+                'continue' => false
             ];
         }
+    }
 
-        foreach($registration->distribution as $distribution) {
-            if ($distribution->type == 'member') {
-                Mail::to($distribution->member->email)->send(new NotifyDistribution($distribution));
+    private function beginActionForce(Registration $registration)
+    {
+        try {
+            foreach($registration->distribution as $distribution) {
+                if ($distribution->type == 'member') {
+                    if (trim($distribution->member->email) != "" && filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
+                        // Si tiene dirección válida, notificamos
+                        Mail::to($distribution->member->email)->send(new NotifyDistribution($distribution));
+                    } else {
+                        // Si no, logeamos
+                        InternalLog::create([
+                            'registration_id' => $registration->id,
+                            'action_id'       => 11, // REGISTRATION_NOT_NOTIFIED
+                            'time'            => now(),
+                            'action_data'     => json_encode(['member' => $distribution->member_id])
+                        ]);
+                    }
+                }
             }
+
+            $registration->status_id = 2; // En proceso
+            $registration->save();
+
+            InternalLog::create([
+                'registration_id' => $registration->id,
+                'action_id'       => 3, // REGISTRATION_ACEPTED
+                'time'            => now(),
+                'action_data'     => json_encode(['forced' => true])
+            ]);
+
+            return [
+                'status' => 'success'
+            ];
+        } catch (Throwable $t) {
+            Log::error("Error iniciando trámite de registro de obra",
+                [
+                    "error" => $t,
+                    "data"  => json_encode($request->all(), JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_INVALID_UTF8_IGNORE )
+                ]
+            );
+
+            return [
+                'status'   => 'failed',
+                'continue' => false
+            ];
         }
-
-        $registration->status_id = 2; // En proceso
-        $registration->save();
-
-        InternalLog::create([
-            'registration_id' => $registration->id,
-            'action_id'       => 3, // REGISTRATION_ACEPTED
-            'time'            => now()
-        ]);
-
-        return [
-            'status' => 'success'
-        ];
     }
 
     private function rejectAction(Registration $registration)
