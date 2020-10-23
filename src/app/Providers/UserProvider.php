@@ -51,6 +51,14 @@ class UserProvider extends EloquentUserProvider implements UserProviderContract
             return false;
         }
 
+        if(!$user->privileges->contains('capitulo', 'nb_login')) {
+            return false;
+        }
+
+        if (optional($user->privileges->firstWhere('capitulo', 'nb_login'))->privilegios != 'lee') {
+            return false;
+        }
+
         return true;
     }
 }
