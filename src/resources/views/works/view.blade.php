@@ -203,6 +203,13 @@
                 <button class="btn btn-danger" id="rejectRequest">Rechazar</button>
             </div>
         </div>
+        {{-- Aprobada/Rechazada --}}
+        @elseif ($registration->status_id == 7 || $registration->status_id == 8)
+        <div class="row justify-content-center">
+            <div>
+                <button class="btn btn-primary" id="finishRequest">Finalizar</button>
+            </div>
+        </div>
         @endif
         @endif
     </section>
@@ -303,12 +310,54 @@ $('#sendToInternal').on('click', () => {
 $('#approveRequest').on('click', () => {
     axios.post('/works/{{ $registration->id }}/status', {
         status: 'approveRequest'
+    })
+    .then(({ data }) => {
+        if (data.status == 'failed') {
+            toastr.error('No se pudo registrar la aprobación de la solicitud.');
+
+            data.errors.forEach(e => {
+                toastr.warning(e);
+            });
+        } else if (data.status == 'success') {
+            toastr.success('Aprobación registrada correctamente');
+            setTimeout(() => { location.reload() }, 1000);
+        }
     });
 });
 
 $('#rejectRequest').on('click', () => {
     axios.post('/works/{{ $registration->id }}/status', {
         status: 'rejectRequest'
+    })
+    .then(({ data }) => {
+        if (data.status == 'failed') {
+            toastr.error('No se pudo registrar el rechazo de la solicitud.');
+
+            data.errors.forEach(e => {
+                toastr.warning(e);
+            });
+        } else if (data.status == 'success') {
+            toastr.success('Rechazo registrado correctamente');
+            setTimeout(() => { location.reload() }, 1000);
+        }
+    });
+});
+
+$('#finishRequest').on('click', () => {
+    axios.post('/works/{{ $registration->id }}/status', {
+        status: 'finishRequest'
+    })
+    .then(({ data }) => {
+        if (data.status == 'failed') {
+            toastr.error('No se pudo registrar la finalización del trámite.');
+
+            data.errors.forEach(e => {
+                toastr.warning(e);
+            });
+        } else if (data.status == 'success') {
+            toastr.success('Finalización registrada correctamente');
+            setTimeout(() => { location.reload() }, 1000);
+        }
     });
 });
 

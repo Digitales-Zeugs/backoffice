@@ -83,10 +83,13 @@ class WorksController extends Controller
                 return $this->sendToInternal($registration);
             break;
             case 'approveRequest':
-                return $this->approveRequest($request, $registration);
+                return $this->approveRequest($registration);
             break;
             case 'rejectRequest':
-                return $this->rejectRequest($request, $registration);
+                return $this->rejectRequest($registration);
+            break;
+            case 'finishRequest':
+                return $this->finishRequest($registration);
             break;
             default:
                 abort(403);
@@ -310,37 +313,106 @@ class WorksController extends Controller
         }
     }
 
-    private function approveRequest()
+    private function approveRequest(Registration $registration)
     {
-        if (!Auth::user()->can('nb_obras', 'homologa')) {
-            abort(403);
+        try {
+            if (!Auth::user()->can('nb_obras', 'homologa')) {
+                abort(403);
+            }
+
+            $registration->status_id = 7;
+            $registration->save();
+
+            InternalLog::create([
+                'registration_id' => $registration->id,
+                'action_id'       => 9, // REQUEST_ACCEPTED
+                'action_data'     => ['operator_id' => Auth::user()->usuarioid],
+                'time'            => now()
+            ]);
+
+            return [
+                'status'   => 'success'
+            ];
+        } catch (Throwable $t) {
+            Log::error("Error guardando aprobación del trámite",
+                [
+                    "error" => $t,
+                    "data"  => json_encode($request->all(), JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_INVALID_UTF8_IGNORE )
+                ]
+            );
+
+            return [
+                'status'   => 'failed'
+            ];
         }
-
-        // Cambiar estado en la BBDD
-        // Enviar mail al iniciador
-
-        InternalLog::create([
-            'registration_id' => $registration->id,
-            'action_id'       => 9, // REQUEST_ACCEPTED
-            'time'            => now()
-        ]);
     }
 
-    private function rejectRequest()
+    private function rejectRequest(Registration $registration)
     {
-        if (!Auth::user()->can('nb_obras', 'homologa')) {
-            abort(403);
+        try {
+            if (!Auth::user()->can('nb_obras', 'homologa')) {
+                abort(403);
+            }
+
+            $registration->status_id = 8;
+            $registration->save();
+
+            InternalLog::create([
+                'registration_id' => $registration->id,
+                'action_id'       => 10, // REQUEST_REJECTED
+                'action_data'     => ['operator_id' => Auth::user()->usuarioid],
+                'time'            => now()
+            ]);
+
+            return [
+                'status'   => 'success'
+            ];
+        } catch (Throwable $t) {
+            Log::error("Error guardando rechazo del trámite",
+                [
+                    "error" => $t,
+                    "data"  => json_encode($request->all(), JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_INVALID_UTF8_IGNORE )
+                ]
+            );
+
+            return [
+                'status'   => 'failed'
+            ];
         }
+    }
 
-        // Cambiar estado en la BBDD
-        // Enviar mail al iniciador
+    private function finishRequest(Registration $registration)
+    {
+        try {
+            if (!Auth::user()->can('nb_obras', 'homologa')) {
+                abort(403);
+            }
 
+            $registration->status_id = 9;
+            $registration->save();
 
-        InternalLog::create([
-            'registration_id' => $registration->id,
-            'action_id'       => 10, // REQUEST_REJECTED
-            'time'            => now()
-        ]);
+            InternalLog::create([
+                'registration_id' => $registration->id,
+                'action_id'       => 12, // REQUEST_FINISHED
+                'action_data'     => ['operator_id' => Auth::user()->usuarioid],
+                'time'            => now()
+            ]);
+
+            return [
+                'status'   => 'success'
+            ];
+        } catch (Throwable $t) {
+            Log::error("Error guardando finalización del trámite",
+                [
+                    "error" => $t,
+                    "data"  => json_encode($request->all(), JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_INVALID_UTF8_IGNORE )
+                ]
+            );
+
+            return [
+                'status'   => 'failed'
+            ];
+        }
     }
 
     public function response(Request $request, Registration $registration)
