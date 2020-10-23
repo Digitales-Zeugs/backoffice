@@ -41,7 +41,7 @@ class TestDataSeeder extends Seeder
         ->insert([
             [ 'recid_usuario' => 51, 'capitulo' => 'nb_login', 'privilegios'   => 'lee' ],
             [ 'recid_usuario' => 51, 'capitulo' => 'nb_socios', 'privilegios'   => 'lee' ],
-            [ 'recid_usuario' => 51, 'capitulo' => 'nb_obras', 'privilegios'   => 'lee' ],
+            [ 'recid_usuario' => 51, 'capitulo' => 'nb_obras', 'privilegios'   => 'sin permisos' ],
             [ 'recid_usuario' => 51, 'capitulo' => 'nb_jingles', 'privilegios'   => 'lee' ],
             [ 'recid_usuario' => $user_1, 'capitulo' => 'nb_login', 'privilegios'   => 'lee' ],
             [ 'recid_usuario' => $user_1, 'capitulo' => 'nb_socios', 'privilegios'   => 'carga' ],
