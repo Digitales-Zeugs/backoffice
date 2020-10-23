@@ -90,7 +90,7 @@
                     <div class="d-flex flex-row align-items-center">
                     <strong>Respuesta:</strong>&nbsp;
                     @if ($distribution->response === null)
-                        @if ($distribution->type == 'member' || $registration->status_id == 1) Sin respuesta
+                        @if ($distribution->type == 'member' || $registration->status_id == 1 || !Auth::user()->can('nb_obras', 'carga')) Sin respuesta
                         @else
                             <button class="btn btn-link text-success" id="acceptDistribution" data-did="{{ $distribution->id }}">Aceptar</button>&nbsp;&nbsp;
                             <button class="btn btn-link text-danger" id="rejectDistribution" data-did="{{ $distribution->id }}">Rechazar</button>
@@ -178,6 +178,7 @@
             @endforeach
         </table>
         <br /><br />
+        @if (Auth::user()->can('nb_obras', 'carga'))
         {{-- Trámite Nuevo --}}
         @if ($registration->status_id == 1)
         <div class="row justify-content-center">
@@ -202,6 +203,7 @@
                 <button class="btn btn-danger" id="rejectRequest">Rechazar</button>
             </div>
         </div>
+        @endif
         @endif
     </section>
 </div>

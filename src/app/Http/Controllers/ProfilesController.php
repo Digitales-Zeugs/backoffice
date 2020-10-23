@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\ProfileUpdates;
 use App\Models\ProfileUpdatesStatus;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProfilesController extends Controller
 {
@@ -18,6 +19,10 @@ class ProfilesController extends Controller
 
     public function index()
     {
+        if (!Auth::user()->can('nb_socios', 'lee')) {
+            abort(403);
+        }
+
         $status = ProfileUpdatesStatus::all();
 
         return view('profiles.index', ['status' => $status]);
@@ -25,11 +30,19 @@ class ProfilesController extends Controller
 
     public function view(ProfileUpdates $profile)
     {
+        if (!Auth::user()->can('nb_socios', 'lee')) {
+            abort(403);
+        }
+
         return view('profiles.view', ['profile' => $profile]);
     }
 
     public function changeStatus(Request $request, ProfileUpdates $profile)
     {
+        if (!Auth::user()->can('nb_socios', 'homologa')) {
+            abort(403);
+        }
+
         $request->validate([
             'status' => 'required|exists:profile_updates_status,id',
         ]);
@@ -50,6 +63,10 @@ class ProfilesController extends Controller
 
     public function datatables(Request $request)
     {
+        if (!Auth::user()->can('nb_socios', 'lee')) {
+            abort(403);
+        }
+
         $query = $request->datatablesQuery;
         $query->with('status');
         $requests = $query->get();

@@ -25,6 +25,10 @@ class WorksController extends Controller
 
     public function index()
     {
+        if (!Auth::user()->can('nb_obras', 'lee')) {
+            abort(403);
+        }
+
         $requests = Registration::where('status_id', 1)->get();
         $status = Status::all();
 
@@ -36,11 +40,19 @@ class WorksController extends Controller
 
     public function showView(Registration $registration)
     {
+        if (!Auth::user()->can('nb_obras', 'lee')) {
+            abort(403);
+        }
+
         return view('works.view', ['registration' => $registration]);
     }
 
     public function datatables(Request $request)
     {
+        if (!Auth::user()->can('nb_obras', 'lee')) {
+            abort(403);
+        }
+
         $query = $request->datatablesQuery;
         $query->with('status');
         $requests = $query->get();
@@ -52,7 +64,9 @@ class WorksController extends Controller
 
     public function changeStatus(Request $request, Registration $registration)
     {
-        // TODO: Validar permisos
+        if (!Auth::user()->can('nb_obras', 'homologa')) {
+            abort(403);
+        }
 
         switch($request->input('status')) {
             case 'beginAction':
@@ -81,6 +95,10 @@ class WorksController extends Controller
 
     public function downloadFile(Request $request)
     {
+        if (!Auth::user()->can('nb_obras', 'lee')) {
+            abort(403);
+        }
+
         try {
             $path = explode('/', $request->input('file'));
             if ($path[0] != 'files') abort(403);
@@ -106,6 +124,10 @@ class WorksController extends Controller
     private function beginAction(Registration $registration)
     {
         try {
+            if (!Auth::user()->can('nb_obras', 'homologa')) {
+                abort(403);
+            }
+
             $errors = [];
 
             // Verificación de los mails
@@ -167,6 +189,10 @@ class WorksController extends Controller
     private function beginActionForce(Registration $registration)
     {
         try {
+            if (!Auth::user()->can('nb_obras', 'homologa')) {
+                abort(403);
+            }
+
             $registration->status_id = 2; // En proceso
             $registration->save();
 
@@ -215,6 +241,10 @@ class WorksController extends Controller
 
     private function rejectAction(Registration $registration)
     {
+        if (!Auth::user()->can('nb_obras', 'homologa')) {
+            abort(403);
+        }
+
         // Cambio estado en la BBDD
         $registration->status_id = 8; // Rechazado
         $registration->save();
@@ -249,6 +279,10 @@ class WorksController extends Controller
     private function sendToInternal(Registration $registration)
     {
         try {
+            if (!Auth::user()->can('nb_obras', 'homologa')) {
+                abort(403);
+            }
+
             $registration->status_id = 6;
             $registration->save();
 
@@ -278,6 +312,10 @@ class WorksController extends Controller
 
     private function approveRequest()
     {
+        if (!Auth::user()->can('nb_obras', 'homologa')) {
+            abort(403);
+        }
+
         // Cambiar estado en la BBDD
         // Enviar mail al iniciador
 
@@ -290,6 +328,10 @@ class WorksController extends Controller
 
     private function rejectRequest()
     {
+        if (!Auth::user()->can('nb_obras', 'homologa')) {
+            abort(403);
+        }
+
         // Cambiar estado en la BBDD
         // Enviar mail al iniciador
 
@@ -304,6 +346,10 @@ class WorksController extends Controller
     public function response(Request $request, Registration $registration)
     {
         try {
+            if (!Auth::user()->can('nb_obras', 'carga')) {
+                abort(403);
+            }
+
             if (!$request->has('response') || !$request->has('distribution_id')) {
                 abort(403);
             }
