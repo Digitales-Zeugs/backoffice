@@ -22,6 +22,7 @@ Route::get('/works/files', 'WorksController@downloadFile');
 Route::get('/works/{registration}', 'WorksController@showView');
 Route::post('/works/{registration}/status', 'WorksController@changeStatus');
 Route::post('/works/{registration}/response', 'WorksController@response');
+Route::post('/works/{registration}/observations', 'WorksController@saveObservations');
 
 Route::get('/login', 'AuthController@login')->name('login');
 Route::get('/logout', 'AuthController@logout')->name('logout');

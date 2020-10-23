@@ -15,6 +15,7 @@ class AlterWorksRegistrationTable extends Migration
     {
         Schema::table('works_registration', function (Blueprint $table) {
             $table->foreignId('status_id')->after('submitted')->nullable()->constrained('works_status');
+            $table->mediumText('observations')->default('');
             $table->dropColumn('submitted');
         });
     }
@@ -27,6 +28,7 @@ class AlterWorksRegistrationTable extends Migration
     public function down()
     {
         $table->boolean('submitted')->after('status_id')->default(false);
+        $table->dropColumn('observations');
         $table->dropColumn('status_id');
     }
 }
