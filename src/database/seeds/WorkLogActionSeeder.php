@@ -28,5 +28,7 @@ class WorkLogActionSeeder extends Seeder
         LogAction::firstOrCreate(['name' => 'REQUEST_REJECTED', 'description' => 'Registro rechazado']);
 
         LogAction::firstOrCreate(['name' => 'REGISTRATION_NOT_NOTIFIED', 'description' => 'No se pudo notificar al socio porque el mail configurado no es válido']);
+
+        LogAction::firstOrCreate(['name' => 'REQUEST_FINISHED', 'description' => 'Se finalizó el trámite']);
     }
 }
