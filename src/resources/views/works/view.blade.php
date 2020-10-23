@@ -176,6 +176,17 @@
                 @endswitch
             </tr>
             @endforeach
+            <tr>
+                <th colspan="2" class="table-inner-title">Observaciones</th>
+            </tr>
+            <tr>
+                <td colspan="2" id="observationsWrapper">
+                    <textarea id="observations">{{ $registration->observations }}</textarea>
+                    @if (Auth::user()->can('nb_obras', 'carga'))
+                    <button class="btn btn-secondary" id="saveObservations"><i class="fas fa-save fa-2x"></i></button>
+                    @endif
+                </td>
+            </tr>
         </table>
         <br /><br />
         @if (Auth::user()->can('nb_obras', 'carga'))
@@ -374,6 +385,22 @@ $('#acceptDistribution').on('click', (event) => {
         } else if (data.status == 'success') {
             toastr.success('Respuesta cambiada correctamente');
             setTimeout(() => { location.reload() }, 1000);
+        }
+    });
+});
+
+$('#saveObservations').on('click', (event) => {
+    axios.post('/works/{{ $registration->id }}/observations', {
+        content: $('#observations').val(),
+    })
+    .catch((err) => {
+        toastr.error('Se encontró un problema mientras se guardaban las observaciones')
+    })
+    .then(({ data }) => {
+        if (data.status == 'failed') {
+            toastr.error('No se puedo guardar las observaciones');
+        } else if (data.status == 'success') {
+            toastr.success('Se guardaron las observaciones');
         }
     });
 });

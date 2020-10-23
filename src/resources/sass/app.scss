@@ -13,3 +13,20 @@
 section.content {
     padding-bottom: 2rem;
 }
+
+#observationsWrapper {
+    position: relative;
+
+    #observations {
+        width: 100%;
+        height: 10rem;
+    }
+
+    #saveObservations {
+        position: absolute;
+        right: 12px;
+        border-top-right-radius: 0;
+        border-top-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+}
