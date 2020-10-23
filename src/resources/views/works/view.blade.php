@@ -279,12 +279,7 @@ $('#rejectAction').on('click', () => {
             });
         } else if (data.status == 'success') {
             toastr.success('Rechazo guardado correctamente');
-
-            if (data.warnings) {
-                data.warnings.forEach(e => {
-                    toastr.warning(e);
-                });
-            }
+            setTimeout(() => { location.reload() }, 1000);
         }
     });
 });
