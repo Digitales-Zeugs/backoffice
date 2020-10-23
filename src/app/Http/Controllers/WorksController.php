@@ -496,4 +496,31 @@ class WorksController extends Controller
             ];
         }
     }
+
+    public function saveObservations(Request $request, Registration $registration)
+    {
+        try {
+            if (!Auth::user()->can('nb_obras', 'carga')) {
+                abort(403);
+            }
+
+            $registration->observations = $request->input('content', '');
+            $registration->save();
+
+            return [
+                'status'   => 'success'
+            ];
+        } catch (Throwable $t) {
+            Log::error("Error guardando finalización del trámite",
+                [
+                    "error" => $t,
+                    "data"  => json_encode($request->all(), JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_INVALID_UTF8_IGNORE )
+                ]
+            );
+
+            return [
+                'status'   => 'failed'
+            ];
+        }
+    }
 }
