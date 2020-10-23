@@ -28,4 +28,9 @@ class User extends Authenticatable
     {
         return $this->clave;
     }
+
+    public function privileges()
+    {
+        return $this->hasMany('App\Privileges', 'recid_usuario', 'recid');
+    }
 }
