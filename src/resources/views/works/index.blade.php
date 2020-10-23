@@ -40,6 +40,9 @@ window.onload = function() {
     // Inicialización dataTables
     const $dt = $('.table').DataTable({
         ajax: '/works/datatables',
+        language: {
+            url: '/localisation/datatables.json'
+        },
         serverSide: true,
         columns: [
             {
@@ -65,7 +68,20 @@ window.onload = function() {
             { search: 1 }, // Status "Nuevo"
             null
         ],
-        order: [[1, 'asc']] // Orden por defecto: id ascendente
+        order: [[1, 'asc']], // Orden por defecto: id ascendente
+        initComplete: () => {
+            // Reemplazamos la búsqueda por defecto por un select con los estados de los trámites
+            const statusOptions = @json($status);
+            const statusSelect = `<select id="statusFilter">${
+                statusOptions.map(opt => `<option value="${ opt.id }">${ opt.name }</option>`).join()
+            }</select>`;
+            $('.dataTables_filter').html(statusSelect);
+            $('#statusFilter').on('change', (event) => {
+                $dt.column('status_id:name')
+                    .search(event.target.value)
+                    .draw();
+            });
+        }
     });
 
     window.dt = $dt;
@@ -90,18 +106,6 @@ window.onload = function() {
         const row = $dt.row( tr );
 
         window.location = `/works/${row.data()['id']}`;
-    });
-
-    // Reemplazamos la búsqueda por defecto por un select con los estados de los trámites
-    const statusOptions = @json($status);
-    const statusSelect = `<select id="statusFilter">${
-        statusOptions.map(opt => `<option value="${ opt.id }">${ opt.name }</option>`).join()
-    }</select>`;
-    $('.dataTables_filter').html(statusSelect);
-    $('#statusFilter').on('change', (event) => {
-        $dt.column('status_id:name')
-            .search(event.target.value)
-            .draw();
     });
 }
 </script>

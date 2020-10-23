@@ -21,3 +21,11 @@ td.view-control {
 .dataTables_length {
     float: left;
 }
+
+.dataTables_paginate .paginate_button:first-child {
+    margin-right: .5rem;
+}
+
+.dataTables_paginate .paginate_button:last-child {
+    margin-left: .5rem;
+}
