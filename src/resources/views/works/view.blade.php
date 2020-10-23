@@ -90,11 +90,10 @@
                     <div class="d-flex flex-row align-items-center">
                     <strong>Respuesta:</strong>&nbsp;
                     @if ($distribution->response === null)
-                        @if ($distribution->type == 'member' || $registration->status_id == 1 || !Auth::user()->can('nb_obras', 'carga')) Sin respuesta
-                        @else
+                        @if ($distribution->type != 'member' && in_array($registration->status_id, [2, 3]) && Auth::user()->can('nb_obras', 'carga'))
                             <button class="btn btn-link text-success" id="acceptDistribution" data-did="{{ $distribution->id }}">Aceptar</button>&nbsp;&nbsp;
                             <button class="btn btn-link text-danger" id="rejectDistribution" data-did="{{ $distribution->id }}">Rechazar</button>
-                        @endif
+                        @else Sin respuesta @endif
                     @elseif ($distribution->response === 0) Rechazado ({{ $distribution->updated_at->format('d/m/Y H:i') }})
                     @elseif ($distribution->response === 1) Aceptado ({{ $distribution->updated_at->format('d/m/Y H:i') }})
                     @endif
