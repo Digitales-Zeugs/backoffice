@@ -11,16 +11,11 @@
                         <p>Inicio</p>
                     </a>
                 </li>
+                @if (Auth::user()->can('nb_socios', 'lee'))
                 <li class="nav-item">
                     <a href="/profiles" class="nav-link @if(Request::path() == 'profiles') active @endif">
                         <i class="nav-icon fas fa-user-edit"></i>
                         <p>Actualización de Datos</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/works" class="nav-link @if(Request::path() == 'works') active @endif">
-                        <i class="nav-icon fas fa-folder-plus"></i>
-                        <p>Registros de Obras</p>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -29,6 +24,15 @@
                         <p>Registros de Socios</p>
                     </a>
                 </li>
+                @endif
+                @if (Auth::user()->can('nb_obras', 'lee'))
+                <li class="nav-item">
+                    <a href="/works" class="nav-link @if(Request::path() == 'works') active @endif">
+                        <i class="nav-icon fas fa-folder-plus"></i>
+                        <p>Registros de Obras</p>
+                    </a>
+                </li>
+                @endif
             </ul>
         </nav>
     </div>
