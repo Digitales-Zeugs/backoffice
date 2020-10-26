@@ -158,7 +158,7 @@ class WorksController extends Controller
 
             foreach($registration->distribution as $distribution) {
                 if ($distribution->type == 'member') {
-                    Mail::to($distribution->member->email)->send(new NotifyDistribution($distribution));
+                    Mail::to($distribution->member->email)->queue(new NotifyDistribution($distribution));
                 }
             }
 
@@ -210,7 +210,7 @@ class WorksController extends Controller
                 if ($distribution->type == 'member') {
                     if (trim($distribution->member->email) != "" && filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
                         // Si tiene dirección válida, notificamos
-                        Mail::to($distribution->member->email)->send(new NotifyDistribution($distribution));
+                        Mail::to($distribution->member->email)->queue(new NotifyDistribution($distribution));
                     } else {
                         // Si no, logeamos
                         InternalLog::create([
@@ -271,7 +271,7 @@ class WorksController extends Controller
                     'warning' => 'No se pudo notificar al iniciador del trámite porque tiene una dirección de correo electrónica errónea: ' . $distribution->initiator->email
                 ];
             } else {
-                Mail::to($registration->initiator->email)->send(new NotifyRejection($registration));
+                Mail::to($registration->initiator->email)->queue(new NotifyRejection($registration));
                 return [
                     'status'  => 'success'
                 ];
