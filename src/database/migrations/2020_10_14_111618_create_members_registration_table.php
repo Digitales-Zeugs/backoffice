@@ -19,8 +19,10 @@ class CreateMembersRegistrationTable extends Migration
             $table->tinyInteger('status');
             $table->string('name');
             $table->date('birth_date');
-            $table->string('birth_city', 50);
-            $table->string('birth_state', 50);
+            $table->string('birth_city_text', 50)->nullable();
+            $table->foreignId('birth_city_id')->nullable()->constrained('cities');
+            $table->string('birth_state_text', 50)->nullable();
+            $table->foreignId('birth_state_id')->nullable()->constrained('states');
             $table->string('birth_country_id', 10)->references('tis_n')->on('source_countries');
             $table->string('doc_number', 50);
             $table->string('doc_country', 50);
@@ -29,9 +31,12 @@ class CreateMembersRegistrationTable extends Migration
             $table->string('address_number', 20)->nullable();
             $table->string('address_floor', 10)->nullable();
             $table->string('address_apt', 10);
-            $table->string('address_city', 50);
             $table->string('address_zip', 10);
-            $table->string('address_state', 50);
+            $table->string('address_city_text', 50)->nullable();
+            $table->foreignId('address_city_id')->nullable()->constrained('cities');
+            $table->string('address_state_text', 50)->nullable();
+            $table->foreignId('address_state_id')->nullable()->constrained('states');
+            $table->string('address_country_id', 10)->references('tis_n')->on('source_countries');
             $table->string('landline', 15)->nullable();
             $table->string('mobile', 15);
             $table->string('email', 254);
