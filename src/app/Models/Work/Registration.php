@@ -11,6 +11,7 @@ class Registration extends Model
 
     protected $fillable = [
         'title',
+        'dnda_title',
         'member_id',
         'user_id',
         'genre_id',

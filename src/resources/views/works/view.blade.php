@@ -38,6 +38,10 @@
             <tr>
                 <th colspan="2" class="table-inner-title">DNDA</th>
             </tr>
+            <tr>
+                <th>Título</th>
+                <td>{{ $registration->dnda_title }}</td>
+            </tr>
             @if ($registration->dnda_in_date)
             <tr>
                 <th colspan="2" class="table-inner-subtitle">Inédito</th>
