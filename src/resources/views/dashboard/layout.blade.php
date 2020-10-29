@@ -9,6 +9,7 @@
 
     <title>{{ config('app.name', 'SADAIC') }}</title>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @stack('styles')
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
