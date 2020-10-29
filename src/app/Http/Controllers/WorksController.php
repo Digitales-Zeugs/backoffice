@@ -450,6 +450,7 @@ class WorksController extends Controller
             }
 
             $distribution->response = $request->input('response') == 'accept';
+            $distribution->liable_id = Auth::user()->usuarioid;
             $distribution->save();
 
             // action_id = 6 -> DISTRIBUTION_CONFIRMED

@@ -29,6 +29,7 @@ class CreateWorksDistributionTable extends Migration
             $table->tinyInteger('sync');
 
             $table->boolean('response')->nullable()->default(null);
+            $table->string('liable_id', 32)->nullable();
 
             $table->timestamps();
         });
