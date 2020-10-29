@@ -94,12 +94,22 @@
                     <div class="d-flex flex-row align-items-center">
                     <strong>Respuesta:</strong>&nbsp;
                     @if ($distribution->response === null)
-                        @if ($distribution->type != 'member' && in_array($registration->status_id, [2, 3]) && Auth::user()->can('nb_obras', 'carga'))
-                            <button class="btn btn-link text-success" id="acceptDistribution" data-did="{{ $distribution->id }}">Aceptar</button>&nbsp;&nbsp;
-                            <button class="btn btn-link text-danger" id="rejectDistribution" data-did="{{ $distribution->id }}">Rechazar</button>
-                        @else Sin respuesta @endif
-                    @elseif ($distribution->response === 0) Rechazado ({{ $distribution->updated_at->format('d/m/Y H:i') }})
-                    @elseif ($distribution->response === 1) Aceptado ({{ $distribution->updated_at->format('d/m/Y H:i') }})
+                        Sin respuesta
+                        @if (in_array($registration->status_id, [2, 3]) && Auth::user()->can('nb_obras', 'carga'))
+                        &nbsp;<button class="btn btn-link text-success acceptDistribution" data-did="{{ $distribution->id }}">Aceptar</button>
+                        &nbsp;<button class="btn btn-link text-danger rejectDistribution" data-did="{{ $distribution->id }}">Rechazar</button>
+                        @endif
+                    @elseif ($distribution->response === 0)
+                        Rechazado por
+                        {{ $distribution->liable_id ?? 'el socio' }}
+                        ({{ $distribution->updated_at->format('d/m/Y H:i') }})
+                        @if (in_array($registration->status_id, [2, 3]) && Auth::user()->can('nb_obras', 'carga'))
+                        &nbsp;<button class="btn btn-link text-success acceptDistribution" data-did="{{ $distribution->id }}">Cambiar Respuesta</button>
+                        @endif
+                    @elseif ($distribution->response === 1)
+                        Aceptado por 
+                        {{ $distribution->liable_id ?? 'el socio' }}
+                        ({{ $distribution->updated_at->format('d/m/Y H:i') }})
                     @endif
                     </div>
                 </td>
@@ -370,9 +380,31 @@ $('#finishRequest').on('click', () => {
     });
 });
 
-$('#acceptDistribution').on('click', (event) => {
+$('.acceptDistribution').on('click', (event) => {
     axios.post('/works/{{ $registration->id }}/response', {
         response: 'accept',
+        distribution_id: $(event.target).data('did')
+    })
+    .catch((err) => {
+        toastr.error('Se encontró un problema mientras se realizaba la solicitud')
+    })
+    .then(({ data }) => {
+        if (data.status == 'failed') {
+            toastr.error('No se puedo cambiar la respuesta a la solicitud.');
+
+            data.errors.forEach(e => {
+                toastr.warning(e);
+            });
+        } else if (data.status == 'success') {
+            toastr.success('Respuesta cambiada correctamente');
+            setTimeout(() => { location.reload() }, 1000);
+        }
+    });
+});
+
+$('.rejectDistribution').on('click', (event) => {
+    axios.post('/works/{{ $registration->id }}/response', {
+        response: 'reject',
         distribution_id: $(event.target).data('did')
     })
     .catch((err) => {
@@ -408,4 +440,12 @@ $('#saveObservations').on('click', (event) => {
     });
 });
 </script>
+@endpush
+
+@push('styles')
+<style>
+.btn-link:hover {
+    text-decoration: underline;
+}
+</style>
 @endpush
