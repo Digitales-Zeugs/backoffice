@@ -23,7 +23,9 @@ class SADAICExpirationCommand extends Command
     public function handle()
     {
         $date = date_create();
-        date_sub($date, date_interval_create_from_date_string("15 days"));
+        date_sub($date, date_interval_create_from_date_string(
+            env('SADAIC_REGISTRY_LIFE_DAYS', '15') . ' days'
+        ));
 
         // Registros en proceso o en disputa sin cambios en los últimos 15 días
         $expired = Registration::where('updated_at', '<=', date_format($date, "Y-m-d"))
