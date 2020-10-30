@@ -17,9 +17,12 @@ class CreateWorksMetaTable extends Migration
             $table->id();
             $table->foreignId('distribution_id')->constrained('works_distribution');
 
-            $table->string('address_country', 10)->references('tis_n')->on('source_countries')->nullable();
-            $table->foreignId('address_state')->nullable()->constrained('states');
-            $table->foreignId('address_city')->nullable()->constrained('cities');
+            $table->string('address_country_id', 10)->references('tis_n')->on('source_countries')->nullable();
+            $table->foreignId('address_state_id')->nullable()->constrained('states');
+            $table->string('address_state_text', 50)->nullable();
+            $table->foreignId('address_city_id')->nullable()->constrained('cities');
+            $table->string('address_city_text', 50)->nullable();
+            
             $table->string('address_zip', 10);
             $table->string('apartment', 20);
             $table->string('birth_country', 10)->references('tis_n')->on('source_countries')->nullable();
