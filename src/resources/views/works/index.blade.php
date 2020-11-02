@@ -55,10 +55,14 @@ window.onload = function() {
             { name: 'title', data: 'title' },
             { name: 'status_id', data: 'status.name' },
             {
-                class:          'view-control',
                 orderable:      false,
                 data:           null,
-                defaultContent: ''
+                class:          'text-center',
+                render: function(data, type) {
+                    if (type == 'display') {
+                        return `<a href="/works/${ data.id }">Ver</a>`;
+                    }
+                }
             },
         ],
         searchCols: [
@@ -98,14 +102,6 @@ window.onload = function() {
             tr.addClass('shown');
             row.child( details( row.data() ) ).show();
         }
-    });
-
-    // Click en ver lleva a la vista del trámite
-    $('.table tbody').on( 'click', 'tr td.view-control', (event) => {
-        const tr = $(event.target).closest('tr');
-        const row = $dt.row( tr );
-
-        window.location = `/works/${row.data()['id']}`;
     });
 }
 </script>
