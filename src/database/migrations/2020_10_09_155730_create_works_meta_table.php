@@ -25,7 +25,7 @@ class CreateWorksMetaTable extends Migration
             
             $table->string('address_zip', 10);
             $table->string('apartment', 20);
-            $table->string('birth_country', 10)->references('tis_n')->on('source_countries')->nullable();
+            $table->string('birth_country_id', 10)->references('tis_n')->on('source_countries')->nullable();
             $table->date('birth_date')->nullable();
             $table->string('doc_type', 10)->references('code')->on('source_types')->nullable();
             $table->string('email', 254);
