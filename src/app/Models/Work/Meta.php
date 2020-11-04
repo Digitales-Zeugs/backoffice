@@ -75,4 +75,13 @@ class Meta extends Model
 
         return $output;
     }
+
+    public function getFullPhoneAttribute()
+    {
+        $output = '+' . ltrim($this->phone_country, '0');
+        $output .= ' ' . ltrim($this->phone_area, '0');
+        $output .= ' ' . $this->phone_number;
+
+        return $output;
+    }
 }
