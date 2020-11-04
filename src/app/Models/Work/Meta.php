@@ -20,7 +20,7 @@ class Meta extends Model
         'address_city_text',
         'address_zip',
         'apartment',
-        'birth_country',
+        'birth_country_id',
         'birth_date',
         'doc_type',
         'email',
@@ -31,6 +31,10 @@ class Meta extends Model
         'phone_number',
         'street_name',
         'street_number'
+    ];
+
+    protected $dates = [
+        'birth_date'
     ];
 
     public function getCountryAttribute()
@@ -83,5 +87,15 @@ class Meta extends Model
         $output .= ' ' . $this->phone_number;
 
         return $output;
+    }
+
+    public function type()
+    {
+        return $this->hasOne('App\Models\SADAIC\Types', 'code', 'doc_type');
+    }
+
+    public function birth_country()
+    {
+        return $this->hasOne('App\Models\SADAIC\Countries', 'tis_n', 'birth_country_id');
     }
 }
