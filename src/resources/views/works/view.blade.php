@@ -194,9 +194,11 @@
             </tr>
             <tr>
                 <td colspan="2" id="observationsWrapper">
-                    <textarea id="observations">{{ $registration->observations }}</textarea>
                     @if (Auth::user()->can('nb_obras', 'carga'))
-                    <button class="btn btn-secondary" id="saveObservations"><i class="fas fa-save fa-2x"></i></button>
+                    <textarea id="observations">{{ $registration->observations }}</textarea>
+                    <button class="btn btn-secondary float-right" id="saveObservations">Guardar Observaciones</button>
+                    @else
+                    <div id="observations">{!! nl2br(e($registration->observations)) !!}</div>
                     @endif
                 </td>
             </tr>
