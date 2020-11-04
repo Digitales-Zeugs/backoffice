@@ -20,7 +20,7 @@ class Log extends Model
         'action_data' => 'array',
     ];
 
-    public $dates = [
+    protected $dates = [
         'time'
     ];
 
