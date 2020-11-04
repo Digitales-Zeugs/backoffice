@@ -452,7 +452,7 @@ class WorksController extends Controller
                 abort(403);
             }
 
-            $registration->observations = $request->input('content', '');
+            $registration->observations = $request->input('content', null) ?? '';
             $registration->save();
 
             return [
