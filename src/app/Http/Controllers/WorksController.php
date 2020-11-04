@@ -70,10 +70,6 @@ class WorksController extends Controller
 
         switch($request->input('status')) {
             case 'beginAction':
-                if ($request->input('force', false) === true) {
-                    return $this->beginActionForce($registration);
-                }
-
                 return $this->beginAction($registration);
             break;
             case 'rejectAction':
@@ -135,6 +131,22 @@ class WorksController extends Controller
 
             foreach($registration->distribution as $distribution) {
                 if ($distribution->type == 'member') {
+                    // Si el trámite lo inició un socio y la distribución lo refiere, se acepta directamente
+                    if ($registration->member_id && $registration->initiator->member_id == $distribution->member_id) {
+                        $distribution->response = 1;
+                        $distribution->liable_id = null;
+                        $distribution->save();
+
+                        InternalLog::create([
+                            'registration_id' => $registration->id,
+                            'distribution_id' => $distribution->id,
+                            'action_id'       => 6,
+                            'time'            => now()
+                        ]);
+
+                        continue;
+                    }
+
                     if (trim($distribution->member->email) != "" && filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
                         // Si tiene dirección válida, notificamos
                         Mail::to($distribution->member->email)->queue(new NotifyDistribution($distribution));
