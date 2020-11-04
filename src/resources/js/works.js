@@ -115,9 +115,6 @@ $('.acceptDistribution').on('click', (event) => {
         response: 'accept',
         distribution_id: $(event.target).data('did')
     })
-    .catch((err) => {
-        toastr.error('Se encontró un problema mientras se realizaba la solicitud')
-    })
     .then(({ data }) => {
         if (data.status == 'failed') {
             toastr.error('No se puedo cambiar la respuesta a la solicitud.');
@@ -129,6 +126,9 @@ $('.acceptDistribution').on('click', (event) => {
             toastr.success('Respuesta cambiada correctamente');
             setTimeout(() => { location.reload() }, 1000);
         }
+    })
+    .catch((err) => {
+        toastr.error('Se encontró un problema mientras se realizaba la solicitud')
     });
 });
 
@@ -137,9 +137,6 @@ $('.rejectDistribution').on('click', (event) => {
         response: 'reject',
         distribution_id: $(event.target).data('did')
     })
-    .catch((err) => {
-        toastr.error('Se encontró un problema mientras se realizaba la solicitud')
-    })
     .then(({ data }) => {
         if (data.status == 'failed') {
             toastr.error('No se puedo cambiar la respuesta a la solicitud.');
@@ -151,6 +148,9 @@ $('.rejectDistribution').on('click', (event) => {
             toastr.success('Respuesta cambiada correctamente');
             setTimeout(() => { location.reload() }, 1000);
         }
+    })
+    .catch((err) => {
+        toastr.error('Se encontró un problema mientras se realizaba la solicitud')
     });
 });
 
@@ -158,14 +158,14 @@ $('#saveObservations').on('click', (event) => {
     axios.post(`/works/${ workId }/observations`, {
         content: $('#observations').val(),
     })
-    .catch((err) => {
-        toastr.error('Se encontró un problema mientras se guardaban las observaciones')
-    })
     .then(({ data }) => {
         if (data.status == 'failed') {
             toastr.error('No se puedo guardar las observaciones');
         } else if (data.status == 'success') {
             toastr.success('Se guardaron las observaciones');
         }
+    })
+    .catch((err) => {
+        toastr.error('Se encontró un problema mientras se guardaban las observaciones')
     });
 });
