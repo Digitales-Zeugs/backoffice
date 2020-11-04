@@ -243,7 +243,7 @@
 
 @push('scripts')
 <script>const workId = {{ $registration->id }}</script>
-<script src="{{ asset('/js/works.js') }}"></script>
+<script src="{{ asset('/js/works.view.js') }}"></script>
 @endpush
 
 @push('styles')
