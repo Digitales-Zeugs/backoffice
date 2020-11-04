@@ -17,6 +17,10 @@ class CreateSourceCitiesTable extends Migration
             $table->unsignedBigInteger('dad_id');
             $table->string('localidad', 100);
             $table->string('provincia', 100);
+
+            $table->primary('dad_id');
+            $table->index('localidad');
+            $table->index('provincia');
         });
     }
 

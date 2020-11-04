@@ -19,6 +19,9 @@ class CreateSourceGenresTable extends Migration
             $table->string('log_updat', 20);
             $table->string('log_user', 50);
             $table->string('des_int_gen', 50);
+
+            $table->primary('cod_int_gen');
+            $table->index('des_int_gen');
         });
     }
 

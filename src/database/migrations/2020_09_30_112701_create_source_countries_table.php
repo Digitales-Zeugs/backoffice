@@ -24,6 +24,10 @@ class CreateSourceCountriesTable extends Migration
             $table->string('abbrev_name_ter', 100);
             $table->string('offi_name_ter', 100);
             $table->string('unoffi_name_ter', 100);
+            $table->string('idx', 15)->virtualAs('CONCAT(tis_n, cod_tis_alfa)');
+
+            $table->unique('idx');
+            $table->index('name_ter');
         });
     }
 

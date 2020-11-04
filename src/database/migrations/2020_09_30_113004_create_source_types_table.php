@@ -16,6 +16,9 @@ class CreateSourceTypesTable extends Migration
         Schema::create('source_types', function (Blueprint $table) {
             $table->string('description');
             $table->string('code', 10);
+
+            $table->primary('code');
+            $table->index('description');
         });
     }
 

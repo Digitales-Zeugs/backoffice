@@ -14,7 +14,7 @@ class CreateSourceMembersTable extends Migration
     public function up()
     {
         Schema::create('source_members', function (Blueprint $table) {
-            $table->unsignedBigInteger('cod_mem_sq');
+            $table->string('cod_mem_sq', 10);
             $table->string('codanita', 20);
             $table->string('ipname', 20);
             $table->string('nombre', 50);
@@ -27,6 +27,12 @@ class CreateSourceMembersTable extends Migration
             $table->string('tipo_doc', 10);
             $table->string('num_doc', 20);
             $table->string('email', 254);
+
+            $table->string('idx', 50)->virtualAs('CONCAT(cod_mem_sq, codanita, num_doc)');
+
+            $table->unique('idx');
+            $table->index('codanita');
+            $table->index('num_doc');
         });
     }
 
