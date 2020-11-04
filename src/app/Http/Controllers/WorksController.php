@@ -133,79 +133,6 @@ class WorksController extends Controller
 
             $errors = [];
 
-            // Verificación de los mails
-            foreach($registration->distribution as $distribution) {
-                if ($distribution->type == 'member') {
-                    // Mail seteado
-                    if (trim($distribution->member->email) == "") {
-                        $errors[] = $distribution->member->nombre . " no tiene una dirección de correo electrónica configurada";
-                    } else {
-                        // Mail válido
-                        if (!filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
-                            $errors[] = $distribution->member->nombre . " tiene una dirección de correo electrónica errónea: " . $distribution->member->email;
-                        }
-                    }
-                }
-            }
-
-            if (count($errors) > 0) {
-                return [
-                    'status'   => 'failed',
-                    'errors'   => $errors,
-                    'continue' => true
-                ];
-            }
-
-            foreach($registration->distribution as $distribution) {
-                if ($distribution->type == 'member') {
-                    Mail::to($distribution->member->email)->queue(new NotifyDistribution($distribution));
-                }
-            }
-
-            $registration->status_id = 2; // En proceso
-            $registration->save();
-
-            InternalLog::create([
-                'registration_id' => $registration->id,
-                'action_id'       => 3, // REGISTRATION_ACEPTED
-                'time'            => now()
-            ]);
-
-            return [
-                'status' => 'success'
-            ];
-        } catch (Throwable $t) {
-            Log::error("Error iniciando trámite de registro de obra",
-                [
-                    "error" => $t,
-                    "data"  => json_encode($request->all(), JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_INVALID_UTF8_IGNORE )
-                ]
-            );
-
-            return [
-                'status'   => 'failed',
-                'continue' => false
-            ];
-        }
-    }
-
-    private function beginActionForce(Registration $registration)
-    {
-        try {
-            if (!Auth::user()->can('nb_obras', 'homologa')) {
-                abort(403);
-            }
-
-            $registration->status_id = 2; // En proceso
-            $registration->save();
-
-            InternalLog::create([
-                'registration_id' => $registration->id,
-                'action_id'       => 3, // REGISTRATION_ACEPTED
-                'time'            => now(),
-                'action_data'     => ['forced' => true]
-            ]);
-
             foreach($registration->distribution as $distribution) {
                 if ($distribution->type == 'member') {
                     if (trim($distribution->member->email) != "" && filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
@@ -220,12 +147,32 @@ class WorksController extends Controller
                             'time'            => now(),
                             'action_data'     => ['member' => $distribution->member_id]
                         ]);
+
+                        // Mail seteado
+                        if (trim($distribution->member->email) == "") {
+                            $errors[] = $distribution->member->nombre . " no tiene una dirección de correo electrónica configurada";
+                        } else {
+                            // Mail válido
+                            if (!filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
+                                $errors[] = $distribution->member->nombre . " tiene una dirección de correo electrónica errónea: " . $distribution->member->email;
+                            }
+                        }
                     }
                 }
             }
 
+            $registration->status_id = 2; // En proceso
+            $registration->save();
+
+            InternalLog::create([
+                'registration_id' => $registration->id,
+                'action_id'       => 3, // REGISTRATION_ACEPTED
+                'time'            => now()
+            ]);
+
             return [
-                'status' => 'success'
+                'status' => 'success',
+                'errors' => $errors
             ];
         } catch (Throwable $t) {
             Log::error("Error iniciando trámite de registro de obra",
