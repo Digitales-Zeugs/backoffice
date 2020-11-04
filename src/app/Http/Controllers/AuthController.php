@@ -26,7 +26,25 @@ class AuthController extends Controller
 
         $credentials = $request->only(['username', 'password']);
 
-        if (Auth::attempt($credentials)) {
+        $test = Auth::attempt($credentials);
+
+        if($request->ajax()) {
+            if ($test) {
+                return [
+                    'status'   => 'success',
+                    'intended' => '/'
+                ];
+            }
+
+            return [
+                'status' => 'failed',
+                'errors' => [
+                    'login' => 'El usuario o clave son incorrectos'
+                ]
+            ];
+        }
+
+        if ($test) {
             return redirect()->intended('/');
         }
 

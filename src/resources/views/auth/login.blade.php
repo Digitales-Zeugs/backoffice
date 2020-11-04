@@ -9,10 +9,8 @@
 
     <title>{{ config('app.name', 'SADAIC') }}</title>
 
-    <script src="{{ asset('js/app.js') }}" defer></script>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
-
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="login-logo">
@@ -58,6 +56,7 @@
             </div>
         </div>
     </div>
+    <script src="{{ asset('/js/app.js') }}"></script>
+    <script src="{{ asset('/js/login.js') }}"></script>
 </body>
-
 </html>
