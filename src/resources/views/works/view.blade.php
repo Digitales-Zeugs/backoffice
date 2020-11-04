@@ -87,7 +87,13 @@
                 <th>{{ $distribution->meta->name }}<br><small>DNI n° {{ $distribution->doc_number }}</small></th>
                 @endif
                 <td>
-                    <strong>DNI:</strong> {{ $distribution->doc_number }}<br>
+                    @if ($distribution->type == 'no-member')
+                    <strong>{{ optional($distribution->meta->type)->description }}:</strong> {{ $distribution->doc_number }}<br>
+                    <strong>Nacimiento:</strong> {{ $distribution->meta->birth_date->format('d/m/Y') }}, {{ $distribution->meta->birth_country->name_ter }}<br>
+                    <strong>Dirección:</strong> {{ $distribution->meta->full_address }}<br>
+                    <strong>Correo electrónico:</strong> <a href="mailto:{{ $distribution->meta->email }}">{{ $distribution->meta->email }}</a><br>
+                    <strong>Teléfono:</strong> {{ $distribution->meta->full_phone }}<br>
+                    @endif
                     <strong>Distribución Pública:</strong> {{ $distribution->public }}%<br>
                     <strong>Distribución Mecánica:</strong> {{ $distribution->mechanic }}%<br>
                     <strong>Distribución Sincronización:</strong> {{ $distribution->sync }}%<br>
