@@ -16,6 +16,9 @@ class CreateSourceRolesTable extends Migration
         Schema::create('source_roles', function (Blueprint $table) {
             $table->string('code', 5);
             $table->string('description', 50);
+
+            $table->primary('code');
+            $table->index('description');
         });
     }
 
