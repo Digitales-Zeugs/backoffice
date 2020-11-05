@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Countries extends Model
 {
     protected $table = 'source_countries';
-    protected $primaryKey = 'tis_n';
+    protected $primaryKey = 'idx';
 
     public $incrementing = false;
     public $timestamps = false;

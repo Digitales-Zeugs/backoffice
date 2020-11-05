@@ -23,7 +23,7 @@ class CreateMembersRegistrationTable extends Migration
             $table->foreignId('birth_city_id')->nullable()->constrained('cities');
             $table->string('birth_state_text', 50)->nullable();
             $table->foreignId('birth_state_id')->nullable()->constrained('states');
-            $table->string('birth_country_id', 10)->references('tis_n')->on('source_countries');
+            $table->string('birth_country_id', 15)->references('idx')->on('source_countries');
             $table->string('doc_number', 50);
             $table->string('doc_country', 50);
             $table->string('work_code', 20);
@@ -36,7 +36,7 @@ class CreateMembersRegistrationTable extends Migration
             $table->foreignId('address_city_id')->nullable()->constrained('cities');
             $table->string('address_state_text', 50)->nullable();
             $table->foreignId('address_state_id')->nullable()->constrained('states');
-            $table->string('address_country_id', 10)->references('tis_n')->on('source_countries');
+            $table->string('address_country_id', 15)->references('idx')->on('source_countries');
             $table->string('landline', 15)->nullable();
             $table->string('mobile', 15);
             $table->string('email', 254);

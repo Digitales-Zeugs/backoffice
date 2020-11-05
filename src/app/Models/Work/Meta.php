@@ -96,6 +96,6 @@ class Meta extends Model
 
     public function birth_country()
     {
-        return $this->hasOne('App\Models\SADAIC\Countries', 'tis_n', 'birth_country_id');
+        return $this->hasOne('App\Models\SADAIC\Countries', 'idx', 'birth_country_id');
     }
 }
