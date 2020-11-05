@@ -36,6 +36,18 @@
                 <td>{{ optional($registration->status)->name }}</td>
             </tr>
             <tr>
+                <th>Iniciador</th>
+                @if ($registration->member_id)
+                <td>{{ $registration->initiator->full_name }} (Socio n° {{ $registration->initiator->member_id }}/{{ $registration->initiator->heir }})</td>
+                @else
+                <td>{{ $registration->initiator->name }}</td>
+                @endif
+            </tr>
+            <tr>
+                <th>Correo electrónico</th>
+                <td>{{ $registration->initiator->email }}</td>
+            </tr>
+            <tr>
                 <th colspan="2" class="table-inner-title">DNDA</th>
             </tr>
             <tr>

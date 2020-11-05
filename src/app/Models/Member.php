@@ -26,6 +26,27 @@ class Member extends Authenticatable
         return $this->member_id . '-' . $this->heir;
     }
 
+    public function sadaic()
+    {
+        return $this->hasOne('App\Models\SADAIC\Member', 'codanita', 'member_id');
+    }
+
+    public function profile()
+    {
+        return $this->hasOne('App\Models\MemberProfile', 'member_id');
+    }
+
+    public function getFullNameAttribute()
+    {
+        if ($this->sadaic) {
+            return ucwords(strtolower($this->sadaic->nombre));
+        } elseif ($this->profile) {
+            return ucwords(strtolower($this->profile->name));
+        }
+
+        return '';
+    }
+
     protected function setKeysForSaveQuery(Builder $query)
     {
         return $query
