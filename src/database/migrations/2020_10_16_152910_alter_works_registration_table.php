@@ -18,6 +18,7 @@ class AlterWorksRegistrationTable extends Migration
             $table->foreignId('status_id')->after('submitted')->nullable()->constrained('works_status');
             $table->mediumText('observations')->default('');
             $table->dropColumn('submitted');
+            $table->boolean('approved')->default(false);
         });
     }
 
@@ -32,5 +33,6 @@ class AlterWorksRegistrationTable extends Migration
         $table->dropColumn('observations');
         $table->dropColumn('status_id');
         $table->dropColumn('dnda_title');
+        $table->dropColumn('approved');
     }
 }
