@@ -2,26 +2,25 @@
 
 namespace App\Mail;
 
-use App\Models\Work\Registration;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class NotifyRejection extends Mailable
+class NotifyWorkApproval extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $registration;
+    public $nombre;
 
-    public function __construct(Registration $registration)
+    public function __construct(string $nombre)
     {
-        $this->registration = $registration;
+        $this->nombre = $nombre;
     }
 
     public function build()
     {
         return $this->from('socios@sadaic.org.ar')
-                    ->view('mails.notify-rejection');
+                    ->view('mails.notify-work-approval');
     }
 }

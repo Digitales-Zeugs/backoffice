@@ -1,3 +1,3 @@
-<p>¡Hola {{ $distribution->member->nombre }}!</p>
+<p>¡Hola {{ $nombre }}!</p>
 
-Notificación de Solicitud de Registro de Obra
+Notificación de Distribución de Solicitud de Registro de Obra

@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class NotifyDistribution extends Mailable
+class NotifyRequestRejection extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -21,6 +21,6 @@ class NotifyDistribution extends Mailable
     public function build()
     {
         return $this->from('socios@sadaic.org.ar')
-                    ->view('mails.notify-distribution');
+                    ->view('mails.notify-request-rejection');
     }
 }

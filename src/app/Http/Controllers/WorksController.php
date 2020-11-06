@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Mail\NotifyDistribution;
-use App\Mail\NotifyRejection;
+use App\Mail\NotifyRequestFinalization;
+use App\Mail\NotifyRequestRejection;
+use App\Mail\NotifyRequestSendToInternal;
+use App\Mail\NotifyWorkApproval;
+use App\Mail\NotifyWorkRejection;
 use App\Models\Work\Log as InternalLog;
 use App\Models\Work\Registration;
 use App\Models\Work\Status;
@@ -149,7 +153,7 @@ class WorksController extends Controller
 
                     if (trim($distribution->member->email) != "" && filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
                         // Si tiene dirección válida, notificamos
-                        Mail::to($distribution->member->email)->queue(new NotifyDistribution($distribution));
+                        Mail::to($distribution->member->email)->queue(new NotifyDistribution($distribution->member->nombre));
                     } else {
                         // Si no, logeamos
                         InternalLog::create([
@@ -227,25 +231,12 @@ class WorksController extends Controller
             'time'            => now()
         ]);
 
-        // Notificación
-        if (trim($registration->initiator->email) == "") {
-            return [
-                'status'  => 'success',
-                'warning' => 'No se pudo notificar al iniciador del trámite porque no tiene configurada dirección de correo electrónico'
-            ];
-        } else {
-            if (!filter_var($registration->initiator->email, FILTER_VALIDATE_EMAIL)) {
-                return [
-                    'status'  => 'success',
-                    'warning' => 'No se pudo notificar al iniciador del trámite porque tiene una dirección de correo electrónica errónea: ' . $distribution->initiator->email
-                ];
-            } else {
-                Mail::to($registration->initiator->email)->queue(new NotifyRejection($registration));
-                return [
-                    'status'  => 'success'
-                ];
-            }
-        }
+        $errors = $this->notifyMembers($registration, NotifyRequestRejection::class);
+
+        return [
+            'status' => 'success',
+            'errors' => $errors
+        ];
     }
 
     private function sendToInternal(Registration $registration)
@@ -265,8 +256,11 @@ class WorksController extends Controller
                 'time'            => now()
             ]);
 
+            $errors = $this->notifyMembers($registration, NotifyRequestSendToInternal::class);
+
             return [
-                'status'   => 'success'
+                'status' => 'success',
+                'errors' => $errors
             ];
         } catch (Throwable $t) {
             Log::error("Error enviando trámite de registro de obra al sistema interno",
@@ -299,8 +293,11 @@ class WorksController extends Controller
                 'time'            => now()
             ]);
 
+            $errors = $this->notifyMembers($registration, NotifyWorkApproval::class);
+
             return [
-                'status'   => 'success'
+                'status' => 'success',
+                'errors' => $errors
             ];
         } catch (Throwable $t) {
             Log::error("Error guardando aprobación del trámite",
@@ -333,8 +330,11 @@ class WorksController extends Controller
                 'time'            => now()
             ]);
 
+            $errors = $this->notifyMembers($registration, NotifyWorkRejection::class);
+
             return [
-                'status'   => 'success'
+                'status' => 'success',
+                'errors' => $errors
             ];
         } catch (Throwable $t) {
             Log::error("Error guardando rechazo del trámite",
@@ -367,8 +367,11 @@ class WorksController extends Controller
                 'time'            => now()
             ]);
 
+            $errors = $this->notifyMembers($registration, NotifyRequestFinalization::class);
+
             return [
-                'status'   => 'success'
+                'status' => 'success',
+                'errors' => $errors
             ];
         } catch (Throwable $t) {
             Log::error("Error guardando finalización del trámite",
@@ -492,5 +495,70 @@ class WorksController extends Controller
                 'status'   => 'failed'
             ];
         }
+    }
+
+    private function notifyMembers(Registration $registration, string $mail)
+    {
+        $errors = [];
+
+        foreach($registration->distribution as $distribution) {
+            if ($distribution->type == 'member') {
+                // Si el trámite lo inició un socio y la distribución lo refiere, se acepta directamente
+                if ($registration->member_id && $registration->initiator->member_id == $distribution->member_id) {
+                    $distribution->response = 1;
+                    $distribution->liable_id = null;
+                    $distribution->save();
+
+                    InternalLog::create([
+                        'registration_id' => $registration->id,
+                        'distribution_id' => $distribution->id,
+                        'action_id'       => 6,
+                        'time'            => now()
+                    ]);
+
+                    continue;
+                }
+
+                if (trim($distribution->member->email) != "" && filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
+                    // Si tiene dirección válida, notificamos
+                    Mail::to($distribution->member->email)->queue(new $mail($distribution->member->nombre));
+                } else {
+                    // Si no, logeamos
+                    InternalLog::create([
+                        'registration_id' => $registration->id,
+                        'distribution_id' => $distribution->id,
+                        'action_id'       => 11, // REGISTRATION_NOT_NOTIFIED
+                        'time'            => now(),
+                        'action_data'     => ['member' => $distribution->member_id]
+                    ]);
+
+                    // Mail seteado
+                    if (trim($distribution->member->email) == "") {
+                        $errors[] = $distribution->member->nombre . " no tiene una dirección de correo electrónica configurada";
+                    } else {
+                        // Mail válido
+                        if (!filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
+                            $errors[] = $distribution->member->nombre . " tiene una dirección de correo electrónica errónea: " . $distribution->member->email;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (trim($registration->initiator->email) == "") {
+            $errors[] = 'No se pudo notificar al iniciador del trámite porque no tiene configurada dirección de correo electrónico';
+        } else {
+            if (!filter_var($registration->initiator->email, FILTER_VALIDATE_EMAIL)) {
+                $errors[] = 'No se pudo notificar al iniciador del trámite porque tiene una dirección de correo electrónica errónea: ' . $registration->initiator->email;
+            } else {
+                if ($registration->initiator->member_id) {
+                    Mail::to($registration->initiator->email)->queue(new $mail($registration->initiator->nombre));
+                } else {
+                    Mail::to($registration->initiator->email)->queue(new $mail($registration->initiator->name));
+                }
+            }
+        }
+
+        return $errors;
     }
 }
