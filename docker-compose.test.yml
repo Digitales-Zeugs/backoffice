@@ -21,6 +21,8 @@ services:
     env_file:
       - ../registro-obras/.env.testing
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras:testing
+    volumes:
+      - ../registro-obras/docker/php/testing.ini:/usr/local/etc/php/conf.d/testing.ini
 
   database:
     volumes:
