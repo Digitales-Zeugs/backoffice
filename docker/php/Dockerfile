@@ -43,6 +43,9 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     net-tools \
     && rm -rf /var/lib/apt/lists/*
 
+# Install xdebug
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+
 # Install extensions
 RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
 
