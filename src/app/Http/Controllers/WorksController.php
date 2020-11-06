@@ -284,6 +284,7 @@ class WorksController extends Controller
             }
 
             $registration->status_id = 7;
+            $registration->approved = true;
             $registration->save();
 
             InternalLog::create([
@@ -321,6 +322,7 @@ class WorksController extends Controller
             }
 
             $registration->status_id = 8;
+            $registration->approved = false;
             $registration->save();
 
             InternalLog::create([

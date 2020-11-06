@@ -30,7 +30,8 @@ class Registration extends Model
     ];
 
     protected $casts = [
-        'submitted'    => 'boolean'
+        'submitted' => 'boolean',
+        'approved'  => 'boolean'
     ];
 
     public function distribution()

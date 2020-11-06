@@ -16,6 +16,7 @@ class AlterMembersRegistrationTable extends Migration
         Schema::table('members_registration', function (Blueprint $table) {
             $table->foreignId('status_id')->after('status')->constrained('members_registration_status');
             $table->dropColumn('status');
+            $table->boolean('approved')->default(false);
         });
     }
 
@@ -29,6 +30,7 @@ class AlterMembersRegistrationTable extends Migration
         Schema::table('members_registration', function (Blueprint $table) {
             $table->tinyInteger('status')->after('status_id');
             $table->dropColumn('status_id');
+            $table->dropColumn('approved');
         });
     }
 }
