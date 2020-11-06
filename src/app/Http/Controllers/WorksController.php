@@ -173,7 +173,17 @@ class WorksController extends Controller
                 }
             }
 
-            $registration->status_id = 2; // En proceso
+            // Chequeamos si todas las partes aprobaron el trámite
+            $finished = $registration->distribution->every(function ($current, $key) {
+                return !!$current->response;
+            });
+
+            if ($finished) {
+                $registration->status_id = 5; // Aprobado Propietarios
+            } else {
+                $registration->status_id = 2; // En proceso
+            }
+
             $registration->save();
 
             InternalLog::create([
