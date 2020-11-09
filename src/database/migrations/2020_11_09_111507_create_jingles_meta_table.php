@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateJinglesRegistrationMetaTable extends Migration
+class CreateJinglesMetaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateJinglesRegistrationMetaTable extends Migration
      */
     public function up()
     {
-        Schema::create('jingles_registration_meta', function (Blueprint $table) {
+        Schema::create('jingles_meta', function (Blueprint $table) {
             $table->id();
             $table->foreignId('agreement_id')->nullable()->constrained('jingles_registration_agreements');
 
@@ -27,7 +27,7 @@ class CreateJinglesRegistrationMetaTable extends Migration
             $table->string('apartment', 20)->nullable();
             $table->string('birth_country_id', 15)->references('idx')->on('source_countries')->nullable();
             $table->date('birth_date')->nullable();
-            $table->string('doc_type', 10)->references('code')->on('source_types')->nullable();
+            $table->string('doc_type_id', 10)->references('code')->on('source_types')->nullable();
             $table->string('email', 254)->nullable();
             $table->string('floor', 20)->nullable();
             $table->string('name', 100)->nullable();
@@ -48,6 +48,6 @@ class CreateJinglesRegistrationMetaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jingles_registration_meta');
+        Schema::dropIfExists('jingles_meta');
     }
 }
