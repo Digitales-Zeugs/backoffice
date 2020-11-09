@@ -16,7 +16,7 @@ class CreateJinglesRegistrationAgreementsTable extends Migration
         Schema::create('jingles_registration_agreements', function (Blueprint $table) {
             $table->id();
 
-            $table->enum('type', ['member', 'no-member']);
+            $table->unsignedBigInteger('type_id');
             $table->string('member_idx', 50)->references('idx')->on('source_members')->nullable();
 
             $table->boolean('response')->nullable()->default(null);
