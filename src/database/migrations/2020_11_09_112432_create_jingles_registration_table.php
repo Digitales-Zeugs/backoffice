@@ -21,22 +21,22 @@ class CreateJinglesRegistrationTable extends Migration
         Schema::create('jingles_registration', function (Blueprint $table) {
             $table->id();
 
-            $table->enum('request_type', ['regular', 'special'])->nullable();
-            $table->enum('request_action', ['original', 'reduction', 'renewal', 'export'])->nullable();
+            $table->boolean('is_special')->default(false);
+            $table->unsignedBigInteger('request_action_id')->nullable();
 
             $table->unsignedTinyInteger('validity')->nullable();
             $table->date('air_date')->nullable();
 
-            $table->string('ads_duration')->nullable();
+            $table->json('ads_duration')->nullable();
 
-            $table->enum('broadcast_territory', ['national', 'state', 'foreign'])->nullable();
+            $table->unsignedBigInteger('broadcast_territory_id')->nullable();
             $table->unsignedBigInteger('territory_id')->nullable();
 
             $table->foreignId('media_id')->nullable()->constrained('jingles_registration_media');
 
             $table->boolean('subsection_i')->default(false);
 
-            $table->enum('agency_type', ['agency', 'producer'])->nullable();
+            $table->unsignedTinyInteger('agency_type_id')->nullable();
 
             $table->string('product_brand')->nullable();
             $table->string('product_type')->nullable();
@@ -54,7 +54,7 @@ class CreateJinglesRegistrationTable extends Migration
             $table->boolean('authors_agreement')->default(false);
             $table->decimal('authors_tariff', 8, 2)->default('0.00');
 
-            $table->enum('tariff_payer', ['advertiser', 'agency', 'producer'])->nullable();
+            $table->unsignedTinyInteger('tariff_payer_id')->nullable();
             $table->string('tariff_representation')->nullable();
 
             $table->foreignId('status_id')->nullable()->constrained('jingles_registration_status');
