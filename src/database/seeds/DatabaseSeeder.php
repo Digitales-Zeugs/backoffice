@@ -17,5 +17,9 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(WorkStatusSeeder::class);
         $this->call(MemberRegistrationStatusSeeder::class);
+        $this->call(MemberRegistrationStatusSeeder::class);
+        $this->call(JinglesLogActionSeeder::class);
+        $this->call(JinglesRegistrationMediaSeeder::class);
+        $this->call(JinglesStatusSeeder::class);
     }
 }
