@@ -14,6 +14,7 @@ class CreateJinglesPartsTable extends Migration
     public function up()
     {
         Schema::create('jingles_parts', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('registration_id')->constrained('jingles_registration');
             $table->foreignId('person_id')->constrained('jingles_people');
             $table->enum('type', ['applicant', 'advertiser', 'agency', 'producer']);

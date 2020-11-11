@@ -30,7 +30,7 @@ class CreateJinglesRegistrationTable extends Migration
             $table->json('ads_duration')->nullable();
 
             $table->unsignedBigInteger('broadcast_territory_id')->nullable();
-            $table->unsignedBigInteger('territory_id')->nullable();
+            $table->json('territory_id')->nullable();
 
             $table->foreignId('media_id')->nullable()->constrained('jingles_registration_media');
 
