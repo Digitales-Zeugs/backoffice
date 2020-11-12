@@ -72,12 +72,24 @@ class SADAICSyncCommand extends Command
 
             // Únicamente importar archivos conocidos
             if ($table != "") {
+                $startTime = microtime(true);
+                $this->line("<comment>Importando:</comment> {$file}");
+
                 ProcessImports::dispatch($file, $table);
+
+                $runTime = number_format((microtime(true) - $startTime), 2);
+                $this->line("<info>Importado:</info>  {$file} ({$runTime}s)");
             }
         }
 
         if ($updateCities) {
+            $startTime = microtime(true);
+            $this->line("<comment>Normalizando:</comment> Localidades y provincias");
+
             NormalizeCities::dispatch();
+
+            $runTime = number_format((microtime(true) - $startTime), 2);
+            $this->line("<info>Normalizado:</info>  Localidades y provincias ({$runTime}s)");
         }
 
         return 0;
