@@ -21,6 +21,9 @@ class CreateJinglesRegistrationTable extends Migration
         Schema::create('jingles_registration', function (Blueprint $table) {
             $table->id();
 
+            $table->foreignId('member_id')->nullable()->constrained('members');
+            $table->foreignId('user_id')->nullable()->constrained('users');
+
             $table->boolean('is_special')->default(false);
             $table->unsignedBigInteger('request_action_id')->nullable();
 
@@ -31,6 +34,7 @@ class CreateJinglesRegistrationTable extends Migration
 
             $table->unsignedBigInteger('broadcast_territory_id')->nullable();
             $table->json('territory_id')->nullable();
+            $table->boolean('also_national')->default(false);
 
             $table->foreignId('media_id')->nullable()->constrained('jingles_registration_media');
 
