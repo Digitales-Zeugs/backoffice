@@ -1,67 +1,34 @@
 require('chart.js');
 
-var randomScalingFactor = function() {
-    return Math.round(Math.random() * 100);
-};
-
-var ctxBars = document.getElementById('dataUpdateCanvasBars').getContext('2d');
-new Chart(ctxBars, {
-    type: 'bar',
+var ctxLines = document.getElementById('canvasLines').getContext('2d');
+new Chart(ctxLines, {
+    type: 'line',
     data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        datasets: [{
-            label: '# of Votes',
-            data: [
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-            ],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
+        labels: worksDays.map(e => e.created),
+        datasets: [
+            {
+                label: 'Nuevas Solicitudes',
+                data: worksDays.map(e => e.count),
+                fill: false
+            }
+        ]
     },
     options: {
         scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }]
+            yAxes: [ { ticks: {
+                min: 0,
+                precision: 0
+            } } ]
         }
     }
 });
 
-var ctxSemiCircle = document.getElementById('dataUpdateCanvasSemiCircle').getContext('2d');
+var ctxSemiCircle = document.getElementById('canvasSemiCircle').getContext('2d');
 new Chart(ctxSemiCircle, {
     type: 'doughnut',
     data: {
         datasets: [{
-            data: [
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-                randomScalingFactor(),
-            ],
+            data: worksStatus.slice(0, -1).map(e => e.count),
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
@@ -72,7 +39,7 @@ new Chart(ctxSemiCircle, {
             ],
             label: 'Dataset 1'
         }],
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        labels: worksStatus.slice(0, -1).map(e => e.name),
     },
     options: {
         responsive: true,
@@ -81,7 +48,7 @@ new Chart(ctxSemiCircle, {
         },
         title: {
             display: true,
-            text: 'Chart.js Doughnut Chart'
+            text: 'Estado de los Trámites Activos'
         },
         animation: {
             animateScale: true,
