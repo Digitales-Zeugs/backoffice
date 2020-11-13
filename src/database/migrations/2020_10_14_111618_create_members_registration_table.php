@@ -44,6 +44,7 @@ class CreateMembersRegistrationTable extends Migration
             $table->string('band')->nullable();
             $table->string('entrance_work');
             $table->unsignedBigInteger('genre_id')->references('cod_int_gen')->on('source_genres');
+            $table->unsignedBigInteger('work_id')->nullable();
             $table->timestamps();
         });
     }
