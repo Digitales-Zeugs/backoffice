@@ -2,13 +2,32 @@ version: "3.8"
 
 services:
 
-  nginx:
+  nginx_backoffice:
+    restart: "always"
     env_file:
       - .env.testing
-    restart: "always"
     volumes:
-      - ./docker/nginx/app-ssl.conf:/etc/nginx/conf.d/backoffice.conf
-      - ../registro-obras/docker/nginx/app-ssl.conf:/etc/nginx/conf.d/registro-obras.conf
+      - type: volume
+        source: code-backoffice
+        target: /var/www/backoffice
+        volume:
+          nocopy: true
+      - user-files:/var/www/storage/app/files
+    depends_on:
+      - database
+      - mailhog
+
+  nginx_registro_obras:
+    restart: "always"
+    env_file:
+      - .env.testing
+    volumes:
+      - type: volume
+        source: code-registro-obras
+        target: /var/www/registro-obras
+        volume:
+          nocopy: true
+      - user-files:/var/www/storage/app/files
     depends_on:
       - database
       - mailhog
@@ -18,19 +37,30 @@ services:
       - .env.testing
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras/backoffice:testing
     restart: "always"
+    volumes:
+      - code-backoffice:/var/www
+      - user-files:/var/www/storage/app/files
+    command: sh -c "php artisan migrate --no-interaction & php-fpm"
 
   php_registro_obras:
     env_file:
       - ../registro-obras/.env.testing
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras:testing
     restart: "always"
+    volumes:
+      - code-registro-obras:/var/www
+      - user-files:/var/www/storage/app/files
+    command: sh -c "php artisan migrate --no-interaction & php-fpm"
 
   database:
+    image: mariadb:10.5.6-focal
     restart: "always"
     volumes:
       - ./database/:/docker-entrypoint-initdb.d/
     env_file:
       - .env.testing
+    networks:
+      - app-network
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
@@ -53,3 +83,9 @@ services:
       - ./docker/adminer/php.ini:/usr/local/etc/php/conf.d/0-upload_large_dumps.ini
     networks:
       - app-network
+
+volumes:
+  code-backoffice:
+  code-registro-obras:
+  user-files:
+  dbdata:

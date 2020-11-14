@@ -2,27 +2,36 @@ version: "3.8"
 
 services:
 
-  nginx:
+  nginx_backoffice:
     restart: "always"
+    volumes:
+      - ./src/public:/var/www/public
     env_file:
       - .env
+
+  nginx_registro_obras:
+    restart: "always"
     volumes:
-      - ./docker/nginx/app-ssl.conf:/etc/nginx/conf.d/backoffice.conf
-      - ../registro-obras/docker/nginx/app-ssl.conf:/etc/nginx/conf.d/registro-obras.conf
+      - ../registro-obras/src/public:/var/www/public
+    env_file:
+      - ../registro-obras/.env
 
   php_backoffice:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
     restart: "always"
+    volumes:
+      - ./src:/var/www
     env_file:
       - .env
 
   php_registro_obras:
-    restart: "always"
-    env_file:
-      - ../registro-obras/.env
-
-  database:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
     restart: "always"
     volumes:
-      - ./database/:/docker-entrypoint-initdb.d/
+      - ../registro-obras/src:/var/www
     env_file:
-      - .env
+      - ../registro-obras/.env

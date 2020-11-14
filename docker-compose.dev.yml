@@ -2,18 +2,28 @@ version: "3.8"
 
 services:
 
-  nginx:
+  nginx_backoffice:
     restart: "always"
     ports:
-      - 9000:9000
-      - 8000:8000
+      - 9443:8443
+      - 9000:8000
     env_file:
       - .env.development
     volumes:
-      - ./src:/var/www/backoffice
-      - ../registro-obras/src:/var/www/registro-obras
-      - ./docker/nginx/app.conf:/etc/nginx/conf.d/backoffice.conf
-      - ../registro-obras/docker/nginx/app.conf:/etc/nginx/conf.d/registro-obras.conf
+      - ./src/public:/var/www/public
+    depends_on:
+      - database
+      - mailhog
+
+  nginx_registro_obras:
+    restart: "always"
+    ports:
+      - 8443:8443
+      - 8000:8000
+    volumes:
+      - ../registro-obras/src/public:/var/www/public
+    env_file:
+      - ../registro-obras/.env.development
     depends_on:
       - database
       - mailhog
@@ -21,16 +31,14 @@ services:
   php_backoffice:
     build:
       context: .
-      args:
-        - DEV
-      dockerfile: ./docker/php/Dockerfile
+      dockerfile: ./docker/Dockerfile
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras/backoffice:develop
     restart: "always"
     env_file:
       - .env.development
     volumes:
       - ./src:/var/www
-      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+      - user-files:/var/www/storage/app/files
     extra_hosts:
       - sadaic.org.ar:10.30.110.20
       - www.sadaic.org.ar:10.30.110.20
@@ -38,26 +46,27 @@ services:
   php_registro_obras:
     build:
       context: ../registro-obras
-      args:
-        - DEV
-      dockerfile: ./docker/php/Dockerfile
+      dockerfile: ./docker/Dockerfile
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras:develop
     restart: "always"
     env_file:
       - ../registro-obras/.env.development
     volumes:
       - ../registro-obras/src:/var/www
-      - ../registro-obras/docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+      - user-files:/var/www/storage/app/files
     extra_hosts:
       - sadaic.org.ar:10.30.110.20
       - www.sadaic.org.ar:10.30.110.20
 
   database:
+    image: mariadb:10.5.6-focal
     restart: "always"
     volumes:
       - ./database/:/docker-entrypoint-initdb.d/
     env_file:
       - .env.development
+    networks:
+      - app-network
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
@@ -102,3 +111,7 @@ services:
     working_dir: /app
     volumes:
       - ../registro-obras/src:/app
+
+volumes:
+  user-files:
+  dbdata:
