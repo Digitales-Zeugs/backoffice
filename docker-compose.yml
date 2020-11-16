@@ -2,24 +2,28 @@ version: "3.8"
 
 services:
 
-  nginx:
+  nginx_backoffice:
     image: nginx:1.19-alpine
-    restart: "no"
+    restart: "always"
+    networks:
+      - app-network
     volumes:
-      - type: volume
-        source: code-registro-obras
-        target: /var/www/registro-obras
-        volume:
-          nocopy: true
-      - type: volume
-        source: code-backoffice
-        target: /var/www/backoffice
-        volume:
-          nocopy: true
+      - ./docker/nginx/app.conf:/etc/nginx/conf.d/app.conf
+      - ./docker/nginx/app-ssl.conf:/etc/nginx/conf.d/app-ssl.conf
+    depends_on:
+      - php_backoffice
+      - database
+
+  nginx_registro_obras:
+    image: nginx:1.19-alpine
+    restart: "always"
+    volumes:
+      - ../registro-obras/docker/nginx/app.conf:/etc/nginx/conf.d/app.conf
+      - ../registro-obras/docker/nginx/app-ssl.conf:/etc/nginx/conf.d/app-ssl.conf
     networks:
       - app-network
     depends_on:
-      - php_backoffice
+      - php_registro_obras
       - database
 
   php_backoffice:
@@ -28,8 +32,8 @@ services:
     networks:
       - app-network
     volumes:
-      - code-backoffice:/var/www
-      - user-files:/var/www/storage/app/files
+      - ./docker/php/opcache.ini:/usr/local/etc/php/conf.d/opcache.ini
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
 
   php_registro_obras:
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras:latest
@@ -37,26 +41,9 @@ services:
     networks:
       - app-network
     volumes:
-      - code-registro-obras:/var/www
-      - user-files:/var/www/storage/app/files
-
-  database:
-    image: mariadb:10.5.6-focal
-    restart: "no"
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-    volumes:
-      - dbdata:/var/lib/mysql/
-    networks:
-      - app-network
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-toor}
+      - ../registro-obras/docker/php/opcache.ini:/usr/local/etc/php/conf.d/opcache.ini
+      - ../registro-obras/docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
 
 networks:
   app-network:
     driver: bridge
-
-volumes:
-  code-backoffice:
-  code-registro-obras:
-  user-files:
-  dbdata:

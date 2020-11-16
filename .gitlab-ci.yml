@@ -18,7 +18,7 @@ build_image_base:
   script:
     - export REGISTRY_IMAGE=$(echo "${CI_REGISTRY_IMAGE}" | sed -r 's/(.*)\//\1\/registro-obras\//')
     - docker pull ${REGISTRY_IMAGE}:testing || true
-    - docker build -f docker/php/Dockerfile --cache-from ${REGISTRY_IMAGE}:testing -t ${REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME} -t ${REGISTRY_IMAGE}:testing .
+    - docker build -f docker/Dockerfile --cache-from ${REGISTRY_IMAGE}:testing -t ${REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME} -t ${REGISTRY_IMAGE}:testing .
     - docker push ${REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}
     - docker push ${REGISTRY_IMAGE}:testing
 
