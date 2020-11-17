@@ -34,7 +34,7 @@ services:
 
   php_registro_obras:
     build:
-      context: .
+      context: ../registro-obras
       dockerfile: ./docker/Dockerfile
     restart: "always"
     volumes:
