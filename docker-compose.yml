@@ -12,7 +12,6 @@ services:
       - ./docker/nginx/app-ssl.conf:/etc/nginx/conf.d/app-ssl.conf
     depends_on:
       - php_backoffice
-      - database
 
   nginx_registro_obras:
     image: nginx:1.19-alpine
@@ -24,7 +23,6 @@ services:
       - app-network
     depends_on:
       - php_registro_obras
-      - database
 
   php_backoffice:
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras/backoffice:latest
