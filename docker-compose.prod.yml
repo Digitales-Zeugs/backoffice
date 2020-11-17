@@ -8,6 +8,9 @@ services:
       - ./src/public:/var/www/public
     env_file:
       - .env
+    ports:
+      - 9443:8443
+      - 9000:8000
 
   nginx_registro_obras:
     restart: "always"
@@ -15,6 +18,9 @@ services:
       - ../registro-obras/src/public:/var/www/public
     env_file:
       - ../registro-obras/.env
+    ports:
+      - 8443:8443
+      - 8000:8000
 
   php_backoffice:
     build:
