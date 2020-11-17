@@ -3,7 +3,7 @@ version: "3.8"
 services:
 
   nginx_backoffice:
-    restart: "always"
+    restart: "no"
     ports:
       - 9443:8443
       - 9000:8000
@@ -16,7 +16,7 @@ services:
       - mailhog
 
   nginx_registro_obras:
-    restart: "always"
+    restart: "no"
     ports:
       - 8443:8443
       - 8000:8000
@@ -33,7 +33,7 @@ services:
       context: .
       dockerfile: ./docker/Dockerfile
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras/backoffice:develop
-    restart: "always"
+    restart: "no"
     env_file:
       - .env.development
     volumes:
@@ -48,7 +48,7 @@ services:
       context: ../registro-obras
       dockerfile: ./docker/Dockerfile
     image: registry.gitlab.com/qkstudio/sadaic/registro-obras:develop
-    restart: "always"
+    restart: "no"
     env_file:
       - ../registro-obras/.env.development
     volumes:
@@ -60,7 +60,7 @@ services:
 
   database:
     image: mariadb:10.5.6-focal
-    restart: "always"
+    restart: "no"
     volumes:
       - ./database/:/docker-entrypoint-initdb.d/
     env_file:
@@ -70,7 +70,7 @@ services:
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
-    restart: "always"
+    restart: "no"
     ports:
       - 8025:8025
     env_file:
@@ -80,7 +80,7 @@ services:
 
   adminer:
     image: adminer:4.7.7
-    restart: "always"
+    restart: "no"
     ports:
       - 8306:8080
     depends_on:
@@ -96,7 +96,7 @@ services:
 
   node_backoffice:
     image: node:14.13.1-alpine3.12
-    restart: "always"
+    restart: "no"
     command: /bin/sh
     tty: true
     working_dir: /app
@@ -107,7 +107,7 @@ services:
 
   node_registro_obras:
     image: node:14.13.1-alpine3.12
-    restart: "always"
+    restart: "no"
     command: /bin/sh
     tty: true
     working_dir: /app
