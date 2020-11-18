@@ -5,7 +5,12 @@ services:
   nginx_backoffice:
     restart: "always"
     volumes:
-      - ./src/public:/var/www/public
+      - type: volume
+        source: code-backoffice
+        target: /var/www
+        volume:
+          nocopy: true
+      - user-files:/var/www/storage/app/files
     env_file:
       - .env
     ports:
@@ -15,7 +20,12 @@ services:
   nginx_registro_obras:
     restart: "always"
     volumes:
-      - ../registro-obras/src/public:/var/www/public
+      - type: volume
+        source: code-registro-obras
+        target: /var/www
+        volume:
+          nocopy: true
+      - user-files:/var/www/storage/app/files
     env_file:
       - ../registro-obras/.env
     ports:
@@ -28,16 +38,21 @@ services:
       dockerfile: ./docker/Dockerfile
     restart: "always"
     volumes:
-      - ./src:/var/www
+      - code-backoffice:/var/www
     env_file:
       - .env
 
   php_registro_obras:
     build:
       context: ../registro-obras
-      dockerfile: ./docker/Dockerfile
+      dockerfile: ../registro-obras/docker/Dockerfile
     restart: "always"
     volumes:
-      - ../registro-obras/src:/var/www
+      - code-registro-obras:/var/www
     env_file:
       - ../registro-obras/.env
+
+volumes:
+  code-backoffice:
+  code-registro-obras:
+  user-files:
