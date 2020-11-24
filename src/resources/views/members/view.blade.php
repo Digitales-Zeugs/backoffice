@@ -25,8 +25,12 @@
                 <td>{{ $registration->id }}</td>
             </tr>
             <tr>
-                <th scope="row">Nombre y Apellido</th>
-                <td>{{ $profile->name }}</td>
+                <th scope="row">Apellido</th>
+                <td>{{ $profile->lastname }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Nombre</th>
+                <td>{{ $profile->forename }}</td>
             </tr>
             <tr>
                 <th scope="row">Fecha de Nacimiento</th>

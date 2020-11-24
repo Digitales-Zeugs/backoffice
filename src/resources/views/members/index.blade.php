@@ -10,6 +10,7 @@
             <thead>
                 <tr>
                     <th>#</th>
+                    <th>Apellido</th>
                     <th>Nombre</th>
                     <th>Documento</th>
                     <th>Email</th>
@@ -34,13 +35,15 @@ window.onload = function() {
         },
         columns: [
             { name: 'id', data: 'id' },
-            { name: 'name', data: 'name' },
+            { name: 'lastname', data: 'lastname' },
+            { name: 'forename', data: 'forename' },
             { name: 'doc_number', data: 'doc_number' },
             { name: 'email', data: 'email' },
             { name: 'mobile', data: 'mobile' },
             { name: 'status_id', data: 'status.name' },
         ],
         searchCols: [
+            null,
             null,
             null,
             null,
