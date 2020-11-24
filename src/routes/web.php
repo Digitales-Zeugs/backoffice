@@ -26,6 +26,7 @@ Route::post('/works/{registration}/observations', 'WorksController@saveObservati
 
 Route::get('/integration', 'IntegrationController@index');
 Route::get('/integration/works', 'IntegrationController@exportWorks');
+Route::post('/integration/works', 'IntegrationController@importWorks');
 
 Route::get('/login', 'AuthController@login')->name('login');
 Route::get('/logout', 'AuthController@logout')->name('logout');

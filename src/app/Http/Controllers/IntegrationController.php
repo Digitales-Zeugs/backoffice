@@ -19,10 +19,9 @@ class IntegrationController extends Controller
         return view('integration.index');
     }
 
-    public function exportWorks() {
+    public function exportWorks()
+    {
         $works = Registration::where('status_id', 6)->get();
-
-        $submissionId = 1;
 
         $works_data = $works->map(function(Registration $work) use (&$submissionId) {
             $interestedParties = $work->distribution->map(function(Distribution $dist) {
@@ -37,7 +36,7 @@ class IntegrationController extends Controller
             });
 
             $data = [
-                'submissionId'      => $submissionId,
+                'submissionId'      => $work->id,
                 'agency'            => '128',
                 'originalTitle'     => $work->title,
                 'interestedParties' => $interestedParties
@@ -70,6 +69,74 @@ class IntegrationController extends Controller
             'Content-Encoding' => 'utf-8',
             'Content-Type'     => 'application/json'
         ]);
+    }
+
+    public function importWorks(Request $request)
+    {
+        if (!$request->hasFile('file')) {
+            abort(400);
+        }
+
+        $contents = $request->file('file')->get();
+        $contents = json_decode($contents);
+
+        if ($contents->fileHeader->receivingAgency != '128') {
+            abort(400);
+        }
+
+        $events = [];
+        $stats = [
+            'success' => 0,
+            'failure' => 0
+        ];
+
+        foreach($contents->acknowledgements as $ack) {
+            // Si no es alta, omitimos el registro
+            if ($ack->originalTransactionType != 'AddWork') {
+                $events[] = "Respuesta $ack->submissionId omitida porque no es un alta";
+                $stats['failure']++;
+                continue;
+            }
+
+            $work = Registration::find($ack->originalSubmissionId);
+
+            // Si no encontramos la solicitud en la BBDD, omitimos el registro
+            if (!$work) {
+                $events[] = "Respuesta $ack->submissionId omitida porque no se encontro solicitud(id $ack->originalSubmissionId) en la BBDD";
+                $stats['failure']++;
+                continue;
+            }
+
+            // Si la solicitud no está a la espera de respuesta, omitimos el registro
+            if ($work->status_id != 6) {
+                $events[] = "Respuesta $ack->submissionId omitida porque la solicitud(id $ack->originalSubmissionId) no está a la espera de respuesta";
+                $stats['failure']++;
+                continue;
+            }
+
+            if ($ack->transactionStatus == 'FullyAccepted') {
+                $work->status_id = 7;
+                $work->approved = true;
+                $work->codwork = $ack->codworkSq;
+                $stats['success']++;
+            } else if ($ack->transactionStatus == 'Rejected') {
+                $work->status_id = 8;
+                $work->approved = true;
+                $stats['success']++;
+            } else {
+                $events[] = "Respuesta $ack->submissionId omitida porque no está soportado el tipo";
+                $stats['failure']++;
+                continue;
+            }
+
+            $work->save();
+        }
+
+        return [
+            'status' => 'success',
+            'events' => $events,
+            'stats'  => $stats
+        ];
     }
 
     private function formatPercentage($percentage) {
