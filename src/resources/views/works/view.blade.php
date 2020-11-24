@@ -151,7 +151,7 @@
                             if ($name[2] == 'contract') {
                                 $desc = 'Contrato';
                             } elseif ($name[2] == 'triage') {
-                                $desc = 'Contrato de triaje';
+                                $desc = 'Contrato de tiraje';
                             }
                         } elseif ($name[1] == 'no-member') {
                             $desc = 'Documento';
