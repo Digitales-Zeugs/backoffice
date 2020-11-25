@@ -68,6 +68,9 @@ class SADAICSyncCommand extends Command
                 case 'sadaic/Tipos Documentos.csv':
                     $table = "source_types";
                 break;
+                case 'sadaic/DATOS_USUARIOS.csv':
+                    $table = "source_agencies";
+                break;
             }
 
             // Únicamente importar archivos conocidos
