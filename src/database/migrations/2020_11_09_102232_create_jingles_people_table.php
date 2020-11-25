@@ -20,6 +20,7 @@ class CreateJinglesPeopleTable extends Migration
             $table->string('address')->nullable();
             $table->string('phone', 50)->nullable();
             $table->string('email', 254)->nullable();
+            $table->boolean('editable')->default(true);
         });
     }
 
