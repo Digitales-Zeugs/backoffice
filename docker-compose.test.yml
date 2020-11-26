@@ -9,7 +9,7 @@ services:
     volumes:
       - type: volume
         source: code-backoffice
-        target: /var/www/backoffice
+        target: /var/www
         volume:
           nocopy: true
       - user-files:/var/www/storage/app/files
@@ -24,7 +24,7 @@ services:
     volumes:
       - type: volume
         source: code-registro-obras
-        target: /var/www/registro-obras
+        target: /var/www
         volume:
           nocopy: true
       - user-files:/var/www/storage/app/files
