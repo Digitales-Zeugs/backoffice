@@ -138,4 +138,9 @@ class Registration extends Model
             'name' => $this->TARIFF_PAYER[$this->tariff_payer_id]
         ];
     }
+
+    public function status()
+    {
+        return $this->hasOne('App\Models\Jingles\Status', 'id', 'status_id');
+    }
 }

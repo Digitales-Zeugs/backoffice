@@ -21,4 +21,6 @@ mix.js('resources/js/login.js', 'public/js');
 mix.js('resources/js/works.index.js', 'public/js');
 mix.js('resources/js/works.view.js', 'public/js');
 
+mix.js('resources/js/jingles.index.js', 'public/js');
+
 mix.js('resources/js/integration.js', 'public/js');
