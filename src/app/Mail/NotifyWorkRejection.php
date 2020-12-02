@@ -13,9 +13,13 @@ class NotifyWorkRejection extends Mailable
 
     public $nombre;
 
-    public function __construct(string $nombre)
+    public $nombre;
+    public $registration_id;
+
+    public function __construct(string $nombre, int $registration_id)
     {
         $this->nombre = $nombre;
+        $this->registration_id = $registration_id;
     }
 
     public function build()

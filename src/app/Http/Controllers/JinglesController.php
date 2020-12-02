@@ -6,18 +6,18 @@ use App\Mail\NotifyDistribution;
 use App\Mail\NotifyRequestFinalization;
 use App\Mail\NotifyRequestRejection;
 use App\Mail\NotifyRequestSendToInternal;
-use App\Mail\NotifyWorkApproval;
-use App\Mail\NotifyWorkRejection;
-use App\Models\Work\Log as InternalLog;
-use App\Models\Work\Registration;
-use App\Models\Work\Status;
+use App\Mail\NotifyJingleApproval;
+use App\Mail\NotifyJingleRejection;
+use App\Models\Jingles\Log as InternalLog;
+use App\Models\Jingles\Registration;
+use App\Models\Jingles\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
-class WorksController extends Controller
+class JinglesController extends Controller
 {
     public $datatablesModel = Registration::class;
 
@@ -36,7 +36,7 @@ class WorksController extends Controller
         $requests = Registration::where('status_id', 1)->get();
         $status = Status::all();
 
-        return view('works.index', [
+        return view('jingles.index', [
             'requests' => $requests,
             'status'   => $status
         ]);
@@ -48,7 +48,7 @@ class WorksController extends Controller
             abort(403);
         }
 
-        return view('works.view', ['registration' => $registration]);
+        return view('jingles.view', ['registration' => $registration]);
     }
 
     public function datatables(Request $request)
@@ -294,7 +294,7 @@ class WorksController extends Controller
                 'time'            => now()
             ]);
 
-            $errors = $this->notifyMembers($registration, NotifyWorkApproval::class);
+            $errors = $this->notifyMembers($registration, NotifyJingleApproval::class);
 
             return [
                 'status' => 'success',
@@ -332,7 +332,7 @@ class WorksController extends Controller
                 'time'            => now()
             ]);
 
-            $errors = $this->notifyMembers($registration, NotifyWorkRejection::class);
+            $errors = $this->notifyMembers($registration, NotifyJingleRejection::class);
 
             return [
                 'status' => 'success',
