@@ -1,3 +1,10 @@
-<p>¡Hola {{ $nombre }}!</p>
+@extends('mails.template')
 
-Notificación de Distribución de Solicitud de Registro de Obra
+@section('content')
+<div class="kicker">Solicitud de Registro de Obra</div>
+<p>¡Hola {{ $nombre }}!</p>
+<p>Has sido incluido como parte en un trámite de Registro de Obra, para ver más información accedé al sitio de autogestión de SADAIC:</p>
+<div class="cta">
+    <a class="btn" href="{{ route('login') }}">Ir a la Autogestión</a>
+</div>
+@endsection

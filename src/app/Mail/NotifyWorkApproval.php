@@ -21,6 +21,7 @@ class NotifyWorkApproval extends Mailable
     public function build()
     {
         return $this->from('socios@sadaic.org.ar')
+                    ->subject('Notificación de Aprobación | SADAIC')
                     ->view('mails.notify-work-approval');
     }
 }

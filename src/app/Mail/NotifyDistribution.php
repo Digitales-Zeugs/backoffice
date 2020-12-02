@@ -21,6 +21,7 @@ class NotifyDistribution extends Mailable
     public function build()
     {
         return $this->from('socios@sadaic.org.ar')
+                    ->subject('Notificación de Distribución | SADAIC')
                     ->view('mails.notify-distribution');
     }
 }
