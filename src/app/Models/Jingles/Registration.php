@@ -8,31 +8,35 @@ class Registration extends Model
 {
     protected $table = 'jingles_registration';
 
+    protected $hidden = ['people'];
+
     public const REQUEST_ACTION = [
-        1 => 'Original',
-        2 => 'Reducción',
-        3 => 'Renovación',
-        4 => 'Exportación'
+        [ 'id' => 1, 'name' => 'Original' ],
+        [ 'id' => 2, 'name' => 'Reducción' ],
+        [ 'id' => 3, 'name' => 'Renovación' ],
+        [ 'id' => 4, 'name' => 'Exportación' ]
     ];
 
     public const BROADCAST_TERRITORY = [
-        1 => 'Nacional',
-        2 => 'Provincial',
-        3 => 'Extranjero'
+        [ 'id' => 1, 'name' => 'Nacional' ],
+        [ 'id' => 2, 'name' => 'Provincial' ],
+        [ 'id' => 3, 'name' => 'Extranjero' ]
     ];
 
     public const AGENCY_TYPE = [
-        1 => 'Agencia',
-        2 => 'Productora'
+        [ 'id' => 1, 'name' => 'Agencia' ],
+        [ 'id' => 2, 'name' => 'Productora' ]
     ];
 
     public const TARIFF_PAYER = [
-        1 => 'Anunciante',
-        2 => 'Agencia',
-        3 => 'Productora'
+        [ 'id' => 1, 'name' => 'Anunciante' ],
+        [ 'id' => 2, 'name' => 'Agencia' ],
+        [ 'id' => 3, 'name' => 'Productora' ]
     ];
 
     protected $fillable = [
+        'member_id',
+        'user_id',
         'is_special',
         'request_action_id',
         'validity',
@@ -68,11 +72,21 @@ class Registration extends Model
         'work_music_mod'    => 'boolean',
         'authors_agreement' => 'boolean',
         'authors_tariff'    => 'decimal:2',
-        'ads_duration'      => 'array'
+        'ads_duration'      => 'array',
+        'territory_id'      => 'array'
     ];
 
     protected $dates = [
         'air_date'
+    ];
+
+    protected $attributes = [
+        'is_special'        => false,
+        'validity'          => 1,
+        'media_id'          => 1,
+        'agency_type_id'    => 1,
+        'work_original'     => 1,
+        'authors_agreement' => false
     ];
 
     public function request_action()
@@ -81,14 +95,12 @@ class Registration extends Model
             return null;
         }
 
-        if (!array_key_exists($this->request_action_id, $this->REQUEST_ACTION)) {
+        $key = array_search($this->request_action_id, array_column($this->REQUEST_ACTION, 'id'));
+        if ($key === false) {
             return null;
         }
 
-        return [
-            'id'   => $this->request_action_id,
-            'name' => $this->REQUEST_ACTION[$this->request_action_id]
-        ];
+        return $this->REQUEST_ACTION[$key];
     }
 
     public function broadcast_territory()
@@ -97,14 +109,12 @@ class Registration extends Model
             return null;
         }
 
-        if (!array_key_exists($this->broadcast_territory_id, $this->BROADCAST_TERRITORY)) {
+        $key = array_search($this->broadcast_territory_id, array_column($this->BROADCAST_TERRITORY, 'id'));
+        if ($key === false) {
             return null;
         }
 
-        return [
-            'id'   => $this->broadcast_territory_id,
-            'name' => $this->BROADCAST_TERRITORY[$this->broadcast_territory_id]
-        ];
+        return $this->BROADCAST_TERRITORY[$key];
     }
 
     public function agency_type()
@@ -113,14 +123,12 @@ class Registration extends Model
             return null;
         }
 
-        if (!array_key_exists($this->agency_type_id, $this->AGENCY_TYPE)) {
+        $key = array_search($this->agency_type_id, array_column($this->AGENCY_TYPE, 'id'));
+        if ($key === false) {
             return null;
         }
 
-        return [
-            'id'   => $this->agency_type_id,
-            'name' => $this->AGENCY_TYPE[$this->agency_type_id]
-        ];
+        return $this->AGENCY_TYPE[$key];
     }
 
     public function tariff_payer()
@@ -129,14 +137,58 @@ class Registration extends Model
             return null;
         }
 
-        if (!array_key_exists($this->tariff_payer_id, $this->TARIFF_PAYER)) {
+        $key = array_search($this->tariff_payer_id, array_column($this->TARIFF_PAYER, 'id'));
+        if ($key === false) {
             return null;
         }
 
-        return [
-            'id'   => $this->tariff_payer_id,
-            'name' => $this->TARIFF_PAYER[$this->tariff_payer_id]
-        ];
+        return $this->TARIFF_PAYER[$key];
+    }
+
+    public function people()
+    {
+        return $this->belongsToMany('App\Models\Jingles\Person', 'jingles_parts')->withPivot(['type']);
+    }
+
+    public function agreements()
+    {
+        return $this->hasMany('App\Models\Jingles\Agreement');
+    }
+
+    public function loadPeople()
+    {
+        $this->setRelation('applicant', $this->people->first(function ($item, $key) {
+            return $item->pivot->type == 'applicant';
+        }));
+
+        $this->setRelation('advertiser', $this->people->first(function ($item, $key) {
+            return $item->pivot->type == 'advertiser';
+        }));
+
+        $this->setRelation('agency', $this->people->first(function ($item, $key) {
+            return $item->pivot->type == 'agency';
+        }));
+    }
+
+    public function getApplicantAttribute()
+    {
+        if (!array_key_exists('applicant', $this->relations)) $this->loadPeople();
+
+        return $this->getRelation('applicant');
+    }
+
+    public function getAdvertiserAttribute()
+    {
+        if (!array_key_exists('advertiser', $this->relations)) $this->loadPeople();
+
+        return $this->getRelation('advertiser');
+    }
+
+    public function getAgencyAttribute()
+    {
+        if (!array_key_exists('agency', $this->relations)) $this->loadPeople();
+
+        return $this->getRelation('agency');
     }
 
     public function status()
