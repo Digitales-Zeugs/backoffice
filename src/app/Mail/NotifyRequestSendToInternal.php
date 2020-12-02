@@ -21,6 +21,7 @@ class NotifyRequestSendToInternal extends Mailable
     public function build()
     {
         return $this->from('socios@sadaic.org.ar')
+                    ->subject('Notificación de Proceso | SADAIC')
                     ->view('mails.notify-request-send-to-internal');
     }
 }

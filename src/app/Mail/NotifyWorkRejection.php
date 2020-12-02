@@ -21,6 +21,7 @@ class NotifyWorkRejection extends Mailable
     public function build()
     {
         return $this->from('socios@sadaic.org.ar')
+                    ->subject('Notificación de Rechazo | SADAIC')
                     ->view('mails.notify-work-rejection');
     }
 }

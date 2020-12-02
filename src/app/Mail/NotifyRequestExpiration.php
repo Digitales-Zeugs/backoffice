@@ -21,6 +21,7 @@ class NotifyRequestExpiration extends Mailable
     public function build()
     {
         return $this->from('socios@sadaic.org.ar')
+                    ->subject('Notificación de Vencimiento | SADAIC')
                     ->view('mails.notify-request-distribution');
     }
 }
