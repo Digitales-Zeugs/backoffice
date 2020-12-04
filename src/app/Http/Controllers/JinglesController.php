@@ -96,34 +96,6 @@ class JinglesController extends Controller
         }
     }
 
-    public function downloadFile(Request $request)
-    {
-        if (!Auth::user()->can('nb_obras', 'lee')) {
-            abort(403);
-        }
-
-        try {
-            $path = explode('/', $request->input('file'));
-            if ($path[0] != 'files') abort(403);
-            if ($path[1] != 'users') abort(403);
-
-            if (!Storage::exists($request->input('file'))) {
-                abort(404);
-            }
-
-            return Storage::download($request->input('file'));
-        } catch (Throwable $t) {
-            Log::error("Error descargando archivo de registro de obra",
-                [
-                    "error" => $t,
-                    "data"  => json_encode($request->all(), JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_INVALID_UTF8_IGNORE )
-                ]
-            );
-
-            abort(500);
-        }
-    }
-
     private function beginAction(Registration $registration)
     {
         try {

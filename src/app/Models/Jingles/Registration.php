@@ -1,7 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\Jingles;
 
+use App\Models\SADAIC\Countries;
+use App\Models\SADAIC\States;
 use Illuminate\Database\Eloquent\Model;
 
 class Registration extends Model
@@ -89,72 +92,68 @@ class Registration extends Model
         'authors_agreement' => false
     ];
 
-    public function request_action()
+    /**
+     * Atributos "estáticos" (no guardados en la BBDD)
+     */
+    public function getRequestActionAttribute()
     {
         if (!$this->request_action_id) {
             return null;
         }
 
-        $key = array_search($this->request_action_id, array_column($this->REQUEST_ACTION, 'id'));
+        $key = array_search($this->request_action_id, array_column(self::REQUEST_ACTION, 'id'));
         if ($key === false) {
             return null;
         }
 
-        return $this->REQUEST_ACTION[$key];
+        return self::REQUEST_ACTION[$key]['name'];
     }
 
-    public function broadcast_territory()
+    public function getBroadcastTerritoryAttribute()
     {
         if (!$this->broadcast_territory_id) {
             return null;
         }
 
-        $key = array_search($this->broadcast_territory_id, array_column($this->BROADCAST_TERRITORY, 'id'));
+        $key = array_search($this->broadcast_territory_id, array_column(self::BROADCAST_TERRITORY, 'id'));
         if ($key === false) {
             return null;
         }
 
-        return $this->BROADCAST_TERRITORY[$key];
+        return self::BROADCAST_TERRITORY[$key]['name'];
     }
 
-    public function agency_type()
+    public function getAgencyTypeAttribute()
     {
         if (!$this->agency_type_id) {
             return null;
         }
 
-        $key = array_search($this->agency_type_id, array_column($this->AGENCY_TYPE, 'id'));
+        $key = array_search($this->agency_type_id, array_column(self::AGENCY_TYPE, 'id'));
         if ($key === false) {
             return null;
         }
 
-        return $this->AGENCY_TYPE[$key];
+        return self::AGENCY_TYPE[$key]['name'];
     }
 
-    public function tariff_payer()
+    public function getTariffPayerAttribute()
     {
         if (!$this->tariff_payer_id) {
             return null;
         }
 
-        $key = array_search($this->tariff_payer_id, array_column($this->TARIFF_PAYER, 'id'));
+        $key = array_search($this->tariff_payer_id, array_column(self::TARIFF_PAYER, 'id'));
         if ($key === false) {
             return null;
         }
 
-        return $this->TARIFF_PAYER[$key];
+        return self::TARIFF_PAYER[$key]['name'];
     }
 
-    public function people()
-    {
-        return $this->belongsToMany('App\Models\Jingles\Person', 'jingles_parts')->withPivot(['type']);
-    }
-
-    public function agreements()
-    {
-        return $this->hasMany('App\Models\Jingles\Agreement');
-    }
-
+    /**
+     * Personas relacionadas
+     */
     public function loadPeople()
     {
         $this->setRelation('applicant', $this->people->first(function ($item, $key) {
@@ -191,8 +190,47 @@ class Registration extends Model
         return $this->getRelation('agency');
     }
 
+    /**
+     * Territorios relacionados
+     */
+    public function getTerritoriesAttribute()
+    {
+        // Si no está seteado, es falsy, no es un array o no tiene elementos
+        if (!$this->territory_id || !is_array($this->territory_id) || count($this->territory_id) == 0) {
+            return collect([]);
+        }
+
+        // Provincias
+        if ($this->broadcast_territory_id == 2) {
+            return States::whereIn('id', $this->territory_id)->get();
+        // Países
+        } elseif ($this->broadcast_territory_id == 3) {
+            return Countries::whereIn('idx', $this->territory_id)->get();
+        }
+
+        return collect([]);
+    }
+
+    /**
+     * Otras relaciones
+     */
     public function status()
     {
         return $this->hasOne('App\Models\Jingles\Status', 'id', 'status_id');
+    }
+
+    public function people()
+    {
+        return $this->belongsToMany('App\Models\Jingles\Person', 'jingles_parts')->withPivot(['type']);
+    }
+
+    public function agreements()
+    {
+        return $this->hasMany('App\Models\Jingles\Agreement');
+    }
+
+    public function media()
+    {
+        return $this->hasOne('App\Models\Jingles\Media', 'id', 'media_id');
     }
 }

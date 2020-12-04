@@ -38,4 +38,14 @@ class Agreement extends Model
             'name' => $this->TYPE[$this->type_id]
         ];
     }
+
+    public function member()
+    {
+        return $this->hasOne('App\Models\SADAIC\Member', 'idx', 'member_idx');
+    }
+
+    public function meta()
+    {
+        return $this->hasOne('App\Models\Jingles\Meta');
+    }
 }
