@@ -229,8 +229,22 @@ class Registration extends Model
         return $this->hasMany('App\Models\Jingles\Agreement');
     }
 
+    public function logs()
+    {
+        return $this->hasMany('App\Models\Jingles\Log', 'registration_id', 'id');
+    }
+
     public function media()
     {
         return $this->hasOne('App\Models\Jingles\Media', 'id', 'media_id');
+    }
+
+    public function initiator()
+    {
+        if ($this->member_id) {
+            return $this->belongsTo('App\Models\Member', 'member_id');
+        } else {
+            return $this->belongsTo('App\Models\User', 'user_id');
+        }
     }
 }

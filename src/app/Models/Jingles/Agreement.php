@@ -19,10 +19,6 @@ class Agreement extends Model
         'response'
     ];
 
-    protected $casts = [
-        'response' => 'boolean'
-    ];
-
     public function getTypeAttribute()
     {
         if (!$this->type_id) {

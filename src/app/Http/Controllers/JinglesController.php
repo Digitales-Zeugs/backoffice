@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\NotifyDistribution;
+use App\Mail\NotifyAgreement;
 use App\Mail\NotifyRequestFinalization;
 use App\Mail\NotifyRequestRejection;
 use App\Mail\NotifyRequestSendToInternal;
@@ -105,44 +105,28 @@ class JinglesController extends Controller
 
             $errors = [];
 
-            foreach($registration->distribution as $distribution) {
-                if ($distribution->type == 'member') {
-                    // Si el trámite lo inició un socio y la distribución lo refiere, se acepta directamente
-                    if ($registration->member_id && $registration->initiator->member_id == $distribution->member_id) {
-                        $distribution->response = 1;
-                        $distribution->liable_id = null;
-                        $distribution->save();
-
-                        InternalLog::create([
-                            'registration_id' => $registration->id,
-                            'distribution_id' => $distribution->id,
-                            'action_id'       => 6,
-                            'time'            => now()
-                        ]);
-
-                        continue;
-                    }
-
-                    if (trim($distribution->member->email) != "" && filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
+            foreach($registration->agreements as $agreement) {
+                if ($agreement->type['name'] == 'member') {
+                    if (trim($agreement->member->email) != "" && filter_var($agreement->member->email, FILTER_VALIDATE_EMAIL)) {
                         // Si tiene dirección válida, notificamos
-                        Mail::to($distribution->member->email)->queue(new NotifyDistribution($distribution->member->nombre, $registration->id));
+                        Mail::to($agreement->member->email)->queue(new NotifyAgreement($agreement->member->nombre, $registration->id));
                     } else {
                         // Si no, logeamos
                         InternalLog::create([
                             'registration_id' => $registration->id,
-                            'distribution_id' => $distribution->id,
-                            'action_id'       => 11, // REGISTRATION_NOT_NOTIFIED
+                            'agreement_id'    => $agreement->id,
+                            'action_id'       => 12, // REGISTRATION_NOT_NOTIFIED
                             'time'            => now(),
-                            'action_data'     => ['member' => $distribution->member_id]
+                            'action_data'     => ['member' => $agreement->member_id]
                         ]);
 
                         // Mail seteado
-                        if (trim($distribution->member->email) == "") {
-                            $errors[] = $distribution->member->nombre . " no tiene una dirección de correo electrónica configurada";
+                        if (trim($agreement->member->email) == "") {
+                            $errors[] = $agreement->member->nombre . " no tiene una dirección de correo electrónica configurada";
                         } else {
                             // Mail válido
-                            if (!filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
-                                $errors[] = $distribution->member->nombre . " tiene una dirección de correo electrónica errónea: " . $distribution->member->email;
+                            if (!filter_var($agreement->member->email, FILTER_VALIDATE_EMAIL)) {
+                                $errors[] = $agreement->member->nombre . " tiene una dirección de correo electrónica errónea: " . $agreement->member->email;
                             }
                         }
                     }
@@ -150,7 +134,7 @@ class JinglesController extends Controller
             }
 
             // Chequeamos si todas las partes aprobaron el trámite
-            $finished = $registration->distribution->every(function ($current, $key) {
+            $finished = $registration->agreements->every(function ($current, $key) {
                 return !!$current->response;
             });
 
@@ -164,7 +148,7 @@ class JinglesController extends Controller
 
             InternalLog::create([
                 'registration_id' => $registration->id,
-                'action_id'       => 3, // REGISTRATION_ACEPTED
+                'action_id'       => 3, // REQUEST_ACCEPTED
                 'time'            => now()
             ]);
 
@@ -199,7 +183,7 @@ class JinglesController extends Controller
 
         InternalLog::create([
             'registration_id' => $registration->id,
-            'action_id'       => 4, // REGISTRATION_REJECTED
+            'action_id'       => 4, // REQUEST_REJECTED
             'time'            => now()
         ]);
 
@@ -223,7 +207,7 @@ class JinglesController extends Controller
 
             InternalLog::create([
                 'registration_id' => $registration->id,
-                'action_id'       => 8, // SEND_TO_INTERNAL
+                'action_id'       => 9, // SEND_TO_INTERNAL
                 'action_data'     => ['operator_id' => Auth::user()->usuarioid],
                 'time'            => now()
             ]);
@@ -261,7 +245,7 @@ class JinglesController extends Controller
 
             InternalLog::create([
                 'registration_id' => $registration->id,
-                'action_id'       => 9, // REQUEST_ACCEPTED
+                'action_id'       => 10, // REQUEST_ACCEPTED
                 'action_data'     => ['operator_id' => Auth::user()->usuarioid],
                 'time'            => now()
             ]);
@@ -299,7 +283,7 @@ class JinglesController extends Controller
 
             InternalLog::create([
                 'registration_id' => $registration->id,
-                'action_id'       => 10, // REQUEST_REJECTED
+                'action_id'       => 11, // REQUEST_REJECTED
                 'action_data'     => ['operator_id' => Auth::user()->usuarioid],
                 'time'            => now()
             ]);
@@ -336,7 +320,7 @@ class JinglesController extends Controller
 
             InternalLog::create([
                 'registration_id' => $registration->id,
-                'action_id'       => 12, // REQUEST_FINISHED
+                'action_id'       => 6, // REQUEST_FINISHED
                 'action_data'     => ['operator_id' => Auth::user()->usuarioid],
                 'time'            => now()
             ]);
@@ -368,7 +352,7 @@ class JinglesController extends Controller
                 abort(403);
             }
 
-            if (!$request->has('response') || !$request->has('distribution_id')) {
+            if (!$request->has('response') || !$request->has('agreement_id')) {
                 abort(403);
             }
 
@@ -376,17 +360,17 @@ class JinglesController extends Controller
                 abort(403);
             }
 
-            $distribution_id = $request->input('distribution_id');
+            $agreement_id = $request->input('agreement_id');
 
-            $distribution = $registration->distribution->where('id', $distribution_id)->first();
+            $agreement = $registration->agreements->where('id', $agreement_id)->first();
 
             // Si el socio no es parte de la distribución del registro
-            if (!$distribution) {
+            if (!$agreement) {
                 abort(403);
             }
 
             // Si ya respondió que si, no se puede cambiar
-            if ($distribution->response == true) {
+            if ($agreement->response == true) {
                 return [
                     'status' => 'failed',
                     'errors' => [
@@ -395,22 +379,22 @@ class JinglesController extends Controller
                 ];
             }
 
-            $distribution->response = $request->input('response') == 'accept';
-            $distribution->liable_id = Auth::user()->usuarioid;
-            $distribution->save();
+            $agreement->response = $request->input('response') == 'accept';
+            $agreement->liable_id = Auth::user()->usuarioid;
+            $agreement->save();
 
-            // action_id = 6 -> DISTRIBUTION_CONFIRMED
-            // action_id = 7 -> DISTRIBUTION_REJECTED
+            // action_id = 7 -> AGREEMENT_CONFIRMED
+            // action_id = 8 -> AGREEMENT_REJECTED
             InternalLog::create([
                 'registration_id' => $registration->id,
-                'distribution_id' => $distribution->id,
-                'action_id'       => $request->input('response') == 'accept' ? 6 : 7,
+                'agreement_id'    => $agreement->id,
+                'action_id'       => $request->input('response') == 'accept' ? 7 : 8,
                 'action_data'     => ['operator_id' => Auth::user()->usuarioid],
                 'time'            => now()
             ]);
 
             // Chequeamos si todas las partes aprobaron el trámite
-            $finished = $registration->distribution->every(function ($current, $key) {
+            $finished = $registration->agreements->every(function ($current, $key) {
                 return !!$current->response;
             });
 
@@ -418,7 +402,7 @@ class JinglesController extends Controller
             if ($finished) {
                 $registration->status_id = 5; // Aprobado Propietarios
             // Si la respuesta fue negativa
-            } elseif (!$distribution->response) {
+            } elseif (!$agreement->response) {
                 $registration->status_id = 3; // Disputa Propietarios
             }
 
@@ -475,44 +459,44 @@ class JinglesController extends Controller
     {
         $errors = [];
 
-        foreach($registration->distribution as $distribution) {
-            if ($distribution->type == 'member') {
+        foreach($registration->agreements as $agreement) {
+            if ($agreement->type == 'member') {
                 // Si el trámite lo inició un socio y la distribución lo refiere, se acepta directamente
-                if ($registration->member_id && $registration->initiator->member_id == $distribution->member_id) {
-                    $distribution->response = 1;
-                    $distribution->liable_id = null;
-                    $distribution->save();
+                if ($registration->member_id && $registration->initiator->member_id == $agreement->member_id) {
+                    $agreement->response = 1;
+                    $agreement->liable_id = null;
+                    $agreement->save();
 
                     InternalLog::create([
                         'registration_id' => $registration->id,
-                        'distribution_id' => $distribution->id,
-                        'action_id'       => 6,
+                        'agreement_id'    => $agreement->id,
+                        'action_id'       => 7, // AGREEMENT_CONFIRMED
                         'time'            => now()
                     ]);
 
                     continue;
                 }
 
-                if (trim($distribution->member->email) != "" && filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
+                if (trim($agreement->member->email) != "" && filter_var($agreement->member->email, FILTER_VALIDATE_EMAIL)) {
                     // Si tiene dirección válida, notificamos
-                    Mail::to($distribution->member->email)->queue(new $mail($distribution->member->nombre, $registration->id));
+                    Mail::to($agreement->member->email)->queue(new $mail($agreement->member->nombre, $registration->id));
                 } else {
                     // Si no, logeamos
                     InternalLog::create([
                         'registration_id' => $registration->id,
-                        'distribution_id' => $distribution->id,
-                        'action_id'       => 11, // REGISTRATION_NOT_NOTIFIED
+                        'agreement_id'    => $agreement->id,
+                        'action_id'       => 12, // REGISTRATION_NOT_NOTIFIED
                         'time'            => now(),
-                        'action_data'     => ['member' => $distribution->member_id]
+                        'action_data'     => ['member' => $agreement->member_id]
                     ]);
 
                     // Mail seteado
-                    if (trim($distribution->member->email) == "") {
-                        $errors[] = $distribution->member->nombre . " no tiene una dirección de correo electrónica configurada";
+                    if (trim($agreement->member->email) == "") {
+                        $errors[] = $agreement->member->nombre . " no tiene una dirección de correo electrónica configurada";
                     } else {
                         // Mail válido
-                        if (!filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
-                            $errors[] = $distribution->member->nombre . " tiene una dirección de correo electrónica errónea: " . $distribution->member->email;
+                        if (!filter_var($agreement->member->email, FILTER_VALIDATE_EMAIL)) {
+                            $errors[] = $agreement->member->nombre . " tiene una dirección de correo electrónica errónea: " . $agreement->member->email;
                         }
                     }
                 }
@@ -526,7 +510,7 @@ class JinglesController extends Controller
                 $errors[] = 'No se pudo notificar al iniciador del trámite porque tiene una dirección de correo electrónica errónea: ' . $registration->initiator->email;
             } else {
                 if ($registration->initiator->member_id) {
-                    Mail::to($registration->initiator->email)->queue(new $mail($registration->initiator->nombre, $registration->id));
+                    Mail::to($registration->initiator->email)->queue(new $mail($registration->initiator->full_name, $registration->id));
                 } else {
                     Mail::to($registration->initiator->email)->queue(new $mail($registration->initiator->name, $registration->id));
                 }

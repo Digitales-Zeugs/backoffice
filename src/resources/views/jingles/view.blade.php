@@ -171,13 +171,24 @@
                             <strong>Teléfono:</strong> {{ $person->meta->full_phone }}<br>
                         @endif
                             <strong>Respuesta:</strong>
-                        @if ($person->response === null)
-                            Sin Respuesta
-                        @elseif ($person->response === 0)
-                            Rechazado
-                        @elseif ($distribution->response === 1)
-                            Aceptado
-                        @endif
+                            @if ($person->response === null)
+                            Sin respuesta
+                            @if (in_array($registration->status_id, [2, 3]) && Auth::user()->can('nb_obras', 'carga'))
+                            &nbsp;<button class="btn btn-link text-success acceptDistribution" data-did="{{ $person->id }}">Aceptar</button>
+                            &nbsp;<button class="btn btn-link text-danger rejectDistribution" data-did="{{ $person->id }}">Rechazar</button>
+                            @endif
+                            @elseif ($person->response === 0)
+                                Rechazado por
+                                {{ $person->liable_id ?? 'el socio' }}
+                                ({{ $person->updated_at->format('d/m/Y H:i') }})
+                                @if (in_array($registration->status_id, [2, 3]) && Auth::user()->can('nb_obras', 'carga'))
+                                &nbsp;<button class="btn btn-link text-success acceptDistribution" data-did="{{ $person->id }}">Cambiar Respuesta</button>
+                                @endif
+                            @elseif ($person->response === 1)
+                                Aceptado por 
+                                {{ $person->liable_id ?? 'el socio' }}
+                                ({{ $person->updated_at->format('d/m/Y H:i') }})
+                            @endif
                         </td>
                     </tr>
                 @endforeach
@@ -202,13 +213,91 @@
                 <td>{{ $registration->tariff_representation }}</td>
             </tr>
             @endif
+            <tr>
+                <th colspan="2" class="table-inner-title">Registro</th>
+            </tr>
+            @foreach ($registration->logs as $log)
+            <tr>
+                <th>{{ $log->time->format('d/m/Y H:i') }}</th>
+                @switch($log->action->name)
+                    @case('REQUEST_ACCEPTED')
+                        <td>{{ $log->action->description }} {{ isset($log->action_data['forced']) ? '(Forzado)' : '' }}</td>
+                        @break
+                    @case('AGREEMENT_CONFIRMED')
+                    @case('AGREEMENT_REJECTED')
+                        <td>{{ $log->action->description }} ({{
+                            $log->agreement->member_idx
+                            ? $log->agreement->member->nombre
+                            : $log->agreement->meta->name
+                            }}{{ isset($log->action_data['operator_id']) ? ' por ' . $log->action_data['operator_id'] : '' }})</td>
+                        @break
+                    @case('REGISTRATION_NOT_NOTIFIED')
+                        <td>{{ $log->action->description }} ({{
+                            $log->agreement->member_idx
+                            ? $log->agreement->member->nombre
+                            : $log->agreement->meta->name
+                            }})</td>
+                        @break
+                    @default
+                        <td>{{ $log->action->description }}</td>
+                @endswitch
+            </tr>
+            @endforeach
+            <tr>
+                <th colspan="2" class="table-inner-title">Observaciones</th>
+            </tr>
+            <tr>
+                <td colspan="2" id="observationsWrapper">
+                    @if (Auth::user()->can('nb_obras', 'carga'))
+                    <textarea id="observations">{{ $registration->observations }}</textarea>
+                    <button class="btn btn-secondary float-right" id="saveObservations">Guardar Observaciones</button>
+                    @else
+                    <div id="observations">{!! nl2br(e($registration->observations)) !!}</div>
+                    @endif
+                </td>
+            </tr>
+        </table>
+        <br><br>
+        @if (Auth::user()->can('nb_obras', 'carga'))
+        {{-- Trámite Nuevo --}}
+        @if ($registration->status_id == 1)
+        <div class="row justify-content-center">
+            <div>
+                <button class="btn btn-success" id="beginAction">Iniciar Proceso</button>
+                <button class="btn btn-danger" id="rejectAction">Rechazar Solicitud</button>
+            </div>
+        </div>
+        {{-- Aprobado por todos los propietarios --}}
+        @elseif ($registration->status_id == 5)
+        <div class="row justify-content-center">
+            <div>
+                <button class="btn btn-primary" id="sendToInternal">Pase a Procesamiento Interno</button>
+            </div>
+        </div>
+        {{-- En sistema interno --}}
+        @elseif ($registration->status_id == 6)
+        <div class="row justify-content-center">
+            <div>
+                <button class="btn btn-success" id="approveRequest">Aprobar</button>
+                <button class="btn btn-danger" id="rejectRequest">Rechazar</button>
+            </div>
+        </div>
+        {{-- Aprobada/Rechazada --}}
+        @elseif ($registration->status_id == 7 || $registration->status_id == 8)
+        <div class="row justify-content-center">
+            <div>
+                <button class="btn btn-primary" id="finishRequest">Finalizar</button>
+            </div>
+        </div>
+        @endif
+        @endif
     </section>
 </div>
 @endsection
 
 @push('scripts')
-<script>const workId = {{ $registration->id }}</script>
-<script src="{{ asset('/js/works.view.js') }}"></script>
+<script>const jingleId = {{ $registration->id }}</script>
+<script src="{{ asset('/js/jingles.view.js') }}"></script>
 @endpush
 
 @push('styles')

@@ -12,7 +12,7 @@ class Meta extends Model
     protected $table = 'jingles_meta';
 
     protected $fillable = [
-        'distribution_id',
+        'agreement_id',
         'address_country_id',
         'address_state_id',
         'address_state_text',

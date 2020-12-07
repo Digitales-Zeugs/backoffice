@@ -30,6 +30,11 @@ class Log extends Model
         return $this->hasOne('App\Models\Jingles\Action', 'id', 'action_id');
     }
 
+    public function agreement()
+    {
+        return $this->belongsTo('App\Models\Jingles\Agreement', 'agreement_id');
+    }
+
     public function registration()
     {
         return $this->belongsTo('App\Models\Jingles\Registration', 'registration_id');
