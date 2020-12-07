@@ -12,8 +12,6 @@ class NotifyWorkRejection extends Mailable
     use Queueable, SerializesModels;
 
     public $nombre;
-
-    public $nombre;
     public $registration_id;
 
     public function __construct(string $nombre, int $registration_id)
