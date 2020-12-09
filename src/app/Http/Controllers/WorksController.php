@@ -554,9 +554,9 @@ class WorksController extends Controller
                 $errors[] = 'No se pudo notificar al iniciador del trámite porque tiene una dirección de correo electrónica errónea: ' . $registration->initiator->email;
             } else {
                 if ($registration->initiator->member_id) {
-                    Mail::to($registration->initiator->email)->queue(new $mail($registration->initiator->nombre, $registration->id));
+                    Mail::to($registration->initiator->email)->queue(new $mail($registration->initiator->nombre ?? 'Socio', $registration->id));
                 } else {
-                    Mail::to($registration->initiator->email)->queue(new $mail($registration->initiator->name, $registration->id));
+                    Mail::to($registration->initiator->email)->queue(new $mail($registration->initiator->name ?? 'Usuario', $registration->id));
                 }
             }
         }
