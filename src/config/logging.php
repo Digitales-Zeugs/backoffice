@@ -47,6 +47,18 @@ return [
             'level' => 'debug',
         ],
 
+        'sync' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/sadaic-sync.log'),
+            'level' => 'debug',
+        ],
+
+        'expiration' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/sadaic-expiration.log'),
+            'level' => 'debug',
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
