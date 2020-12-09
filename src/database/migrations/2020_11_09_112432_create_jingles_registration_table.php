@@ -62,6 +62,7 @@ class CreateJinglesRegistrationTable extends Migration
             $table->string('tariff_representation')->nullable();
 
             $table->foreignId('status_id')->nullable()->constrained('jingles_registration_status');
+            $table->boolean('approved')->default(false);
 
             $table->timestamps();
         });
