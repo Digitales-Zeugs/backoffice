@@ -74,9 +74,23 @@ class ProcessImports implements ShouldQueue
 
         // Si no estamos trabajando en local
         if (!\App::environment('local')) {
-            // Elimino el archivo
-            Log::channel('sync')->debug("Borrando archivo $this->file");
-            Storage::disk('local')->delete($this->file);
+            // Muevo el archivo a done
+            Log::channel('sync')->debug("Moviendo archivo $this->file");
+
+            $date = new \DateTime('now');
+            $target = pathinfo($this->file);
+
+            $targetPath = str_replace('input', 'done', $target['dirname']);
+            $targetPath .= '/' . $date->format('Y-m-d');
+
+            $targetFile = $targetPath . '/' . $target['basename'];
+
+            // Si el archivo ya existe, le agregamos un sufijo
+            if (Storage::disk('local')->exists($targetFile)) {
+                $targetFile .= $date->format('_His');
+            }
+
+            Storage::disk('local')->move($this->file, $targetFile);
             Log::channel('sync')->debug("Archivo $this->file borrado");
         }
     }
