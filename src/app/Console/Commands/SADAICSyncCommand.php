@@ -40,35 +40,35 @@ class SADAICSyncCommand extends Command
      */
     public function handle()
     {
-        $files = Storage::disk('local')->allFiles('sadaic');
+        $files = Storage::disk('local')->allFiles('sadaic/input');
 
         $updateCities = false;
         foreach($files as $file) {
             $table = "";
             switch($file) {
-                case 'sadaic/DIV_ADMINISTRATIVAS.csv':
+                case 'sadaic/input/DIV_ADMINISTRATIVAS.csv':
                     $table = "source_cities";
                     $updateCities = true;
                 break;
-                case 'sadaic/DOC_MW_REF_INT_GENRE.csv':
+                case 'sadaic/input/DOC_MW_REF_INT_GENRE.csv':
                     $table = "source_genres";
                 break;
-                case 'sadaic/PAISES TIS_N.csv':
+                case 'sadaic/input/PAISES TIS_N.csv':
                     $table = "source_countries";
                 break;
-                case 'sadaic/REF_MW_WORK_ROLE.csv':
+                case 'sadaic/input/REF_MW_WORK_ROLE.csv':
                     $table = "source_roles";
                 break;
-                case 'sadaic/REF_SOCIETY.csv':
+                case 'sadaic/input/REF_SOCIETY.csv':
                     $table = "source_societies";
                 break;
-                case 'sadaic/SOCIOS SGS Completo.csv':
+                case 'sadaic/input/SOCIOS SGS Completo.csv':
                     $table = "source_members";
                 break;
-                case 'sadaic/Tipos Documentos.csv':
+                case 'sadaic/input/Tipos Documentos.csv':
                     $table = "source_types";
                 break;
-                case 'sadaic/DATOS_USUARIOS.csv':
+                case 'sadaic/input/DATOS_USUARIOS.csv':
                     $table = "source_agencies";
                 break;
             }
