@@ -44,9 +44,9 @@ class ExportWorks implements ShouldQueue
                         'nameNumber' => $dist->type == 'member' ? $dist->member->ipname : -1,
                         'name'       => $dist->type == 'member' ? ucwords(strtolower($dist->member->nombre)) : $dist->meta->name,
                         'role'       => $dist->fn,
-                        'porcentPer' => $this->formatPercentage($dist->public),
-                        'porcentMec' => $this->formatPercentage($dist->mechanic),
-                        'porcentSyn' => $this->formatPercentage($dist->sync)
+                        'porcentPer' => $dist->public * 100,
+                        'porcentMec' => $dist->mechanic * 100,
+                        'porcentSyn' => $dist->sync * 100
                     ];
                 });
 
