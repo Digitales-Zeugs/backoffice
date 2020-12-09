@@ -460,7 +460,7 @@ class JinglesController extends Controller
         $errors = [];
 
         foreach($registration->agreements as $agreement) {
-            if ($agreement->type == 'member') {
+            if ($agreement->type['name'] == 'member') {
                 // Si el trámite lo inició un socio y la distribución lo refiere, se acepta directamente
                 if ($registration->member_id && $registration->initiator->member_id == $agreement->member_id) {
                     $agreement->response = 1;

@@ -23,7 +23,7 @@ class IntegrationController extends Controller
     {
         $works = Registration::where('status_id', 6)->get();
 
-        $works_data = $works->map(function(Registration $work) use (&$submissionId) {
+        $works_data = $works->map(function(Registration $work) {
             $interestedParties = $work->distribution->map(function(Distribution $dist) {
                 return [
                     'nameNumber' => $dist->type == 'member' ? $dist->member->ipname : -1,
@@ -41,8 +41,6 @@ class IntegrationController extends Controller
                 'originalTitle'     => $work->title,
                 'interestedParties' => $interestedParties
             ];
-
-            $submissionId++;
 
             return $data;
         });
