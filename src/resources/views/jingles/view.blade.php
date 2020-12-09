@@ -158,7 +158,7 @@
                 @foreach($registration->agreements as $person)
                     <tr>
                         @if ($person->type_id == 1)
-                        <th>{{ $person->member->nombre }}</th>
+                        <th>{{ $person->member->nombre }}<br><small>Socio n° {{ $person->member->codanita }}</small></th>
                         <td>
                             <strong>N° de Documento:</strong> {{ $person->doc_number }}<br>
                             <strong>Correo electrónico:</strong> {{ $person->member->email }}<br>
