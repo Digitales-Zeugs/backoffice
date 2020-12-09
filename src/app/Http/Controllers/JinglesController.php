@@ -115,7 +115,7 @@ class JinglesController extends Controller
                         InternalLog::create([
                             'registration_id' => $registration->id,
                             'agreement_id'    => $agreement->id,
-                            'action_id'       => 12, // REGISTRATION_NOT_NOTIFIED
+                            'action_id'       => 12, // NOT_NOTIFIED
                             'time'            => now(),
                             'action_data'     => ['member' => $agreement->member_id]
                         ]);
@@ -485,7 +485,7 @@ class JinglesController extends Controller
                     InternalLog::create([
                         'registration_id' => $registration->id,
                         'agreement_id'    => $agreement->id,
-                        'action_id'       => 12, // REGISTRATION_NOT_NOTIFIED
+                        'action_id'       => 12, // NOT_NOTIFIED
                         'time'            => now(),
                         'action_data'     => ['member' => $agreement->member_id]
                     ]);

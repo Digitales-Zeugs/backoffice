@@ -231,7 +231,7 @@
                             : $log->agreement->meta->name
                             }}{{ isset($log->action_data['operator_id']) ? ' por ' . $log->action_data['operator_id'] : '' }})</td>
                         @break
-                    @case('REGISTRATION_NOT_NOTIFIED')
+                    @case('NOT_NOTIFIED')
                         <td>{{ $log->action->description }} ({{
                             $log->agreement->member_idx
                             ? $log->agreement->member->nombre

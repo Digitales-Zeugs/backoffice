@@ -159,7 +159,7 @@ class WorksController extends Controller
                         InternalLog::create([
                             'registration_id' => $registration->id,
                             'distribution_id' => $distribution->id,
-                            'action_id'       => 11, // REGISTRATION_NOT_NOTIFIED
+                            'action_id'       => 11, // NOT_NOTIFIED
                             'time'            => now(),
                             'action_data'     => ['member' => $distribution->member_id]
                         ]);
@@ -529,7 +529,7 @@ class WorksController extends Controller
                     InternalLog::create([
                         'registration_id' => $registration->id,
                         'distribution_id' => $distribution->id,
-                        'action_id'       => 11, // REGISTRATION_NOT_NOTIFIED
+                        'action_id'       => 11, // NOT_NOTIFIED
                         'time'            => now(),
                         'action_data'     => ['member' => $distribution->member_id]
                     ]);
