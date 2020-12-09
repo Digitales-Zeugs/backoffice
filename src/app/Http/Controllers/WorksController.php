@@ -82,12 +82,6 @@ class WorksController extends Controller
             case 'sendToInternal':
                 return $this->sendToInternal($registration);
             break;
-            case 'approveRequest':
-                return $this->approveRequest($registration);
-            break;
-            case 'rejectRequest':
-                return $this->rejectRequest($registration);
-            break;
             case 'finishRequest':
                 return $this->finishRequest($registration);
             break;
@@ -264,82 +258,6 @@ class WorksController extends Controller
             ];
         } catch (Throwable $t) {
             Log::error("Error enviando trámite de registro de obra al sistema interno",
-                [
-                    "error" => $t,
-                    "data"  => json_encode($request->all(), JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_INVALID_UTF8_IGNORE )
-                ]
-            );
-
-            return [
-                'status'   => 'failed'
-            ];
-        }
-    }
-
-    private function approveRequest(Registration $registration)
-    {
-        try {
-            if (!Auth::user()->can('nb_obras', 'homologa')) {
-                abort(403);
-            }
-
-            $registration->status_id = 7;
-            $registration->approved = true;
-            $registration->save();
-
-            InternalLog::create([
-                'registration_id' => $registration->id,
-                'action_id'       => 9, // REQUEST_ACCEPTED
-                'action_data'     => ['operator_id' => Auth::user()->usuarioid],
-                'time'            => now()
-            ]);
-
-            $errors = $this->notifyMembers($registration, NotifyWorkApproval::class);
-
-            return [
-                'status' => 'success',
-                'errors' => $errors
-            ];
-        } catch (Throwable $t) {
-            Log::error("Error guardando aprobación del trámite",
-                [
-                    "error" => $t,
-                    "data"  => json_encode($request->all(), JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_INVALID_UTF8_IGNORE )
-                ]
-            );
-
-            return [
-                'status'   => 'failed'
-            ];
-        }
-    }
-
-    private function rejectRequest(Registration $registration)
-    {
-        try {
-            if (!Auth::user()->can('nb_obras', 'homologa')) {
-                abort(403);
-            }
-
-            $registration->status_id = 8;
-            $registration->approved = false;
-            $registration->save();
-
-            InternalLog::create([
-                'registration_id' => $registration->id,
-                'action_id'       => 10, // REQUEST_REJECTED
-                'action_data'     => ['operator_id' => Auth::user()->usuarioid],
-                'time'            => now()
-            ]);
-
-            $errors = $this->notifyMembers($registration, NotifyWorkRejection::class);
-
-            return [
-                'status' => 'success',
-                'errors' => $errors
-            ];
-        } catch (Throwable $t) {
-            Log::error("Error guardando rechazo del trámite",
                 [
                     "error" => $t,
                     "data"  => json_encode($request->all(), JSON_PARTIAL_OUTPUT_ON_ERROR | JSON_INVALID_UTF8_IGNORE )

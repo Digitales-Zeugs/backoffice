@@ -238,14 +238,6 @@
                 <button class="btn btn-primary" id="sendToInternal">Pase a Procesamiento Interno</button>
             </div>
         </div>
-        {{-- En sistema interno --}}
-        @elseif ($registration->status_id == 6)
-        <div class="row justify-content-center">
-            <div>
-                <button class="btn btn-success" id="approveRequest">Aprobar</button>
-                <button class="btn btn-danger" id="rejectRequest">Rechazar</button>
-            </div>
-        </div>
         {{-- Aprobada/Rechazada --}}
         @elseif ($registration->status_id == 7 || $registration->status_id == 8)
         <div class="row justify-content-center">
