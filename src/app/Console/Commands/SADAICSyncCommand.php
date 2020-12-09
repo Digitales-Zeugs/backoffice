@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
+use App\Jobs\ImportWorks;
 use App\Jobs\ProcessImports;
 use App\Jobs\NormalizeCities;
 
@@ -79,6 +80,16 @@ class SADAICSyncCommand extends Command
                 $this->line("<comment>Queueing job de importación:</comment> {$file}");
 
                 ProcessImports::dispatch($file, $table);
+
+                $runTime = number_format((microtime(true) - $startTime), 2);
+                $this->line("<info>Job de importación queued:</info>  {$file} ({$runTime}s)");
+            }
+
+            if (substr($file, -5) == '.json') {
+                $startTime = microtime(true);
+                $this->line("<comment>Queueing job de importación:</comment> {$file}");
+
+                ImportWorks::dispatch($file);
 
                 $runTime = number_format((microtime(true) - $startTime), 2);
                 $this->line("<info>Job de importación queued:</info>  {$file} ({$runTime}s)");
