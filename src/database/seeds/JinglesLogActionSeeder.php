@@ -26,5 +26,7 @@ class JinglesLogActionSeeder extends Seeder
 
         Action::firstOrCreate(['name' => 'REGISTER_ACCEPTED', 'description' => 'Registro aceptado']);
         Action::firstOrCreate(['name' => 'REGISTER_REJECTED', 'description' => 'Registro rechazado']);
+
+        Action::firstOrCreate(['name' => 'NOT_NOTIFIED', 'description' => 'No se pudo notificar al socio porque el mail configurado no es válido']);
     }
 }

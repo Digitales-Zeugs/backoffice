@@ -24,6 +24,7 @@ class CreateJinglesRegistrationAgreementsTable extends Migration
             $table->string('doc_number', 20)->nullable();
 
             $table->boolean('response')->nullable()->default(null);
+            $table->string('liable_id', 32)->nullable();
 
             $table->timestamps();
         });

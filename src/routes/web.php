@@ -24,6 +24,13 @@ Route::post('/works/{registration}/status', 'WorksController@changeStatus');
 Route::post('/works/{registration}/response', 'WorksController@response');
 Route::post('/works/{registration}/observations', 'WorksController@saveObservations');
 
+Route::get('/jingles', 'JinglesController@index');
+Route::get('/jingles/datatables', 'JinglesController@datatables');
+Route::get('/jingles/{registration}', 'JinglesController@showView');
+Route::post('/jingles/{registration}/status', 'JinglesController@changeStatus');
+Route::post('/jingles/{registration}/response', 'JinglesController@response');
+Route::post('/jingles/{registration}/observations', 'JinglesController@saveObservations');
+
 Route::get('/integration', 'IntegrationController@index');
 Route::get('/integration/works', 'IntegrationController@exportWorks');
 Route::post('/integration/works', 'IntegrationController@importWorks');

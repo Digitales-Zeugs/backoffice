@@ -1,38 +1,45 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models\Jingles;
 
+use App\Models\SADAIC\Countries;
+use App\Models\SADAIC\States;
 use Illuminate\Database\Eloquent\Model;
 
 class Registration extends Model
 {
     protected $table = 'jingles_registration';
 
+    protected $hidden = ['people'];
+
     public const REQUEST_ACTION = [
-        1 => 'Original',
-        2 => 'Reducción',
-        3 => 'Renovación',
-        4 => 'Exportación'
+        [ 'id' => 1, 'name' => 'Original' ],
+        [ 'id' => 2, 'name' => 'Reducción' ],
+        [ 'id' => 3, 'name' => 'Renovación' ],
+        [ 'id' => 4, 'name' => 'Exportación' ]
     ];
 
     public const BROADCAST_TERRITORY = [
-        1 => 'Nacional',
-        2 => 'Provincial',
-        3 => 'Extranjero'
+        [ 'id' => 1, 'name' => 'Nacional' ],
+        [ 'id' => 2, 'name' => 'Provincial' ],
+        [ 'id' => 3, 'name' => 'Extranjero' ]
     ];
 
     public const AGENCY_TYPE = [
-        1 => 'Agencia',
-        2 => 'Productora'
+        [ 'id' => 1, 'name' => 'Agencia' ],
+        [ 'id' => 2, 'name' => 'Productora' ]
     ];
 
     public const TARIFF_PAYER = [
-        1 => 'Anunciante',
-        2 => 'Agencia',
-        3 => 'Productora'
+        [ 'id' => 1, 'name' => 'Anunciante' ],
+        [ 'id' => 2, 'name' => 'Agencia' ],
+        [ 'id' => 3, 'name' => 'Productora' ]
     ];
 
     protected $fillable = [
+        'member_id',
+        'user_id',
         'is_special',
         'request_action_id',
         'validity',
@@ -68,74 +75,176 @@ class Registration extends Model
         'work_music_mod'    => 'boolean',
         'authors_agreement' => 'boolean',
         'authors_tariff'    => 'decimal:2',
-        'ads_duration'      => 'array'
+        'ads_duration'      => 'array',
+        'territory_id'      => 'array'
     ];
 
     protected $dates = [
         'air_date'
     ];
 
-    public function request_action()
+    protected $attributes = [
+        'is_special'        => false,
+        'validity'          => 1,
+        'media_id'          => 1,
+        'agency_type_id'    => 1,
+        'work_original'     => 1,
+        'authors_agreement' => false
+    ];
+
+    /**
+     * Atributos "estáticos" (no guardados en la BBDD)
+     */
+    public function getRequestActionAttribute()
     {
         if (!$this->request_action_id) {
             return null;
         }
 
-        if (!array_key_exists($this->request_action_id, $this->REQUEST_ACTION)) {
+        $key = array_search($this->request_action_id, array_column(self::REQUEST_ACTION, 'id'));
+        if ($key === false) {
             return null;
         }
 
-        return [
-            'id'   => $this->request_action_id,
-            'name' => $this->REQUEST_ACTION[$this->request_action_id]
-        ];
+        return self::REQUEST_ACTION[$key]['name'];
     }
 
-    public function broadcast_territory()
+    public function getBroadcastTerritoryAttribute()
     {
         if (!$this->broadcast_territory_id) {
             return null;
         }
 
-        if (!array_key_exists($this->broadcast_territory_id, $this->BROADCAST_TERRITORY)) {
+        $key = array_search($this->broadcast_territory_id, array_column(self::BROADCAST_TERRITORY, 'id'));
+        if ($key === false) {
             return null;
         }
 
-        return [
-            'id'   => $this->broadcast_territory_id,
-            'name' => $this->BROADCAST_TERRITORY[$this->broadcast_territory_id]
-        ];
+        return self::BROADCAST_TERRITORY[$key]['name'];
     }
 
-    public function agency_type()
+    public function getAgencyTypeAttribute()
     {
         if (!$this->agency_type_id) {
             return null;
         }
 
-        if (!array_key_exists($this->agency_type_id, $this->AGENCY_TYPE)) {
+        $key = array_search($this->agency_type_id, array_column(self::AGENCY_TYPE, 'id'));
+        if ($key === false) {
             return null;
         }
 
-        return [
-            'id'   => $this->agency_type_id,
-            'name' => $this->AGENCY_TYPE[$this->agency_type_id]
-        ];
+        return self::AGENCY_TYPE[$key]['name'];
     }
 
-    public function tariff_payer()
+    public function getTariffPayerAttribute()
     {
         if (!$this->tariff_payer_id) {
             return null;
         }
 
-        if (!array_key_exists($this->tariff_payer_id, $this->TARIFF_PAYER)) {
+        $key = array_search($this->tariff_payer_id, array_column(self::TARIFF_PAYER, 'id'));
+        if ($key === false) {
             return null;
         }
 
-        return [
-            'id'   => $this->tariff_payer_id,
-            'name' => $this->TARIFF_PAYER[$this->tariff_payer_id]
-        ];
+        return self::TARIFF_PAYER[$key]['name'];
+    }
+
+    /**
+     * Personas relacionadas
+     */
+    public function loadPeople()
+    {
+        $this->setRelation('applicant', $this->people->first(function ($item, $key) {
+            return $item->pivot->type == 'applicant';
+        }));
+
+        $this->setRelation('advertiser', $this->people->first(function ($item, $key) {
+            return $item->pivot->type == 'advertiser';
+        }));
+
+        $this->setRelation('agency', $this->people->first(function ($item, $key) {
+            return $item->pivot->type == 'agency';
+        }));
+    }
+
+    public function getApplicantAttribute()
+    {
+        if (!array_key_exists('applicant', $this->relations)) $this->loadPeople();
+
+        return $this->getRelation('applicant');
+    }
+
+    public function getAdvertiserAttribute()
+    {
+        if (!array_key_exists('advertiser', $this->relations)) $this->loadPeople();
+
+        return $this->getRelation('advertiser');
+    }
+
+    public function getAgencyAttribute()
+    {
+        if (!array_key_exists('agency', $this->relations)) $this->loadPeople();
+
+        return $this->getRelation('agency');
+    }
+
+    /**
+     * Territorios relacionados
+     */
+    public function getTerritoriesAttribute()
+    {
+        // Si no está seteado, es falsy, no es un array o no tiene elementos
+        if (!$this->territory_id || !is_array($this->territory_id) || count($this->territory_id) == 0) {
+            return collect([]);
+        }
+
+        // Provincias
+        if ($this->broadcast_territory_id == 2) {
+            return States::whereIn('id', $this->territory_id)->get();
+        // Países
+        } elseif ($this->broadcast_territory_id == 3) {
+            return Countries::whereIn('idx', $this->territory_id)->get();
+        }
+
+        return collect([]);
+    }
+
+    /**
+     * Otras relaciones
+     */
+    public function status()
+    {
+        return $this->hasOne('App\Models\Jingles\Status', 'id', 'status_id');
+    }
+
+    public function people()
+    {
+        return $this->belongsToMany('App\Models\Jingles\Person', 'jingles_parts')->withPivot(['type']);
+    }
+
+    public function agreements()
+    {
+        return $this->hasMany('App\Models\Jingles\Agreement');
+    }
+
+    public function logs()
+    {
+        return $this->hasMany('App\Models\Jingles\Log', 'registration_id', 'id');
+    }
+
+    public function media()
+    {
+        return $this->hasOne('App\Models\Jingles\Media', 'id', 'media_id');
+    }
+
+    public function initiator()
+    {
+        if ($this->member_id) {
+            return $this->belongsTo('App\Models\Member', 'member_id');
+        } else {
+            return $this->belongsTo('App\Models\User', 'user_id');
+        }
     }
 }

@@ -14,9 +14,9 @@ class JinglesStatusSeeder extends Seeder
     {
         Status::firstOrCreate(['name' => 'Nuevo']);
         Status::firstOrCreate(['name' => 'En Proceso']);
-        Status::firstOrCreate(['name' => 'Disputa Propietarios']);
+        Status::firstOrCreate(['name' => 'Disputa Autores']);
         Status::firstOrCreate(['name' => 'Vencido']);
-        Status::firstOrCreate(['name' => 'Aprobado Propietarios']);
+        Status::firstOrCreate(['name' => 'Aprobado Autores']);
         Status::firstOrCreate(['name' => 'En Procesamiento Interno']);
         Status::firstOrCreate(['name' => 'Aprobado SADAIC']);
         Status::firstOrCreate(['name' => 'Rechazado SADAIC']);

@@ -33,6 +33,14 @@
                     </a>
                 </li>
                 @endif
+                @if (Auth::user()->can('nb_obras', 'lee'))
+                <li class="nav-item">
+                    <a href="/jingles" class="nav-link @if(Request::path() == 'jingles') active @endif">
+                        <i class="nav-icon fas fa-folder-plus"></i>
+                        <p>Solicitudes de Inclusión</p>
+                    </a>
+                </li>
+                @endif
                 @if (Auth::user()->usuarioid == 'lmiaton')
                 <li class="nav-item">
                     <a href="/integration" class="nav-link @if(Request::path() == 'integration') active @endif">

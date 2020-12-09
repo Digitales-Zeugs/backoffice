@@ -153,13 +153,13 @@ class WorksController extends Controller
 
                     if (trim($distribution->member->email) != "" && filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
                         // Si tiene dirección válida, notificamos
-                        Mail::to($distribution->member->email)->queue(new NotifyDistribution($distribution->member->nombre));
+                        Mail::to($distribution->member->email)->queue(new NotifyDistribution($distribution->member->nombre, $registration->id));
                     } else {
                         // Si no, logeamos
                         InternalLog::create([
                             'registration_id' => $registration->id,
                             'distribution_id' => $distribution->id,
-                            'action_id'       => 11, // REGISTRATION_NOT_NOTIFIED
+                            'action_id'       => 11, // NOT_NOTIFIED
                             'time'            => now(),
                             'action_data'     => ['member' => $distribution->member_id]
                         ]);
@@ -523,13 +523,13 @@ class WorksController extends Controller
 
                 if (trim($distribution->member->email) != "" && filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
                     // Si tiene dirección válida, notificamos
-                    Mail::to($distribution->member->email)->queue(new $mail($distribution->member->nombre));
+                    Mail::to($distribution->member->email)->queue(new $mail($distribution->member->nombre, $registration->id));
                 } else {
                     // Si no, logeamos
                     InternalLog::create([
                         'registration_id' => $registration->id,
                         'distribution_id' => $distribution->id,
-                        'action_id'       => 11, // REGISTRATION_NOT_NOTIFIED
+                        'action_id'       => 11, // NOT_NOTIFIED
                         'time'            => now(),
                         'action_data'     => ['member' => $distribution->member_id]
                     ]);
@@ -554,9 +554,9 @@ class WorksController extends Controller
                 $errors[] = 'No se pudo notificar al iniciador del trámite porque tiene una dirección de correo electrónica errónea: ' . $registration->initiator->email;
             } else {
                 if ($registration->initiator->member_id) {
-                    Mail::to($registration->initiator->email)->queue(new $mail($registration->initiator->nombre));
+                    Mail::to($registration->initiator->email)->queue(new $mail($registration->initiator->nombre, $registration->id));
                 } else {
-                    Mail::to($registration->initiator->email)->queue(new $mail($registration->initiator->name));
+                    Mail::to($registration->initiator->email)->queue(new $mail($registration->initiator->name, $registration->id));
                 }
             }
         }

@@ -65,7 +65,7 @@ class SADAICExpirationCommand extends Command
 
                 if (trim($distribution->member->email) != "" && filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
                     // Si tiene dirección válida, notificamos
-                    Mail::to($distribution->member->email)->queue(new NotifyExpiration($distribution));
+                    Mail::to($distribution->member->email)->queue(new NotifyExpiration($distribution, $item->id));
                 }
             }
         });

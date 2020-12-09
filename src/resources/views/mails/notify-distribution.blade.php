@@ -1,7 +1,7 @@
 @extends('mails.template')
 
 @section('content')
-<div class="kicker">Solicitud de Registro de Obra</div>
+<div class="kicker">Solicitud #{{ $registration_id }}</div>
 <p>¡Hola {{ $nombre }}!</p>
 <p>Has sido incluido como parte en un trámite de Registro de Obra, para ver más información accedé al sitio de autogestión de SADAIC:</p>
 <div class="cta">
