@@ -39,8 +39,8 @@ class ExportJingles implements ShouldQueue
         try {
             // Preparamos los datos y actualizamos el estado de la solicitud
             $jingles_data = $jingles->map(function(Registration $jingle) {
-                //$jingle->status_id = 7; // En Procesamiento Interno
-                //$jingle->save();
+                $jingle->status_id = 7; // En Procesamiento Interno
+                $jingle->save();
 
                 $data = [
                     'id'             => $jingle->id,
