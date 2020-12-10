@@ -22,7 +22,7 @@ class JinglesLogActionSeeder extends Seeder
         Action::firstOrCreate(['name' => 'AGREEMENT_CONFIRMED', 'description' => 'Confirmación de acuerdo']);
         Action::firstOrCreate(['name' => 'AGREEMENT_REJECTED', 'description' => 'Rechazo de acuerdo']);
 
-        Action::firstOrCreate(['name' => 'SEND_TO_INTERNAL', 'description' => 'Enviado a Sistema Interno']);
+        Action::firstOrCreate(['name' => 'SENT_TO_INTERNAL', 'description' => 'Enviado a Sistema Interno']);
 
         Action::firstOrCreate(['name' => 'REGISTER_ACCEPTED', 'description' => 'Registro aceptado']);
         Action::firstOrCreate(['name' => 'REGISTER_REJECTED', 'description' => 'Registro rechazado']);

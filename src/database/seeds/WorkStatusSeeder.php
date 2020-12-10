@@ -17,6 +17,7 @@ class WorkStatusSeeder extends Seeder
         Status::firstOrCreate(['name' => 'Disputa Propietarios']);
         Status::firstOrCreate(['name' => 'Vencido']);
         Status::firstOrCreate(['name' => 'Aprobado Propietarios']);
+        Status::firstOrCreate(['name' => 'Para enviar a Procesamiento Interno']);
         Status::firstOrCreate(['name' => 'En Procesamiento Interno']);
         Status::firstOrCreate(['name' => 'Aprobado SADAIC']);
         Status::firstOrCreate(['name' => 'Rechazado SADAIC']);

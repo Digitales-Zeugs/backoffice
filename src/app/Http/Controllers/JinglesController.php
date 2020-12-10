@@ -178,7 +178,7 @@ class JinglesController extends Controller
         }
 
         // Cambio estado en la BBDD
-        $registration->status_id = 8; // Rechazado
+        $registration->status_id = 9; // Rechazado
         $registration->save();
 
         InternalLog::create([
@@ -202,7 +202,7 @@ class JinglesController extends Controller
                 abort(403);
             }
 
-            $registration->status_id = 6;
+            $registration->status_id = 6; // Para pasar a PI
             $registration->save();
 
             InternalLog::create([
@@ -239,7 +239,7 @@ class JinglesController extends Controller
                 abort(403);
             }
 
-            $registration->status_id = 7;
+            $registration->status_id = 8; // Aprobado
             $registration->approved = true;
             $registration->save();
 
@@ -277,7 +277,7 @@ class JinglesController extends Controller
                 abort(403);
             }
 
-            $registration->status_id = 8;
+            $registration->status_id = 9; // Rechazado
             $registration->approved = false;
             $registration->save();
 
@@ -315,7 +315,7 @@ class JinglesController extends Controller
                 abort(403);
             }
 
-            $registration->status_id = 9;
+            $registration->status_id = 10; // Finalizado
             $registration->save();
 
             InternalLog::create([

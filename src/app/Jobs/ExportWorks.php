@@ -50,7 +50,7 @@ class ExportWorks implements ShouldQueue
                     ];
                 });
 
-                $work->status_id = 6; // En Procesamiento Interno
+                $work->status_id = 7; // En Procesamiento Interno
                 $work->save();
 
                 $data = [
@@ -81,7 +81,7 @@ class ExportWorks implements ShouldQueue
 
             // Calculamos el nombre del archivo
             $fileName = 'work-';
-            $fileName .= $date->format('Y-m-d\TH:i:s');
+            $fileName .= $date->format('Y\-m\-d\TH\-i\-s');
             $fileName .= '-128-061-registros.json';
 
             // Guardamos el archivo en el storage
