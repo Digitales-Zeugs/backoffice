@@ -7,8 +7,8 @@ Route::get('/', 'DashboardController@index');
 
 Route::get('/members', 'MembersController@index');
 Route::get('/members/datatables', 'MembersController@datatables');
-Route::get('/members/{profile}', 'MembersController@view');
-Route::post('/members/{profile}/status', 'MembersController@changeStatus');
+Route::get('/members/{registration}', 'MembersController@view');
+Route::post('/members/{registration}/status', 'MembersController@changeStatus');
 
 Route::get('/profiles', 'ProfilesController@index');
 Route::get('/profiles/datatables', 'ProfilesController@datatables');

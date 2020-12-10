@@ -14,6 +14,7 @@ class MemberRegistrationStatusSeeder extends Seeder
     {
         Status::firstOrCreate(['name' => 'Pendiente']);
         Status::firstOrCreate(['name' => 'En espera']);
+        Status::firstOrCreate(['name' => 'Para procesar']);
         Status::firstOrCreate(['name' => 'En proceso']);
         Status::firstOrCreate(['name' => 'Aceptado']);
         Status::firstOrCreate(['name' => 'Rechazado']);

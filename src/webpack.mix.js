@@ -18,6 +18,9 @@ mix.js('resources/js/dashboard.js', 'public/js');
 
 mix.js('resources/js/login.js', 'public/js');
 
+mix.js('resources/js/members.index.js', 'public/js');
+mix.js('resources/js/members.view.js', 'public/js');
+
 mix.js('resources/js/works.index.js', 'public/js');
 mix.js('resources/js/works.view.js', 'public/js');
 

@@ -15,6 +15,7 @@
                     <th>Email</th>
                     <th>Celular</th>
                     <th>Estado</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -24,45 +25,6 @@
 @endsection
 
 @push('scripts')
-<script>
-window.onload = function() {
-    const $dt = $('.table').DataTable({
-        ajax: '/members/datatables',
-        serverSide: true,
-        language: {
-            url: '/localisation/datatables.json'
-        },
-        columns: [
-            { name: 'id', data: 'id' },
-            { name: 'name', data: 'name' },
-            { name: 'doc_number', data: 'doc_number' },
-            { name: 'email', data: 'email' },
-            { name: 'mobile', data: 'mobile' },
-            { name: 'status_id', data: 'status.name' },
-        ],
-        searchCols: [
-            null,
-            null,
-            null,
-            null,
-            null,
-            { search: 1 }, // Status "Pendiente"
-        ],
-        initComplete: () => {
-            // Reemplazamos la búsqueda por defecto por un select con los estados de los trámites
-            const statusOptions = @json($status);
-            const statusSelect = `<select id="statusFilter">${
-                statusOptions.map(opt => `<option value="${ opt.id }">${ opt.name }</option>`).join()
-            }</select>`;
-            $('.dataTables_filter').html(statusSelect);
-            $('#statusFilter').on('change', (event) => {
-                $dt.column('status_id:name')
-                    .search(event.target.value)
-                    .draw();
-            });
-        }
-    });
-}
-</script>
+<script>const statusOptions = @json($status);</script>
+<script src="{{ asset('/js/members.index.js') }}"></script>
 @endpush
-
