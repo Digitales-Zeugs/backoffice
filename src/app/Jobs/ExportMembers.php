@@ -38,8 +38,8 @@ class ExportMembers implements ShouldQueue
         try {
             // Preparamos los datos y actualizamos el estado de la solicitud
             $members_data = $members->map(function(Registration $member) {
-                //$member->status_id = 3; // En Proceso
-                //$member->save();
+                $member->status_id = 3; // En Proceso
+                $member->save();
 
                 $data['id'] = $member->id;
                 $data['nombre'] = $member->name;
