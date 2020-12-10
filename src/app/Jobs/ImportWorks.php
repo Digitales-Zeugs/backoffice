@@ -74,19 +74,19 @@ class ImportWorks implements ShouldQueue
                 }
     
                 // Si la solicitud no está a la espera de respuesta, omitimos el registro
-                if ($work->status_id != 6) {
+                if ($work->status_id != 6) { // Para pasar a PI
                     $events[] = "Respuesta $ack->submissionId omitida porque la solicitud(id $ack->originalSubmissionId) no está a la espera de respuesta";
                     $stats['failure']++;
                     continue;
                 }
     
                 if ($ack->transactionStatus == 'FullyAccepted') {
-                    $work->status_id = 7;
+                    $work->status_id = 8; // Aprobado
                     $work->approved = true;
                     $work->codwork = $ack->codworkSq;
                     $stats['success']++;
                 } else if ($ack->transactionStatus == 'Rejected') {
-                    $work->status_id = 8;
+                    $work->status_id = 9; // Rechazado
                     $work->approved = true;
                     $stats['success']++;
                 } else {

@@ -22,7 +22,7 @@ class WorkLogActionSeeder extends Seeder
         LogAction::firstOrCreate(['name' => 'DISTRIBUTION_CONFIRMED', 'description' => 'Confirmación de distribución']);
         LogAction::firstOrCreate(['name' => 'DISTRIBUTION_REJECTED', 'description' => 'Rechazo de distribución']);
 
-        LogAction::firstOrCreate(['name' => 'SEND_TO_INTERNAL', 'description' => 'Enviado a Sistema Interno']);
+        LogAction::firstOrCreate(['name' => 'SENT_TO_INTERNAL', 'description' => 'Enviado al Sistema Interno']);
 
         LogAction::firstOrCreate(['name' => 'REQUEST_ACCEPTED', 'description' => 'Registro aceptado']);
         LogAction::firstOrCreate(['name' => 'REQUEST_REJECTED', 'description' => 'Registro rechazado']);

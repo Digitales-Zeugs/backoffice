@@ -239,7 +239,7 @@
             </div>
         </div>
         {{-- Aprobada/Rechazada --}}
-        @elseif ($registration->status_id == 7 || $registration->status_id == 8)
+        @elseif ($registration->status_id == 8 || $registration->status_id == 9)
         <div class="row justify-content-center">
             <div>
                 <button class="btn btn-primary" id="finishRequest">Finalizar</button>

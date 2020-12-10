@@ -165,6 +165,7 @@
                         @else
                         <th>{{ $person->meta->name }}</th>
                         <td>
+                            <strong>N° de Documento:</strong> {{ $person->doc_number }}<br>
                             <strong>Nacimiento:</strong> {{ $person->meta->birth_date->format('d/m/Y') }}, {{ $person->meta->birth_country->name_ter }}<br>
                             <strong>Dirección:</strong> {{ $person->meta->full_address }}<br>
                             <strong>Correo electrónico:</strong> <a href="mailto:{{ $person->meta->email }}">{{ $person->meta->email }}</a><br>
@@ -275,7 +276,7 @@
             </div>
         </div>
         {{-- En sistema interno --}}
-        @elseif ($registration->status_id == 6)
+        @elseif ($registration->status_id == 7)
         <div class="row justify-content-center">
             <div>
                 <button class="btn btn-success" id="approveRequest">Aprobar</button>
@@ -283,7 +284,7 @@
             </div>
         </div>
         {{-- Aprobada/Rechazada --}}
-        @elseif ($registration->status_id == 7 || $registration->status_id == 8)
+        @elseif ($registration->status_id == 8 || $registration->status_id == 9)
         <div class="row justify-content-center">
             <div>
                 <button class="btn btn-primary" id="finishRequest">Finalizar</button>

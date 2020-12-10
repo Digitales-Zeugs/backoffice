@@ -216,7 +216,7 @@ class WorksController extends Controller
         }
 
         // Cambio estado en la BBDD
-        $registration->status_id = 8; // Rechazado
+        $registration->status_id = 9; // Rechazado
         $registration->save();
 
         InternalLog::create([
@@ -240,7 +240,7 @@ class WorksController extends Controller
                 abort(403);
             }
 
-            $registration->status_id = 6;
+            $registration->status_id = 6; // Para enviar a SI
             $registration->save();
 
             InternalLog::create([
@@ -277,7 +277,7 @@ class WorksController extends Controller
                 abort(403);
             }
 
-            $registration->status_id = 9;
+            $registration->status_id = 10; // Finalizado
             $registration->save();
 
             InternalLog::create([
