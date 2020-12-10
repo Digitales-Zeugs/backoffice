@@ -5,6 +5,7 @@ namespace App\Jobs;
 use \Exception;
 use App\Models\Work\Distribution;
 use App\Models\Work\Registration;
+use App\Models\Members\Registration as MemberRegistration;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -63,16 +64,16 @@ class ImportWorks implements ShouldQueue
                     $stats['failure']++;
                     continue;
                 }
-    
+
                 $work = Registration::find($ack->originalSubmissionId);
-    
+
                 // Si no encontramos la solicitud en la BBDD, omitimos el registro
                 if (!$work) {
                     $events[] = "Respuesta $ack->submissionId omitida porque no se encontro solicitud(id $ack->originalSubmissionId) en la BBDD";
                     $stats['failure']++;
                     continue;
                 }
-    
+
                 // Si la solicitud no está a la espera de respuesta, omitimos el registro
                 if ($work->status_id != 6) { // Para pasar a PI
                     $events[] = "Respuesta $ack->submissionId omitida porque la solicitud(id $ack->originalSubmissionId) no está a la espera de respuesta";
@@ -84,6 +85,13 @@ class ImportWorks implements ShouldQueue
                     $work->status_id = 8; // Aprobado
                     $work->approved = true;
                     $work->codwork = $ack->codworkSq;
+
+                    $member = MemberRegistration::where('work_id', $work->id)->get();
+                    if ($member) {
+                        $member->status_id = 3; // Para procesar
+                        $member->save();
+                    }
+
                     $stats['success']++;
                 } else if ($ack->transactionStatus == 'Rejected') {
                     $work->status_id = 9; // Rechazado
@@ -94,7 +102,7 @@ class ImportWorks implements ShouldQueue
                     $stats['failure']++;
                     continue;
                 }
-    
+
                 $work->save();
             }
 
