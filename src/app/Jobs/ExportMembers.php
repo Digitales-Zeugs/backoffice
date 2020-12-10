@@ -27,7 +27,7 @@ class ExportMembers implements ShouldQueue
     {
         Log::channel('sync')->debug("Iniciando exportación de las solicitudes de registro de socio para pasar a gestión interna");
 
-        $members = Registration::where('status_id', 1)->get();
+        $members = Registration::where('status_id', 3)->get();
 
         if (!$members->count()) {
             Log::channel('sync')->debug("No hay solicitudes de registro de socio para exportar");

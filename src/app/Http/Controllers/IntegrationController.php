@@ -286,7 +286,7 @@ class IntegrationController extends Controller
 
     public function exportMembers()
     {
-        $members = MemberRegistration::where('status_id', 1)->get();
+        $members = MemberRegistration::where('status_id', 3)->get();
 
         // Preparamos los datos y actualizamos el estado de la solicitud
         $members_data = $members->map(function(MemberRegistration $member) {
