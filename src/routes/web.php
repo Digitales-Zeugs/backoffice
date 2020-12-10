@@ -33,6 +33,8 @@ Route::post('/jingles/{registration}/observations', 'JinglesController@saveObser
 
 Route::get('/integration', 'IntegrationController@index');
 Route::get('/integration/works', 'IntegrationController@exportWorks');
+Route::get('/integration/jingles', 'IntegrationController@exportJingles');
+Route::get('/integration/members', 'IntegrationController@exportMembers');
 Route::post('/integration/works', 'IntegrationController@importWorks');
 
 Route::get('/login', 'AuthController@login')->name('login');

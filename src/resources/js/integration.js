@@ -40,3 +40,11 @@ $('#importWorksFile').on('change', (event) => {
         event.target.value = '';
     });
 });
+
+$('#exportJingles').on('click', () => {
+    window.location = '/integration/jingles';
+});
+
+$('#exportMembers').on('click', () => {
+    window.location = '/integration/members';
+});
