@@ -67,12 +67,20 @@
         </table>
     </section>
     @if (Auth::user()->can('nb_socios', 'carga'))
-    {{-- Trámite Nuevo --}}
+        {{-- Trámite Nuevo --}}
         @if ($registration->status_id == 1)
         <div class="row justify-content-center">
             <div>
                 <button class="btn btn-success" id="beginAction">Iniciar Proceso</button>
                 <button class="btn btn-danger" id="rejectAction">Rechazar Solicitud</button>
+            </div>
+        </div>
+        {{-- Trámite en proceso interno --}}
+        @elseif ($registration->status_id == 4)
+        <div class="row justify-content-center">
+            <div>
+                <button class="btn btn-success" id="approveRequest">Aprobar</button>
+                <button class="btn btn-danger" id="rejectRequest">Rechazar</button>
             </div>
         </div>
         @endif

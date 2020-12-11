@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Members\Registration;
 use App\Models\Members\Status;
+use App\Mail\NotifyMemberApproval;
 use App\Mail\NotifyMemberRejection;
 use App\Mail\NotifyMemberSendToInternal;
 use Illuminate\Http\Request;
@@ -70,6 +71,12 @@ class MembersController extends Controller
             case 'rejectAction':
                 return $this->rejectAction($registration);
             break;
+            case 'approveRequest':
+                return $this->approveRequest($registration);
+            break;
+            case 'rejectRequest':
+                return $this->rejectRequest($registration);
+            break;
             default:
                 abort(403);
         }
@@ -95,6 +102,44 @@ class MembersController extends Controller
     }
 
     private function rejectAction(Registration $registration)
+    {
+        if (!Auth::user()->can('nb_socios', 'carga')) {
+            abort(403);
+        }
+
+        // Cambio estado en la BBDD
+        $registration->status_id = 6; // Rechazado
+        $registration->save();
+
+        if ($registration->email) {
+            Mail::to($registration->email)->queue(new NotifyMemberRejection($registration->name ?? 'Usuario', $registration->id));
+        }
+
+        return [
+            'status' => 'success'
+        ];
+    }
+
+    private function approveRequest(Registration $registration)
+    {
+        if (!Auth::user()->can('nb_socios', 'carga')) {
+            abort(403);
+        }
+
+        // Cambio estado en la BBDD
+        $registration->status_id = 5; // Aceptado
+        $registration->save();
+
+        if ($registration->email) {
+            Mail::to($registration->email)->queue(new NotifyMemberApproval($registration->name ?? 'Usuario', $registration->id));
+        }
+
+        return [
+            'status' => 'success'
+        ];
+    }
+
+    private function rejectRequest(Registration $registration)
     {
         if (!Auth::user()->can('nb_socios', 'carga')) {
             abort(403);
