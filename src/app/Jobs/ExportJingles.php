@@ -83,7 +83,7 @@ class ExportJingles implements ShouldQueue
                         return $t->tis_n;
                     });
 
-                    $data['difusion_nacional'] = $jingle->also_national;
+                    $data['difusion_nacional'] = $jingle->also_national ? 'Si' : 'No';
                 }
 
                 $data['medios_de_comunicacion'] = [
