@@ -16,7 +16,7 @@ class AlterWorksRegistrationTable extends Migration
         Schema::table('works_registration', function (Blueprint $table) {
             $table->string('dnda_title')->after('title')->default('');
             $table->foreignId('status_id')->after('submitted')->nullable()->constrained('works_status');
-            $table->mediumText('observations')->default('');
+            $table->mediumText('observations')->nullable();
             $table->dropColumn('submitted');
             $table->boolean('approved')->default(false);
         });
