@@ -11,6 +11,7 @@ services:
         volume:
           nocopy: true
       - user-files:/var/www/storage/app/files
+      - sync-files:/var/www/storage/app/sadaic
     env_file:
       - .env
     ports:
@@ -56,3 +57,4 @@ volumes:
   code-backoffice:
   code-registro-obras:
   user-files:
+  sync-files:
