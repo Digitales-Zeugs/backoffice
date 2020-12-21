@@ -47,9 +47,9 @@ class ImportWorks implements ShouldQueue
                 'failure' => 0
             ];
 
-            if (!$contents->acknowledgements) {
-                Log::channel('sync')->error("Importación fallida: Formato no soportado (no acknowledgements)");
-                throw new Exception("Importación fallida: Formato no soportado (no acknowledgements)");
+            if (!isset($contents->acknowledgements)) {
+                Log::channel('sync')->error("Importación no iniciada: Formato no soportado (no acknowledgements)");
+                return 0;
             }
 
             if ($contents->fileHeader->receivingAgency != '128') {
