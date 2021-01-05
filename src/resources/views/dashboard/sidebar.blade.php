@@ -1,6 +1,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <a href="/" class="brand-link">
-        <span class="brand-text font-weight-light">SADAIC</span>
+        <span class="brand-text font-weight-light">Back Office</span>
+        <span style="font-size: 12px">v{{ config('app.version') }}</span>
     </a>
     <div class="sidebar">
         <nav class="mt-2">
