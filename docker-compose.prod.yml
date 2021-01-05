@@ -57,4 +57,9 @@ volumes:
   code-backoffice:
   code-registro-obras:
   user-files:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/Web-registro-obras/storage
   sync-files:
