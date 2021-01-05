@@ -99,6 +99,7 @@
                 <th>{{ $distribution->meta->name }}<br><small>DNI n° {{ $distribution->doc_number }}</small></th>
                 @endif
                 <td>
+                    <strong>Rol:</strong> {{ $distribution->role->description }}<br>
                     @if ($distribution->type == 'no-member')
                     <strong>{{ optional($distribution->meta->type)->description }}:</strong> {{ $distribution->doc_number }}<br>
                     <strong>Nacimiento:</strong> {{ $distribution->meta->birth_date->format('d/m/Y') }}, {{ $distribution->meta->birth_country->name_ter }}<br>

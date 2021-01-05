@@ -44,6 +44,11 @@ class Distribution extends Model
         return $this->hasOne('App\Models\Work\Meta', 'distribution_id');
     }
 
+    public function role()
+    {
+        return $this->hasOne('App\Models\SADAIC\Role', 'code', 'fn');
+    }
+
     public function getFile($name)
     {
         return File::where([
