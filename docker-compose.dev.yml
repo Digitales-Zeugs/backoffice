@@ -89,8 +89,6 @@ services:
       - .env.development
     environment:
       ADMINER_DEFAULT_SERVER: ${ADMINER_DEFAULT_SERVER:-database}
-    volumes:
-      - ./docker/adminer/php.ini:/usr/local/etc/php/conf.d/0-upload_large_dumps.ini
     networks:
       - app-network
 
