@@ -7,8 +7,13 @@
 
     <ul class="navbar-nav ml-auto">
         <li class="nav-item">
+            <span class="navbar-text">
+                <strong>{{ Auth::user()->usuarioid }}</strong>
+            </span>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" href="/logout">
-                <i class="fas fa-sign-out-alt"></i>
+                <i class="fas fa-sign-out-alt align-middle"></i>
             </a>
         </li>
     </ul>
