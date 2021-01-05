@@ -106,9 +106,9 @@
                     <strong>Correo electrónico:</strong> <a href="mailto:{{ $distribution->meta->email }}">{{ $distribution->meta->email }}</a><br>
                     <strong>Teléfono:</strong> {{ $distribution->meta->full_phone }}<br>
                     @endif
-                    <strong>Distribución Pública:</strong> {{ $distribution->public }}%<br>
-                    <strong>Distribución Mecánica:</strong> {{ $distribution->mechanic }}%<br>
-                    <strong>Distribución Sincronización:</strong> {{ $distribution->sync }}%<br>
+                    <strong>Ejecución Pública:</strong> {{ $distribution->public }}%<br>
+                    <strong>Reproducción Mecánica:</strong> {{ $distribution->mechanic }}%<br>
+                    <strong>Sincronización:</strong> {{ $distribution->sync }}%<br>
                     <div class="d-flex flex-row align-items-center">
                     <strong>Respuesta:</strong>&nbsp;
                     @if ($distribution->response === null)
