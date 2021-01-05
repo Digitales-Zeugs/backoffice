@@ -158,7 +158,7 @@
                 @foreach($registration->agreements as $person)
                     <tr>
                         @if ($person->type_id == 1)
-                        <th>{{ $person->member->nombre }}<br><small>Socio n° {{ $person->member->codanita }}</small></th>
+                        <th>{{ optional($person->member)->nombre }}<br><small>Socio n° {{ $person->member->codanita }}</small></th>
                         <td>
                             <strong>N° de Documento:</strong> {{ $person->doc_number }}<br>
                             <strong>Correo electrónico:</strong> {{ $person->member->email }}<br>
@@ -228,14 +228,14 @@
                     @case('AGREEMENT_REJECTED')
                         <td>{{ $log->action->description }} ({{
                             $log->agreement->member_idx
-                            ? $log->agreement->member->nombre
+                            ? optional($log->agreement->member)->nombre
                             : $log->agreement->meta->name
                             }}{{ isset($log->action_data['operator_id']) ? ' por ' . $log->action_data['operator_id'] : '' }})</td>
                         @break
                     @case('NOT_NOTIFIED')
                         <td>{{ $log->action->description }} ({{
                             $log->agreement->member_idx
-                            ? $log->agreement->member->nombre
+                            ? optional($log->agreement->member)->nombre
                             : $log->agreement->meta->name
                             }})</td>
                         @break

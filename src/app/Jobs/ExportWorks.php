@@ -42,7 +42,7 @@ class ExportWorks implements ShouldQueue
                 $interestedParties = $work->distribution->map(function(Distribution $dist) {
                     return [
                         'nameNumber' => $dist->type == 'member' ? $dist->member->ipname : -1,
-                        'name'       => $dist->type == 'member' ? ucwords(strtolower($dist->member->nombre)) : $dist->meta->name,
+                        'name'       => $dist->type == 'member' ? ucwords(strtolower(optional($dist->member)->nombre)) : $dist->meta->name,
                         'role'       => $dist->fn,
                         'porcentPer' => $dist->public * 100,
                         'porcentMec' => $dist->mechanic * 100,

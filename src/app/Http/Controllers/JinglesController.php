@@ -109,7 +109,7 @@ class JinglesController extends Controller
                 if ($agreement->type['name'] == 'member') {
                     if (trim($agreement->member->email) != "" && filter_var($agreement->member->email, FILTER_VALIDATE_EMAIL)) {
                         // Si tiene dirección válida, notificamos
-                        Mail::to($agreement->member->email)->queue(new NotifyAgreement($agreement->member->nombre, $registration->id));
+                        Mail::to($agreement->member->email)->queue(new NotifyAgreement(optional($agreement->member)->nombre, $registration->id));
                     } else {
                         // Si no, logeamos
                         InternalLog::create([
@@ -122,11 +122,11 @@ class JinglesController extends Controller
 
                         // Mail seteado
                         if (trim($agreement->member->email) == "") {
-                            $errors[] = $agreement->member->nombre . " no tiene una dirección de correo electrónica configurada";
+                            $errors[] = optional($agreement->member)->nombre . " no tiene una dirección de correo electrónica configurada";
                         } else {
                             // Mail válido
                             if (!filter_var($agreement->member->email, FILTER_VALIDATE_EMAIL)) {
-                                $errors[] = $agreement->member->nombre . " tiene una dirección de correo electrónica errónea: " . $agreement->member->email;
+                                $errors[] = optional($agreement->member)->nombre . " tiene una dirección de correo electrónica errónea: " . $agreement->member->email;
                             }
                         }
                     }
@@ -479,7 +479,7 @@ class JinglesController extends Controller
 
                 if (trim($agreement->member->email) != "" && filter_var($agreement->member->email, FILTER_VALIDATE_EMAIL)) {
                     // Si tiene dirección válida, notificamos
-                    Mail::to($agreement->member->email)->queue(new $mail($agreement->member->nombre, $registration->id));
+                    Mail::to($agreement->member->email)->queue(new $mail(optional($agreement->member)->nombre, $registration->id));
                 } else {
                     // Si no, logeamos
                     InternalLog::create([
@@ -492,11 +492,11 @@ class JinglesController extends Controller
 
                     // Mail seteado
                     if (trim($agreement->member->email) == "") {
-                        $errors[] = $agreement->member->nombre . " no tiene una dirección de correo electrónica configurada";
+                        $errors[] = optional($agreement->member)->nombre . " no tiene una dirección de correo electrónica configurada";
                     } else {
                         // Mail válido
                         if (!filter_var($agreement->member->email, FILTER_VALIDATE_EMAIL)) {
-                            $errors[] = $agreement->member->nombre . " tiene una dirección de correo electrónica errónea: " . $agreement->member->email;
+                            $errors[] = optional($agreement->member)->nombre . " tiene una dirección de correo electrónica errónea: " . $agreement->member->email;
                         }
                     }
                 }

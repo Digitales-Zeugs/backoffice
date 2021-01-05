@@ -29,7 +29,7 @@ class IntegrationController extends Controller
             $interestedParties = $work->distribution->map(function(Distribution $dist) {
                 return [
                     'nameNumber' => $dist->type == 'member' ? $dist->member->ipname : -1,
-                    'name'       => $dist->type == 'member' ? ucwords(strtolower($dist->member->nombre)) : $dist->meta->name,
+                    'name'       => $dist->type == 'member' ? ucwords(strtolower(optional($dist->member)->nombre)) : $dist->meta->name,
                     'role'       => $dist->fn,
                     'porcentPer' => $this->formatPercentage($dist->public),
                     'porcentMec' => $this->formatPercentage($dist->mechanic),
@@ -229,10 +229,10 @@ class IntegrationController extends Controller
                     $autor = [];
 
                     if ($person->type_id == 1) { // Socios
-                        $autor['nombre'] = $person->member->nombre;
-                        $autor['nro_socio'] = $person->member->codanita;
+                        $autor['nombre'] = optional($person->member)->nombre;
+                        $autor['nro_socio'] = optional($person->member)->codanita;
                         $autor['nro_doc'] = $person->doc_number;
-                        $autor['correo'] = $person->member->email;
+                        $autor['correo'] = optional($person->member)->email;
                     } else { // No socios
                         $autor['nombre'] = $person->meta->name;
                         $autor['nro_doc'] = $person->doc_number;

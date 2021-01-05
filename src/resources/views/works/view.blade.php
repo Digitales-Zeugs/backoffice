@@ -162,7 +162,7 @@
 
                         if ($name[1] != 'dnda') {
                             if ($file->distribution->member_id) {
-                                $desc .= $file->distribution->member->nombre;
+                                $desc .= optional($file->distribution->member)->nombre;
                             } else {
                                 $desc .= $file->distribution->meta->name;
                             }
@@ -192,14 +192,14 @@
                     @case('DISTRIBUTION_REJECTED')
                         <td>{{ $log->action->description }} ({{
                             $log->distribution->member_id
-                            ? $log->distribution->member->nombre
+                            ? optional($log->distribution->member)->nombre
                             : $log->distribution->meta->name
                             }}{{ isset($log->action_data['operator_id']) ? ' por ' . $log->action_data['operator_id'] : '' }})</td>
                         @break
                     @case('NOT_NOTIFIED')
                         <td>{{ $log->action->description }} ({{
                             $log->distribution->member_id
-                            ? $log->distribution->member->nombre
+                            ? optional($log->distribution->member)->nombre
                             : $log->distribution->meta->name
                             }})</td>
                         @break
@@ -223,7 +223,7 @@
             </tr>
         </table>
         <br /><br />
-        @if (Auth::user()->can('nb_obras', 'carga'))
+        @if (Auth::user()->can('nb_obras', 'homologa'))
         {{-- Trámite Nuevo --}}
         @if ($registration->status_id == 1)
         <div class="row justify-content-center">

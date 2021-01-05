@@ -126,10 +126,10 @@ class ExportJingles implements ShouldQueue
                         $autor = [];
 
                         if ($person->type_id == 1) { // Socios
-                            $autor['nombre'] = $person->member->nombre;
-                            $autor['nro_socio'] = $person->member->codanita;
+                            $autor['nombre'] = optional($person->member)->nombre;
+                            $autor['nro_socio'] = optional($person->member)->codanita;
                             $autor['nro_doc'] = $person->doc_number;
-                            $autor['correo'] = $person->member->email;
+                            $autor['correo'] = optional($person->member)->email;
                         } else { // No socios
                             $autor['nombre'] = $person->meta->name;
                             $autor['nro_doc'] = $person->doc_number;

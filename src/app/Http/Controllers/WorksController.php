@@ -146,7 +146,7 @@ class WorksController extends Controller
 
                     if (trim($distribution->member->email) != "" && filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
                         // Si tiene dirección válida, notificamos
-                        Mail::to($distribution->member->email)->queue(new NotifyDistribution($distribution->member->nombre, $registration->id));
+                        Mail::to($distribution->member->email)->queue(new NotifyDistribution(optional($distribution->member)->nombre, $registration->id));
                     } else {
                         // Si no, logeamos
                         InternalLog::create([
@@ -159,11 +159,11 @@ class WorksController extends Controller
 
                         // Mail seteado
                         if (trim($distribution->member->email) == "") {
-                            $errors[] = $distribution->member->nombre . " no tiene una dirección de correo electrónica configurada";
+                            $errors[] = optional($distribution->member)->nombre . " no tiene una dirección de correo electrónica configurada";
                         } else {
                             // Mail válido
                             if (!filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
-                                $errors[] = $distribution->member->nombre . " tiene una dirección de correo electrónica errónea: " . $distribution->member->email;
+                                $errors[] = optional($distribution->member)->nombre . " tiene una dirección de correo electrónica errónea: " . $distribution->member->email;
                             }
                         }
                     }
@@ -440,7 +440,7 @@ class WorksController extends Controller
 
                 if (trim($distribution->member->email) != "" && filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
                     // Si tiene dirección válida, notificamos
-                    Mail::to($distribution->member->email)->queue(new $mail($distribution->member->nombre, $registration->id));
+                    Mail::to($distribution->member->email)->queue(new $mail(optional($distribution->member)->nombre, $registration->id));
                 } else {
                     // Si no, logeamos
                     InternalLog::create([
@@ -453,11 +453,11 @@ class WorksController extends Controller
 
                     // Mail seteado
                     if (trim($distribution->member->email) == "") {
-                        $errors[] = $distribution->member->nombre . " no tiene una dirección de correo electrónica configurada";
+                        $errors[] = optional($distribution->member)->nombre . " no tiene una dirección de correo electrónica configurada";
                     } else {
                         // Mail válido
                         if (!filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
-                            $errors[] = $distribution->member->nombre . " tiene una dirección de correo electrónica errónea: " . $distribution->member->email;
+                            $errors[] = optional($distribution->member)->nombre . " tiene una dirección de correo electrónica errónea: " . $distribution->member->email;
                         }
                     }
                 }
