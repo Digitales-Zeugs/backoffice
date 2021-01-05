@@ -94,7 +94,7 @@
             @foreach ($registration->distribution as $distribution)
             <tr>
                 @if ($distribution->type == 'member')
-                <th>{{ $distribution->member->nombre }}<br><small>Socio n° {{ $distribution->member_id }}</small></th>
+                <th>{{ optional($distribution->member)->nombre }}<br><small>Socio n° {{ $distribution->member_id }}</small></th>
                 @else
                 <th>{{ $distribution->meta->name }}<br><small>DNI n° {{ $distribution->doc_number }}</small></th>
                 @endif
