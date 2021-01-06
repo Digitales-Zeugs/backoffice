@@ -67,6 +67,12 @@ class Registration extends Model
         return $this->hasOne('App\Models\Work\Status', 'id', 'status_id');
     }
 
+    public function titles()
+    {
+        return $this->hasMany('App\Models\Work\Title', 'registration_id', 'id');
+    }
+
+
     public function initiator()
     {
         if ($this->member_id) {

@@ -27,6 +27,16 @@
                 <th>Título</th>
                 <td>{{ $registration->title }}</td>
             </tr>
+            @if($registration->titles && $registration->titles->count() > 0)
+            <tr>
+                <th>Títulos alternativos</th>
+                <td>
+                    @foreach($registration->titles as $title)
+                        {{ $title->title }}<br>
+                    @endforeach
+                </td>
+            </tr>
+            @endif
             <tr>
                 <th>Género</th>
                 <td>{{ $registration->genre->name }}</td>
