@@ -28,6 +28,10 @@
                 <td>{{ $registration->title }}</td>
             </tr>
             <tr>
+                <th>Género</th>
+                <td>{{ $registration->genre->name }}</td>
+            </tr>
+            <tr>
                 <th>Fecha</th>
                 <td>{{ optional($registration->created_at)->format('d/m/Y H:i') }}</td>
             </tr>
