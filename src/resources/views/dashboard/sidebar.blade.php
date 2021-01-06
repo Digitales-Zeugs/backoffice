@@ -42,14 +42,12 @@
                     </a>
                 </li>
                 @endif
-                @if (Auth::user()->usuarioid == 'lmiaton')
                 <li class="nav-item">
                     <a href="/integration" class="nav-link @if(Request::path() == 'integration') active @endif">
                         <i class="nav-icon fas fa-sync-alt"></i>
                         <p>Integración</p>
                     </a>
                 </li>
-                @endif
             </ul>
         </nav>
     </div>
