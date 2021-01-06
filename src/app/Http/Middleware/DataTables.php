@@ -79,6 +79,12 @@ class DataTables extends Middleware
                 $column = $this->getColumnName($request, $idx);
                 if (!$column) continue;
 
+                // Filtro para mostrar todos los status
+                if ($column == 'status_id' && $search['value'] == '-1') {
+                    $query->whereNotNull('status_id');
+                    continue;
+                }
+
                 $query->where($column, 'like', '%' . $search['value'] . '%');
             }
         }

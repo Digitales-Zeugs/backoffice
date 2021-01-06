@@ -27,15 +27,16 @@ const $dt = $('.table').DataTable({
         null,
         null,
         null,
-        { search: 1 }, // Status "Nuevo"
+        { search: -1 }, // Status "Todos"
         null
     ],
     order: [[1, 'asc']], // Orden por defecto: id ascendente
     initComplete: () => {
         // Reemplazamos la búsqueda por defecto por un select con los estados de los trámites
-        const statusSelect = `<select id="statusFilter">${
-            statusOptions.map(opt => `<option value="${ opt.id }">${ opt.name }</option>`).join()
-        }</select>`;
+        const statusSelect = `<select id="statusFilter">
+            <option value="-1">Todos</option>
+            ${ statusOptions.map(opt => `<option value="${ opt.id }">${ opt.name }</option>`).join() }
+        </select>`;
         $('.dataTables_filter').html(statusSelect);
         $('#statusFilter').on('change', (event) => {
             $dt.column('status_id:name')
