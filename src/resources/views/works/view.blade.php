@@ -63,7 +63,7 @@
                 <th colspan="2" class="table-inner-subtitle">Inédito</th>
             </tr>
             <tr>
-                <th>N° Expediente (Audio)</th>
+                <th>N° Expediente (Música)</th>
                 <td>{{ $registration->audio_dnda_in_file }}</td>
             </tr>
             <tr>
@@ -80,7 +80,7 @@
                 <th colspan="2" class="table-inner-subtitle">Editado</th>
             </tr>
             <tr>
-                <th>N° Expediente (Audio)</th>
+                <th>N° Expediente (Música)</th>
                 <td>{{ $registration->audio_dnda_ed_file }}</td>
             </tr>
             <tr>
