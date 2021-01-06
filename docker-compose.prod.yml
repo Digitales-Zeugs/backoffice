@@ -10,8 +10,8 @@ services:
         target: /var/www
         volume:
           nocopy: true
-      - user-files:/var/www/storage/app/files
-      - sync-files:/var/www/storage/app/sadaic
+      - /home/Web-registro-obras/storage:/var/www/storage/app/files
+      - /home/Web-registro-obras/sync:/var/www/storage/app/sadaic
     env_file:
       - .env
     ports:
@@ -26,7 +26,7 @@ services:
         target: /var/www
         volume:
           nocopy: true
-      - user-files:/var/www/storage/app/files
+      - /home/Web-registro-obras/storage:/var/www/storage/app/files
     env_file:
       - ../registro-obras/.env
     ports:
@@ -53,13 +53,14 @@ services:
     env_file:
       - ../registro-obras/.env
 
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    restart: "no"
+    ports:
+      - 8025:8025
+    env_file:
+      - .env
+
 volumes:
   code-backoffice:
   code-registro-obras:
-  user-files:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/Web-registro-obras/storage
-  sync-files:
