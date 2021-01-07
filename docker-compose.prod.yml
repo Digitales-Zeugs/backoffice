@@ -60,6 +60,8 @@ services:
       - 8025:8025
     env_file:
       - .env
+    networks:
+      - app-network
 
 volumes:
   code-backoffice:
