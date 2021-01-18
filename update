@@ -13,6 +13,6 @@ docker-compose -f docker-compose.yml -f docker-compose.prod.yml build php_backof
 
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml down -v
 
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml exec -u root php_backoffice php artisan migrate
