@@ -5,6 +5,6 @@
 <p>¡Hola {{ $nombre }}!</p>
 <p>Una solicitud de la que sos parte está siendo procesada, para ver más información accedé al sitio de autogestión de SADAIC:</p>
 <div class="cta">
-    <a class="btn" href="{{ route('login') }}">Ir a la Autogestión</a>
+    <a class="btn" href="{{ config('app.sitio_publico') }}">Ir a la Autogestión</a>
 </div>
 @endsection
