@@ -161,9 +161,32 @@ class WorksController extends Controller
                         if (trim($distribution->member->email) == "") {
                             $errors[] = optional($distribution->member)->nombre . " no tiene una dirección de correo electrónica configurada";
                         } else {
-                            // Mail válido
+                            // Mail inválido
                             if (!filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
                                 $errors[] = optional($distribution->member)->nombre . " tiene una dirección de correo electrónica errónea: " . $distribution->member->email;
+                            }
+                        }
+                    }
+                } else {
+                    if (optional($distribution->meta)->email && trim($distribution->meta->email) != "" && filter_var($distribution->meta->email, FILTER_VALIDATE_EMAIL)) {
+                        // Si tiene dirección válida, notificamos
+                        Mail::to($distribution->meta->email)->queue(new NotifyDistribution(optional($distribution->meta)->name, $registration->id));
+                    } else {
+                        // Si no, logeamos
+                        InternalLog::create([
+                            'registration_id' => $registration->id,
+                            'distribution_id' => $distribution->id,
+                            'action_id'       => 11, // NOT_NOTIFIED
+                            'time'            => now()
+                        ]);
+
+                        // Mail seteado
+                        if (!optional($distribution->meta)->email || trim($distribution->meta->email) == "") {
+                            $errors[] = optional($distribution->meta)->name . " no tiene una dirección de correo electrónica configurada";
+                        } else {
+                            // Mail inválido
+                            if (!filter_var($distribution->meta->email, FILTER_VALIDATE_EMAIL)) {
+                                $errors[] = optional($distribution->meta)->name . " tiene una dirección de correo electrónica errónea: " . $distribution->meta->email;
                             }
                         }
                     }
@@ -458,6 +481,29 @@ class WorksController extends Controller
                         // Mail válido
                         if (!filter_var($distribution->member->email, FILTER_VALIDATE_EMAIL)) {
                             $errors[] = optional($distribution->member)->nombre . " tiene una dirección de correo electrónica errónea: " . $distribution->member->email;
+                        }
+                    }
+                }
+            } else {
+                if (optional($distribution->meta)->email && trim($distribution->meta->email) != "" && filter_var($distribution->meta->email, FILTER_VALIDATE_EMAIL)) {
+                    // Si tiene dirección válida, notificamos
+                    Mail::to($distribution->meta->email)->queue(new $mail(optional($distribution->meta)->name, $registration->id));
+                } else {
+                    // Si no, logeamos
+                    InternalLog::create([
+                        'registration_id' => $registration->id,
+                        'distribution_id' => $distribution->id,
+                        'action_id'       => 11, // NOT_NOTIFIED
+                        'time'            => now()
+                    ]);
+
+                    // Mail seteado
+                    if (!optional($distribution->meta)->email || trim($distribution->meta->email) == "") {
+                        $errors[] = optional($distribution->meta)->name . " no tiene una dirección de correo electrónica configurada";
+                    } else {
+                        // Mail inválido
+                        if (!filter_var($distribution->meta->email, FILTER_VALIDATE_EMAIL)) {
+                            $errors[] = optional($distribution->meta)->name . " tiene una dirección de correo electrónica errónea: " . $distribution->meta->email;
                         }
                     }
                 }
