@@ -89,6 +89,7 @@
                 <th>{{ $registration->media->name }}</th>
                 <td>{{ $registration->media->description }}</td>
             </tr>
+            @if ($registration->agency->cuit && $registration->agency->name)
             <tr>
                 <th colspan="2" class="table-inner-title">Datos de la Agencia</th>
             </tr>
@@ -97,6 +98,7 @@
                 <td>{{ $registration->agency_type }}</td>
             </tr>
             @include('components.agency-view', ['type' => 'agency'])
+            @endif
             <tr>
                 <th colspan="2" class="table-inner-title">Datos del Producto / Servicio</th>
             </tr>
