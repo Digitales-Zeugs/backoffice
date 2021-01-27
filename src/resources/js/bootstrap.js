@@ -3,7 +3,8 @@ window.$ = window.jQuery = require('jquery');
 window.toastr = require('toastr');
 
 toastr.options = {
-    "positionClass": "toast-bottom-right"
+    positionClass: "toast-bottom-right",
+    timeOut: 5000
 }
 
 /**
