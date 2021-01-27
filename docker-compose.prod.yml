@@ -40,6 +40,8 @@ services:
     restart: "always"
     volumes:
       - code-backoffice:/var/www
+      - /home/Web-registro-obras/storage:/var/www/storage/app/files
+      - /home/Web-registro-obras/sync:/var/www/storage/app/sadaic
     env_file:
       - .env
 
@@ -50,6 +52,7 @@ services:
     restart: "always"
     volumes:
       - code-registro-obras:/var/www
+      - /home/Web-registro-obras/storage:/var/www/storage/app/files
     env_file:
       - ../registro-obras/.env
 
