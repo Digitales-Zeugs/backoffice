@@ -62,6 +62,14 @@
                 <td>{{ $registration->initiator->email }}</td>
             </tr>
             <tr>
+                <th></th>
+                <td>
+                    {{ $registration->is_jingle ? '✔' : '✖' }} Jingle
+                    <br>
+                    {{ $registration->is_movie ? '✔' : '✖' }} Música de Película
+                </td>
+            </tr>
+            <tr>
                 <th colspan="2" class="table-inner-title">DNDA</th>
             </tr>
             <tr>
