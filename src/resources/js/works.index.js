@@ -22,6 +22,18 @@ const $dt = $('.table').DataTable({
         },
         { name: 'id', data: 'id' },
         { name: 'title', data: 'title' },
+        {
+            orderable: false,
+            data:      null,
+            class:     'text-center',
+            render: function(data, type) {
+                if (type == 'display') {
+                    return data.has_editor ? 'Si' : 'No';
+                }
+
+                return null;
+            }
+        },
         { name: 'status_id', data: 'status.name' },
         {
             orderable: false,
@@ -37,6 +49,7 @@ const $dt = $('.table').DataTable({
         },
     ],
     searchCols: [
+        null,
         null,
         null,
         null,

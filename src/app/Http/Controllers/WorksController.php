@@ -61,6 +61,18 @@ class WorksController extends Controller
         $query->with('status');
         $requests = $query->get();
 
+        $requests->each(function($item, $key) {
+            $has_editor = false;
+            $item->distribution->each(function($item, $key) use (&$has_editor) {
+                if ($item->fn === 'E') {
+                    $has_editor = true;
+                    return false;
+                }
+            });
+
+            $item->has_editor = $has_editor;
+        });
+
         $response = response(null);
         $response->datatablesOutput = $requests;
         return $response;

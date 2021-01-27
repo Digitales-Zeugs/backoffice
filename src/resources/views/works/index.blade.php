@@ -16,6 +16,7 @@
                     <th></th>
                     <th>#</th>
                     <th>Título</th>
+                    <th>Editor</th>
                     <th>Estado</th>
                     <th></th>
                 </tr>
