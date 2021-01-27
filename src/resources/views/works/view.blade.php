@@ -158,7 +158,7 @@
                     case 'lyric_file': $desc = 'Archivo Partitura'; break;
                     case 'audio_file': $desc = 'Archivo de Audio'; break;
                     case 'script_file': $desc = 'Archivo Letra'; break;
-                    case 'dnda_file': $desc = 'Archivo DNDA'; break;
+                    case 'file_dnda_contract': $desc = 'Constancia DNDA'; break;
                     default: 
                         $name = explode('_', $file->name);
 
