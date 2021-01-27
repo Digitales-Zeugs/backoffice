@@ -17,6 +17,8 @@
                     <th>#</th>
                     <th>Título</th>
                     <th>Editor</th>
+                    <th>Jingle</th>
+                    <th>M. Película</th>
                     <th>Estado</th>
                     <th></th>
                 </tr>

@@ -22,18 +22,9 @@ const $dt = $('.table').DataTable({
         },
         { name: 'id', data: 'id' },
         { name: 'title', data: 'title' },
-        {
-            orderable: false,
-            data:      null,
-            class:     'text-center',
-            render: function(data, type) {
-                if (type == 'display') {
-                    return data.has_editor ? 'Si' : 'No';
-                }
-
-                return null;
-            }
-        },
+        { name: 'has_editor', orderable: false, data: (row) => row.has_editor ? 'Si' : 'No' },
+        { name: 'is_jingle', data: (row) => row.is_jingle ? 'Si' : 'No' },
+        { name: 'is_movie', data: (row) => row.is_movie ? 'Si' : 'No' },
         { name: 'status_id', data: 'status.name' },
         {
             orderable: false,
@@ -49,6 +40,8 @@ const $dt = $('.table').DataTable({
         },
     ],
     searchCols: [
+        null,
+        null,
         null,
         null,
         null,
