@@ -41,9 +41,9 @@ class SADAICExportCommand extends Command
      */
     public function handle()
     {
-        new ExportJingles();
-        new ExportMembers();
-        new ExportWorks();
+        ExportJingles::dispatch();
+        ExportMembers::dispatch();
+        ExportWorks::dispatch();
 
         return 0;
     }
