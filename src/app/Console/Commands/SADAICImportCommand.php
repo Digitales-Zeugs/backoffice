@@ -8,14 +8,14 @@ use App\Jobs\ImportWorks;
 use App\Jobs\ProcessImports;
 use App\Jobs\NormalizeCities;
 
-class SADAICSyncCommand extends Command
+class SADAICImportCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'sadaic:sync';
+    protected $signature = 'sadaic:import';
 
     /**
      * The console command description.
