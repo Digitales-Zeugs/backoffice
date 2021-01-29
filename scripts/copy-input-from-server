@@ -30,4 +30,4 @@ echo "bye" >> /tmp/batch.out
 rm /tmp/A0.lst
 ftp -ivn < /tmp/batch.out >> /tmp/sadaic-sync
 
-cd /home/Web-registro-obras/scripts
+cd /home/Web-registro-obras/backoffice/scripts

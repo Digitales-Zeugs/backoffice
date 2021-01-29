@@ -10,4 +10,4 @@ mput *.json
 quit
 END_SCRIPT
 
-cd /home/Web-registro-obras/scripts
+cd /home/Web-registro-obras/backoffice/scripts
