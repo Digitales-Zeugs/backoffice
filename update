@@ -9,9 +9,16 @@ git reset --hard develop
 git pull origin develop
 
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml build php_registro_obras
+
+sleep 5
+
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml build php_backoffice
 
+sleep 5
+
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml down -v
+
+sleep 5
 
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
