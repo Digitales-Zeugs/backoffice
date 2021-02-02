@@ -110,12 +110,7 @@ class DataTables extends Middleware
         $output['draw'] = $request->input('draw');
         $output['data'] = $data;
         $output['recordsFiltered'] = $query->count();
-
-        if ($modelClass) {
-            $output['recordsTotal'] = $modelClass::count();
-        } else {
-            $output['recordsTotal'] = $query->count();
-        }
+        $output['recordsTotal'] = $query->count();
 
         $response->setContent(json_encode($output));
 
