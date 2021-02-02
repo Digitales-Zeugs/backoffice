@@ -209,9 +209,6 @@ class WorksController extends Controller
                 $registration->status_id = 2; // En proceso
             }
 
-            // Guardamos la fecha de entrada
-            $registration->entry_date = now();
-
             $registration->save();
 
             InternalLog::create([
@@ -247,7 +244,6 @@ class WorksController extends Controller
 
         // Cambio estado en la BBDD
         $registration->status_id = 9; // Rechazado
-        $registration->entry_date = now();
         $registration->save();
 
         InternalLog::create([
