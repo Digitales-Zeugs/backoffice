@@ -30,7 +30,7 @@ class AddEntryDateToWorksRegistrationTable extends Migration
     public function down()
     {
         Schema::table('works_registration', function (Blueprint $table) {
-            $table->drop('entry_date');
+            $table->dropColumn('entry_date');
         });
     }
 }
