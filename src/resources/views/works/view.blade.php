@@ -148,7 +148,7 @@
                         &nbsp;<button class="btn btn-link text-success acceptDistribution" data-did="{{ $distribution->id }}">Cambiar Respuesta</button>
                         @endif
                     @elseif ($distribution->response === 1)
-                        Aceptado por 
+                        Aceptado por
                         {{ $distribution->liable_id ?? 'el socio' }}
                         ({{ $distribution->updated_at->format('d/m/Y H:i') }})
                     @endif
@@ -167,7 +167,7 @@
                     case 'audio_file': $desc = 'Archivo de Audio'; break;
                     case 'script_file': $desc = 'Archivo Letra'; break;
                     case 'file_dnda_contract': $desc = 'Constancia DNDA'; break;
-                    default: 
+                    default:
                         $name = explode('_', $file->name);
 
                         if ($name[1] == 'editor' || $name[1] == 'subeditor' || $name[1] == 'dnda') {
@@ -251,7 +251,7 @@
         <div class="row justify-content-center">
             <div>
                 <button class="btn btn-success" id="beginAction">Iniciar Proceso</button>
-                <button class="btn btn-danger" id="rejectAction">Rechazar Solicitud</button>
+                <button class="btn btn-danger" data-toggle="modal" data-target="#modalRejection">Rechazar Solicitud</button>
             </div>
         </div>
         {{-- Aprobado por todos los propietarios --}}
@@ -272,6 +272,28 @@
         @endif
     </section>
 </div>
+
+@if ($registration->status_id == 1)
+<div class="modal" tabindex="-1" id="modalRejection">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ingrese el motivo del rechazo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea class="form-control" rows="5"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="rejectAction">Rechazar</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 @endsection
 
 @push('scripts')

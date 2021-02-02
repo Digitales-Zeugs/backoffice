@@ -82,7 +82,10 @@ class WorksController extends Controller
                 return $this->beginAction($registration);
             break;
             case 'rejectAction':
-                return $this->rejectAction($registration);
+                if (!$request->has('reason')) {
+                    abort(403);
+                }
+                return $this->rejectAction($registration, $request->reason);
             break;
             case 'sendToInternal':
                 return $this->sendToInternal($registration);
@@ -252,7 +255,7 @@ class WorksController extends Controller
         }
     }
 
-    private function rejectAction(Registration $registration)
+    private function rejectAction(Registration $registration, $reason)
     {
         if (!Auth::user()->can('nb_obras', 'homologa')) {
             abort(403);
@@ -260,6 +263,7 @@ class WorksController extends Controller
 
         // Cambio estado en la BBDD
         $registration->status_id = 9; // Rechazado
+        $registration->rejection_reason = $reason;
         $registration->save();
 
         InternalLog::create([

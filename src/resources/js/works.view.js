@@ -20,9 +20,18 @@ $('#beginAction').on('click', () => {
     });
 });
 
-$('#rejectAction').on('click', () => {
+$('#modalRejection').on('show.bs.modal', () => {
+    $('textarea', '#modalRejection').val('');
+})
+
+$('#modalRejection').on('shown.bs.modal', () => {
+    $('textarea', '#modalRejection').focus();
+})
+
+$('#rejectAction').on('click', (event) => {
     axios.post(`/works/${ workId }/status`, {
-        status: 'rejectAction'
+        status: 'rejectAction',
+        reason: $('textarea', '#modalRejection').val()
     })
     .then(({ data }) => {
         if (data.status == 'failed') {
