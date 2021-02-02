@@ -1,7 +1,9 @@
 // Generamos el contenido a mostrar en los detalles de cada registro
 const details = ( data ) => {
     output = '';
-    output += `<strong>Duración:</strong> ${ data.duration }<br>`;
+    output += `<strong>Fecha de Ingreso:</strong> ${
+        new Date(data.entry_date).toLocaleDateString('es-AR', { dateStyle: 'short' })
+    }<br>`;
 
     return output;
 };
