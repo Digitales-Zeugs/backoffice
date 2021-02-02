@@ -75,13 +75,16 @@ class DataTables extends Middleware
             foreach($request->input('columns.*.search') as $idx => $search) {
                 if ($search['value'] == null) continue;
                 if ($search['regex']) continue; // Búsquedas regex no soportadas
-                
+
                 $column = $this->getColumnName($request, $idx);
                 if (!$column) continue;
 
                 // Filtro para mostrar todos los status
                 if ($column == 'status_id' && $search['value'] == '-1') {
                     $query->whereNotNull('status_id');
+                    continue;
+                } else if ($column == 'status_id' && $search['value'] != '-1') {
+                    $query->where('status_id', $search['value']);
                     continue;
                 }
 
