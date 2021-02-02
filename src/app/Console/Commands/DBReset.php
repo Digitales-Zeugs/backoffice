@@ -40,7 +40,7 @@ class DBReset extends Command
         $this->call('db:wipe');
         $this->call('migrate');
         $this->call('db:seed');
-        $this->call('sadaic:sync');
+        $this->call('sadaic:import');
 
         return 0;
     }
