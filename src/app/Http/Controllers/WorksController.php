@@ -59,19 +59,12 @@ class WorksController extends Controller
 
         $query = $request->datatablesQuery;
         $query->with('status');
+
+        $query->addSelect(['has_editor' => function($query) {
+            $query->select(DB::raw("COUNT(*) >= 1 FROM works_distribution WHERE fn = 'E' AND registration_id = works_registration.id"));
+        }]);
+
         $requests = $query->get();
-
-        $requests->each(function($item, $key) {
-            $has_editor = false;
-            $item->distribution->each(function($item, $key) use (&$has_editor) {
-                if ($item->fn === 'E') {
-                    $has_editor = true;
-                    return false;
-                }
-            });
-
-            $item->has_editor = $has_editor;
-        });
 
         $response = response(null);
         $response->datatablesOutput = $requests;
