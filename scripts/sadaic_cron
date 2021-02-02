@@ -1,0 +1,5 @@
+0 0 * * * /home/Web-registro-obras/backoffice/scripts/generate-output-files
+5 0 * * * /home/Web-registro-obras/backoffice/scripts/copy-output-to-server
+10 0 * * * /home/Web-registro-obras/backoffice/scripts/copy-input-from-server
+15 0 * * * /home/Web-registro-obras/backoffice/scripts/proccess-input-files
+20 0 * * * /home/Web-registro-obras/backoffice/scripts/registry-expiration
