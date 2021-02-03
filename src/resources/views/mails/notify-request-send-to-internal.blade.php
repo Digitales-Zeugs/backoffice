@@ -3,7 +3,8 @@
 @section('content')
 <div class="kicker">Solicitud #{{ $registration_id }}</div>
 <p>¡Hola {{ $nombre }}!</p>
-<p>Una solicitud de la que sos parte está siendo procesada, para ver más información accedé al sitio de autogestión de SADAIC:</p>
+<p>Tu obra ingresó con éxito a nuestra base de datos.</p>
+<p>Para más detalles, te pedimos que te dirijas al sitio de Autogestión de SADAIC.</p>
 <div class="cta">
     <a class="btn" href="{{ config('app.sitio_publico') }}">Ir a la Autogestión</a>
 </div>
