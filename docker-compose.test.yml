@@ -53,7 +53,7 @@ services:
     command: sh -c "php-fpm"
 
   database:
-    image: mariadb:10.5.6-focal
+    image: mysql:8.0.21
     restart: "always"
     volumes:
       - ./database/:/docker-entrypoint-initdb.d/
