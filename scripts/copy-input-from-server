@@ -10,24 +10,5 @@
 # Salida de SGS: *.json
 
 cd /home/Web-registro-obras/sync/input
-
-ftp -ivn <<EOJ >> /tmp/some_log_file
-open 10.26.110.19
-user web desarrollo2021
-asc
-dir A0* /tmp/A0.lst
-quit
-EOJ
-
-echo "open 10.26.110.19" >> /tmp/batch.out
-echo "user web desarrollo2021" >> /tmp/batch.out
-
-awk '{print $NF}' /tmp/A0.lst | while read file; do
-echo "get $file" >> /tmp/batch.out
-echo "del $file" >> /tmp/batch.out
-done
-echo "bye" >> /tmp/batch.out
-rm /tmp/A0.lst
-ftp -ivn < /tmp/batch.out >> /tmp/sadaic-sync
-
+sftp web@10.26.110.19 < /home/Web-registro-obras/backoffice/scripts/files-input-from-server
 cd /home/Web-registro-obras/backoffice/scripts

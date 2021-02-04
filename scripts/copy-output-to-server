@@ -1,13 +1,4 @@
 #!/bin/sh
-
 cd /home/Web-registro-obras/sync/output
-
-ftp -n 10.26.110.19 <<END_SCRIPT
-user web desarrollo2021
-binary
-prompt
-mput *.json
-quit
-END_SCRIPT
-
+sftp web@10.26.110.19 < /home/Web-registro-obras/backoffice/scripts/files-output-to-server
 cd /home/Web-registro-obras/backoffice/scripts
