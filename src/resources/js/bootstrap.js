@@ -4,7 +4,7 @@ window.toastr = require('toastr');
 
 toastr.options = {
     positionClass: "toast-bottom-right",
-    timeOut: 5000
+    timeOut: 10000
 }
 
 /**
