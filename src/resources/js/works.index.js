@@ -2,7 +2,7 @@
 const details = ( data ) => {
     output = '';
     output += `<strong>Fecha de Ingreso:</strong> ${
-        new Date(data.entry_date).toLocaleDateString('es-AR', { dateStyle: 'short' })
+        data.entry_date.split('-').reverse().join('/')
     }<br>`;
 
     return output;
