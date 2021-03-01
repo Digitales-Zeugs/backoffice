@@ -2,7 +2,7 @@
 const details = ( data ) => {
     let output = '';
     output += `<strong>Fecha de Ingreso:</strong> ${
-        data.entry_date.split('-').reverse().join('/')
+        data.entry_date?.split('-').reverse().join('/') ?? '-'
     }<br>`;
 
     return output;
