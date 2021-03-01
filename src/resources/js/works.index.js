@@ -1,6 +1,6 @@
 // Generamos el contenido a mostrar en los detalles de cada registro
 const details = ( data ) => {
-    output = '';
+    let output = '';
     output += `<strong>Fecha de Ingreso:</strong> ${
         data.entry_date.split('-').reverse().join('/')
     }<br>`;
