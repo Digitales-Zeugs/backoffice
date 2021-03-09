@@ -79,6 +79,18 @@ class ExportWorks implements ShouldQueue
             // Parseamos el contenido del archivo
             $fileContents = json_encode($fileContents, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 
+            // Transformar los strings que representan números con leading zeros a
+            // "números con leading zeros". Se hace de forma manual porque el estandar
+            // de JSON no soporta leading zeros para los números
+            $patterns = [
+                '/("nameNumber"): "(\d*)"/m',
+                '/("porcentPer"): "(\d*)"/m',
+                '/("porcentMec"): "(\d*)"/m',
+                '/("porcentSyn"): "(\d*)"/m',
+            ];
+
+            $fileContents = preg_replace($patterns, '${1}: ${2}', $fileContents);
+
             // Calculamos el nombre del archivo
             $fileName = 'work-';
             $fileName .= $date->format('Y\-m\-d\TH\-i\-s');

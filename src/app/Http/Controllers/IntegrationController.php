@@ -63,7 +63,21 @@ class IntegrationController extends Controller
         $fileName .= '-128-061-registros.json';
 
         return response()->streamDownload(function() use ($fileContents) {
-            echo json_encode($fileContents, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+            $output = json_encode($fileContents, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+
+            // Transformar los strings que representan números con leading zeros a
+            // "números" con leading zeros. Se hace de forma manual porque el estandar
+            // de JSON no soporta leading zeros para los números
+            $patterns = [
+                '/("nameNumber"): "(\d*)"/m',
+                '/("porcentPer"): "(\d*)"/m',
+                '/("porcentMec"): "(\d*)"/m',
+                '/("porcentSyn"): "(\d*)"/m',
+            ];
+
+            $output = preg_replace($patterns, '${1}: ${2}', $output);
+
+            echo $output;
         }, $fileName, [
             'Content-Encoding' => 'utf-8',
             'Content-Type'     => 'application/json'
