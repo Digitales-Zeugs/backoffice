@@ -44,9 +44,9 @@ class ExportWorks implements ShouldQueue
                         'nameNumber' => $dist->type == 'member' ? $dist->member->ipname : -1,
                         'name'       => $dist->type == 'member' ? ucwords(strtolower(optional($dist->member)->nombre)) : $dist->meta->name,
                         'role'       => $dist->fn,
-                        'porcentPer' => $dist->public * 100,
-                        'porcentMec' => $dist->mechanic * 100,
-                        'porcentSyn' => $dist->sync * 100
+                        'porcentPer' => str_pad($dist->public * 100, 5, '0', STR_PAD_LEFT),
+                        'porcentMec' => str_pad($dist->mechanic * 100, 5, '0', STR_PAD_LEFT),
+                        'porcentSyn' => str_pad($dist->sync * 100, 5, '0', STR_PAD_LEFT)
                     ];
                 });
 
@@ -67,8 +67,8 @@ class ExportWorks implements ShouldQueue
 
             // Preparamos el resto del contenido del archivo
             $fileContents = [
+                '$schema'    => './work_schema.json',
                 'fileHeader' => [
-                    '$schema'              => './work_schema.json',
                     'submittingAgency'     => '128',
                     'fileCreationDateTime' => $date->format('Y-m-d\TH:i:s.uT'),
                     'receivingAgency'      => '061'

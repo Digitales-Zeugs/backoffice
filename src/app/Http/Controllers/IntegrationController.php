@@ -7,7 +7,6 @@ use App\Models\Work\Registration as WorkRegistration;
 use App\Models\Jingles\Registration as JingleRegistration;
 use App\Models\Members\Registration as MemberRegistration;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class IntegrationController extends Controller
 {
@@ -31,9 +30,9 @@ class IntegrationController extends Controller
                     'nameNumber' => $dist->type == 'member' ? $dist->member->ipname : -1,
                     'name'       => $dist->type == 'member' ? ucwords(strtolower(optional($dist->member)->nombre)) : $dist->meta->name,
                     'role'       => $dist->fn,
-                    'porcentPer' => $this->formatPercentage($dist->public),
-                    'porcentMec' => $this->formatPercentage($dist->mechanic),
-                    'porcentSyn' => $this->formatPercentage($dist->sync)
+                    'porcentPer' => str_pad($dist->public * 100, 5, '0', STR_PAD_LEFT),
+                    'porcentMec' => str_pad($dist->mechanic * 100, 5, '0', STR_PAD_LEFT),
+                    'porcentSyn' => str_pad($dist->sync * 100, 5, '0', STR_PAD_LEFT)
                 ];
             });
 
@@ -50,8 +49,8 @@ class IntegrationController extends Controller
         $date = new \DateTime('now');
 
         $fileContents = [
+            '$schema'    => './work_schema.json',
             'fileHeader' => [
-                '$schema'              => './work_schema.json',
                 'submittingAgency'     => '128',
                 'fileCreationDateTime' => $date->format('Y-m-d\TH:i:s.uT'),
                 'receivingAgency'      => '061'
@@ -335,9 +334,5 @@ class IntegrationController extends Controller
             'Content-Encoding' => 'utf-8',
             'Content-Type'     => 'application/json'
         ]);
-    }
-
-    private function formatPercentage($percentage) {
-        return $percentage * 100;
     }
 }
