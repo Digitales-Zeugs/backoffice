@@ -14,7 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Back Office | SADAIC'),
-    'version' => '1.8.23',
+    'version' => '1.8.24',
     'sitio_publico' => env('SP_URL', 'http://10.26.110.101:8000/login'),
 
     /*
