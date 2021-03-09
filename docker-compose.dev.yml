@@ -63,6 +63,7 @@ services:
     restart: "no"
     volumes:
       - ./database/:/docker-entrypoint-initdb.d/
+      - ./docker/mysql/infile.cnf:/etc/mysql/conf.d/infile.cnf
     env_file:
       - .env.development
     networks:
