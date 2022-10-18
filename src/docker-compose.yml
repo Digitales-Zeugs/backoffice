@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+
+  nginx:
+    image: nginx:1.19-alpine
+    restart: "no"
+    ports:
+      - 9000:9000
+      - 8000:8000
+    volumes:
+      - ./src:/var/www/backoffice
+      - ./docker/nginx/app.conf:/etc/nginx/conf.d/backoffice.conf
+      - ../registro-obras/src:/var/www/registro-obras
+      - ../registro-obras/docker/nginx/app.conf:/etc/nginx/conf.d/registro-obras.conf
+    networks:
+      - app-network
+    depends_on:
+      - php_backoffice
+      - database
+
+  php_backoffice:
+    image: registry.gitlab.com/qkstudio/sadaic/registro-obras/backoffice:latest
+    restart: "always"
+    networks:
+      - app-network
+
+  php_registro_obras:
+    image: registry.gitlab.com/qkstudio/sadaic/registro-obras:latest
+    restart: "always"
+    networks:
+      - app-network
+
+  database:
+    image: mariadb:10.5.6-focal
+    restart: "no"
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - dbdata:/var/lib/mysql/
+    networks:
+      - app-network
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-toor}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-sadaic}
+      MYSQL_USER: ${MYSQL_USER:-sadaic}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-sadaic}
+
+networks:
+  app-network:
+    driver: bridge
+    name: sadaic-network
+
+volumes:
+  dbdata:
+    name: sadaic-dbdata

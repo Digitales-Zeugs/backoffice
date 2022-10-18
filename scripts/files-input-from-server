@@ -1,0 +1,3 @@
+lcd /home/Web-registro-obras/sync/input
+cd /bin/desdeweb
+mget *.csv

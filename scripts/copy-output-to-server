@@ -1,0 +1,4 @@
+#!/bin/sh
+cd /home/Web-registro-obras/sync/output
+sftp web@10.26.110.19 < /home/Web-registro-obras/backoffice/scripts/files-output-to-server
+cd /home/Web-registro-obras/backoffice/scripts

@@ -1,0 +1,91 @@
+version: "3.8"
+
+services:
+
+  nginx_backoffice:
+    restart: "always"
+    env_file:
+      - .env.testing
+    volumes:
+      - type: volume
+        source: code-backoffice
+        target: /var/www
+        volume:
+          nocopy: true
+      - user-files:/var/www/storage/app/files
+    depends_on:
+      - database
+      - mailhog
+
+  nginx_registro_obras:
+    restart: "always"
+    env_file:
+      - .env.testing
+    volumes:
+      - type: volume
+        source: code-registro-obras
+        target: /var/www
+        volume:
+          nocopy: true
+      - user-files:/var/www/storage/app/files
+    depends_on:
+      - database
+      - mailhog
+
+  php_backoffice:
+    env_file:
+      - .env.testing
+    image: registry.gitlab.com/qkstudio/sadaic/registro-obras/backoffice:testing
+    restart: "always"
+    volumes:
+      - code-backoffice:/var/www
+      - user-files:/var/www/storage/app/files
+    command: sh -c "php-fpm"
+
+  php_registro_obras:
+    env_file:
+      - ../registro-obras/.env.testing
+    image: registry.gitlab.com/qkstudio/sadaic/registro-obras:testing
+    restart: "always"
+    volumes:
+      - code-registro-obras:/var/www
+      - user-files:/var/www/storage/app/files
+    command: sh -c "php-fpm"
+
+  database:
+    image: mysql:8.0.21
+    restart: "always"
+    volumes:
+      - ./database/:/docker-entrypoint-initdb.d/
+    env_file:
+      - .env.testing
+    networks:
+      - app-network
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    restart: "always"
+    env_file:
+      - .env.testing
+    networks:
+      - app-network
+
+  adminer:
+    image: adminer:4.7.7
+    restart: "always"
+    depends_on:
+      - database
+    env_file:
+      - .env.testing
+    environment:
+      ADMINER_DEFAULT_SERVER: ${ADMINER_DEFAULT_SERVER:-database}
+    volumes:
+      - ./docker/adminer/php.ini:/usr/local/etc/php/conf.d/0-upload_large_dumps.ini
+    networks:
+      - app-network
+
+volumes:
+  code-backoffice:
+  code-registro-obras:
+  user-files:
+  dbdata:

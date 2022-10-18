@@ -1,0 +1,13 @@
+{
+    "/js/app.js": "/js/app.js",
+    "/css/app.css": "/css/app.css",
+    "/js/dashboard.js": "/js/dashboard.js",
+    "/js/integration.js": "/js/integration.js",
+    "/js/jingles.index.js": "/js/jingles.index.js",
+    "/js/jingles.view.js": "/js/jingles.view.js",
+    "/js/login.js": "/js/login.js",
+    "/js/members.index.js": "/js/members.index.js",
+    "/js/members.view.js": "/js/members.view.js",
+    "/js/works.index.js": "/js/works.index.js",
+    "/js/works.view.js": "/js/works.view.js"
+}

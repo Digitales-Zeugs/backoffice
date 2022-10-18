@@ -1,0 +1,25 @@
+#!/bin/bash
+
+cd ../registro-obras/
+git reset --hard develop
+git pull origin develop
+
+cd ../backoffice/
+git reset --hard develop
+git pull origin develop
+
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml build php_registro_obras
+
+sleep 5
+
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml build php_backoffice
+
+sleep 5
+
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml down -v
+
+sleep 10
+
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml exec -u root php_backoffice php artisan migrate
