@@ -1,0 +1,120 @@
+version: "3.8"
+
+services:
+
+  nginx_backoffice:
+    restart: "no"
+    ports:
+      - 9443:8443
+      - 9000:8000
+    env_file:
+      - .env.development
+    volumes:
+      - ./src/public:/var/www/public
+    depends_on:
+      - database
+      - mailhog
+
+  nginx_registro_obras:
+    restart: "no"
+    ports:
+      - 8443:8443
+      - 8000:8000
+    volumes:
+      - ../registro-obras/src/public:/var/www/public
+    env_file:
+      - ../registro-obras/.env.development
+    depends_on:
+      - database
+      - mailhog
+
+  php_backoffice:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    image: registry.gitlab.com/qkstudio/sadaic/registro-obras/backoffice:develop
+    restart: "no"
+    env_file:
+      - .env.development
+    volumes:
+      - ./src:/var/www
+      - user-files:/var/www/storage/app/files
+    extra_hosts:
+      - sadaic.org.ar:10.30.110.20
+      - www.sadaic.org.ar:10.30.110.20
+
+  php_registro_obras:
+    build:
+      context: ../registro-obras
+      dockerfile: ./docker/Dockerfile
+    image: registry.gitlab.com/qkstudio/sadaic/registro-obras:develop
+    restart: "no"
+    env_file:
+      - ../registro-obras/.env.development
+    volumes:
+      - ../registro-obras/src:/var/www
+      - user-files:/var/www/storage/app/files
+    extra_hosts:
+      - sadaic.org.ar:10.30.110.20
+      - www.sadaic.org.ar:10.30.110.20
+
+  database:
+    image: mysql:8.0.21
+    restart: "no"
+    volumes:
+      - ./database/:/docker-entrypoint-initdb.d/
+      - ./docker/mysql/infile.cnf:/etc/mysql/conf.d/infile.cnf
+    env_file:
+      - .env.development
+    networks:
+      - app-network
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    restart: "no"
+    ports:
+      - 8025:8025
+    env_file:
+      - .env.development
+    networks:
+      - app-network
+
+  adminer:
+    image: adminer:4.7.7
+    restart: "no"
+    ports:
+      - 8306:8080
+    depends_on:
+      - database
+    env_file:
+      - .env.development
+    environment:
+      ADMINER_DEFAULT_SERVER: ${ADMINER_DEFAULT_SERVER:-database}
+    networks:
+      - app-network
+
+  node_backoffice:
+    image: node:14.13.1-alpine3.12
+    restart: "no"
+    command: /bin/sh
+    tty: true
+    working_dir: /app
+    volumes:
+      - ./src:/app
+    networks:
+      - app-network
+
+  node_registro_obras:
+    image: node:14.13.1-alpine3.12
+    restart: "no"
+    command: /bin/sh
+    tty: true
+    working_dir: /app
+    volumes:
+      - ../registro-obras/src:/app
+    networks:
+      - app-network
+      
+volumes:
+  user-files:
+  dbdata:

@@ -1,0 +1,31 @@
+// Icons: https://www.flaticon.es/autores/roundicons
+
+td.details-control {
+    background: url('/images/icons/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+
+tr.shown td.details-control {
+    background: url('/images/icons/details_close.png') no-repeat center center;
+}
+
+td.view-control {
+    background: url('/images/icons/view.png') no-repeat center center;
+    cursor: pointer;
+}
+
+.search_id {
+    width: 3rem;
+}
+
+.dataTables_length {
+    float: left;
+}
+
+.dataTables_paginate .paginate_button:first-child {
+    margin-right: .5rem;
+}
+
+.dataTables_paginate .paginate_button:last-child {
+    margin-left: .5rem;
+}

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+cd /home/Web-registro-obras/backoffice
+
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml exec -u root php_backoffice php artisan sadaic:expiration
+
+cd /home/Web-registro-obras/backoffice/scripts

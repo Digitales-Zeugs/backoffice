@@ -1,0 +1,36 @@
+#!/bin/bash
+
+ACTUAL_VERSION=(`git describe --abbrev=0`)
+
+VERSION_LIST=(`echo $ACTUAL_VERSION | tr '.' ' '`)
+
+VERSION_MAJOR=${VERSION_LIST[0]}
+VERSION_MINOR=${VERSION_LIST[1]}
+VERSION_PATCH=${VERSION_LIST[2]}
+
+TARGET=(`echo "$1" | tr '[:upper:]' '[:lower:]'`)
+
+case $TARGET in
+  major)
+    VERSION_MAJOR=$((VERSION_MAJOR + 1))
+    VERSION_MINOR=0
+    VERSION_PATCH=0
+    ;;
+  minor)
+    VERSION_MINOR=$((VERSION_MINOR + 1))
+    VERSION_PATCH=0
+    ;;
+  *)
+    VERSION_PATCH=$((VERSION_PATCH + 1))
+    ;;
+esac
+
+NEW_VERSION="$VERSION_MAJOR.$VERSION_MINOR.$VERSION_PATCH"
+
+echo "Nueva versión: $NEW_VERSION"
+
+sed -i "s/'version'\s*=>\s*'$ACTUAL_VERSION'/'version' => '$NEW_VERSION'"/g ./src/config/app.php
+
+git add ./src/config/app.php
+git commit -m "Version bump: $NEW_VERSION"
+git tag -a $NEW_VERSION -m "v$NEW_VERSION"

@@ -1,0 +1,35 @@
+image: docker:19.03.13
+
+services:
+  - docker:19.03.13-dind
+
+stages:
+  - build
+  - deploy
+
+before_script:
+  - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD $CI_REGISTRY
+
+build_image_base:
+  only:
+    - tags 
+  stage: build
+  allow_failure: false
+  script:
+    - export REGISTRY_IMAGE=$(echo "${CI_REGISTRY_IMAGE}" | sed -r 's/(.*)\//\1\/registro-obras\//')
+    - docker pull ${REGISTRY_IMAGE}:testing || true
+    - docker build -f docker/Dockerfile --cache-from ${REGISTRY_IMAGE}:testing -t ${REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME} -t ${REGISTRY_IMAGE}:testing .
+    - docker push ${REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}
+    - docker push ${REGISTRY_IMAGE}:testing
+
+deploy:testing:
+  stage: deploy
+  only:
+    - tags 
+  before_script:
+    - apk add --update docker-compose
+    - eval $(ssh-agent -s)
+    - cat ${DEPLOY_TESTING_SSH_KEY} | ssh-add -
+  script:    
+    - ssh -o StrictHostKeyChecking=no ${DEPLOY_TESTING_USER}@${DEPLOY_TESTING_HOST} ./bin/deploy ${DEPLOY_TESTING_PROJECT_NAME} ${CI_COMMIT_REF_NAME}
+  when: manual

@@ -1,0 +1,14 @@
+#!/bin/sh
+# Listado de localidades y provincias: DIV_ADMINISTRATIVAS.csv
+# Listado de géneros: DOC_MW_REF_INT_GENRE.csv
+# Listado de países: PAISES TIS_N.csv
+# Listado de roles de los derechohabientes: REF_MW_WORK_ROLE.csv
+# Listado de otras sociedades: REF_SOCIETY.csv
+# Listado de socios: SOCIOS SGS Completo.csv
+# Listado de tipos de documento: Tipos Documentos.csv
+# Listado de productoras y agencias: DATOS_USUARIOS.csv
+# Salida de SGS: *.json
+
+cd /home/Web-registro-obras/sync/input
+sftp web@10.26.110.19 < /home/Web-registro-obras/backoffice/scripts/files-input-from-server
+cd /home/Web-registro-obras/backoffice/scripts

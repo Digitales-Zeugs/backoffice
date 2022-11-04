@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+
+  nginx_backoffice:
+    image: nginx:1.19-alpine
+    restart: "always"
+    networks:
+      - app-network
+    volumes:
+      - ./docker/nginx/app.conf:/etc/nginx/conf.d/app.conf
+      - ./docker/nginx/app-ssl.conf:/etc/nginx/conf.d/app-ssl.conf
+    depends_on:
+      - php_backoffice
+
+  nginx_registro_obras:
+    image: nginx:1.19-alpine
+    restart: "always"
+    volumes:
+      - ../registro-obras/docker/nginx/app.conf:/etc/nginx/conf.d/app.conf
+      - ../registro-obras/docker/nginx/app-ssl.conf:/etc/nginx/conf.d/app-ssl.conf
+    networks:
+      - app-network
+    depends_on:
+      - php_registro_obras
+
+  php_backoffice:
+    image: registry.gitlab.com/qkstudio/sadaic/registro-obras/backoffice:latest
+    restart: "always"
+    networks:
+      - app-network
+    volumes:
+      - ./docker/php/opcache.ini:/usr/local/etc/php/conf.d/opcache.ini
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+
+  php_registro_obras:
+    image: registry.gitlab.com/qkstudio/sadaic/registro-obras:latest
+    restart: "always"
+    networks:
+      - app-network
+    volumes:
+      - ../registro-obras/docker/php/opcache.ini:/usr/local/etc/php/conf.d/opcache.ini
+      - ../registro-obras/docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+
+networks:
+  app-network:
+    driver: bridge
