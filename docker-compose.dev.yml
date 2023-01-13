@@ -93,6 +93,19 @@ services:
     networks:
       - app-network
 
+  phpmyadmin:
+    depends_on:
+        - database
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+        - '8080:80'
+    env_file:
+      - .env.development
+    environment:
+      PMA_HOST: database
+      UPLOAD_LIMIT: 300M
+
   node_backoffice:
     image: node:14.13.1-alpine3.12
     restart: "no"

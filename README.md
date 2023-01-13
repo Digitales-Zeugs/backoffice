@@ -137,3 +137,13 @@ backoffice/ $ docker-compose --env-file=env/dev exec node_backoffice npm run dev
 backoffice/ $ docker-compose --env-file=env/dev exec node_registro_obras npm install
 backoffice/ $ docker-compose --env-file=env/dev exec node_registro_obras npm run development
 ```
+
+```
+backoffice/ $ docker compose --env-file=env/dev exec php_backoffice composer install
+backoffice/ $ docker compose --env-file=env/dev exec php_registro_obras composer install
+backoffice/ $ docker compose --env-file=env/dev exec node_backoffice npm install
+backoffice/ $ docker compose --env-file=env/dev exec node_backoffice npm run development
+backoffice/ $ docker compose --env-file=env/dev exec node_registro_obras npm install
+backoffice/ $ docker compose --env-file=env/dev exec node_registro_obras npm run development
+```
+
